@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkinCare App</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="mobile-frame">
+    <div class="flex flex-col h-full bg-white">
+      <!-- Header -->
+      <header class="app-gradient p-3">
+        <div class="flex justify-between items-center">
+          <h1 class="text-xl font-semibold text-white">SkinCare Tracker</h1>
+          <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+            <i class="fas fa-user text-gray-500"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-1 overflow-y-auto p-3">
+        <div class="mb-3">
+          <h2 class="text-lg font-medium mb-2">Welcome back!</h2>
+          <p class="text-sm text-gray-600">Track your skin health journey and discover personalized recommendations.</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div class="card p-3">
+            <p class="text-xs text-gray-500 mb-1">Skin Health</p>
+            <div class="flex items-center">
+              <span class="text-xl mr-2">😊</span>
+              <div class="flex-1">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" style="width: 75%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card p-3">
+            <p class="text-xs text-gray-500 mb-1">Streak</p>
+            <div class="flex items-center">
+              <span class="text-xl mr-2">🔥</span>
+              <p class="text-lg font-medium">7 days</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tracking Categories -->
+        <h3 class="text-sm font-medium mb-2">Track Your Progress</h3>
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <a href="skin-health.html" class="card p-3 flex flex-col items-center text-center">
+            <div class="w-10 h-10 rounded-full app-gradient flex items-center justify-center mb-1">
+              <i class="fas fa-smile text-white"></i>
+            </div>
+            <h4 class="font-medium text-sm">Skin Health</h4>
+            <p class="text-xs text-gray-500">Daily tracking</p>
+          </a>
+          
+          <a href="symptoms.html" class="card p-3 flex flex-col items-center text-center">
+            <div class="w-10 h-10 rounded-full secondary-gradient flex items-center justify-center mb-1">
+              <i class="fas fa-clipboard-list text-white"></i>
+            </div>
+            <h4 class="font-medium text-sm">Symptoms</h4>
+            <p class="text-xs text-gray-500">Log symptoms</p>
+          </a>
+          
+          <a href="diet.html" class="card p-3 flex flex-col items-center text-center">
+            <div class="w-10 h-10 rounded-full app-gradient flex items-center justify-center mb-1">
+              <i class="fas fa-utensils text-white"></i>
+            </div>
+            <h4 class="font-medium text-sm">Diet</h4>
+            <p class="text-xs text-gray-500">Track meals</p>
+          </a>
+          
+          <a href="supplements.html" class="card p-3 flex flex-col items-center text-center">
+            <div class="w-10 h-10 rounded-full secondary-gradient flex items-center justify-center mb-1">
+              <i class="fas fa-pills text-white"></i>
+            </div>
+            <h4 class="font-medium text-sm">Supplements</h4>
+            <p class="text-xs text-gray-500">Track intake</p>
+          </a>
+          
+          <a href="routine.html" class="card p-3 flex flex-col items-center text-center">
+            <div class="w-10 h-10 rounded-full app-gradient flex items-center justify-center mb-1">
+              <i class="fas fa-list-check text-white"></i>
+            </div>
+            <h4 class="font-medium text-sm">Routine</h4>
+            <p class="text-xs text-gray-500">Skin care plan</p>
+          </a>
+          
+          <a href="insights.html" class="card p-3 flex flex-col items-center text-center bg-gradient-to-r from-blue-100 to-green-100 col-span-2 mt-2">
+            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-1">
+              <i class="fas fa-lightbulb text-yellow-500"></i>
+            </div>
+            <h4 class="font-medium text-sm">Insights</h4>
+            <p class="text-xs text-gray-500">Get recommendations</p>
+          </a>
+          
+          <a href="chat.html" class="card p-3 flex flex-col items-center text-center bg-gradient-to-r from-indigo-100 to-purple-100 col-span-2 mt-2">
+            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-1">
+              <i class="fas fa-robot text-purple-500"></i>
+            </div>
+            <h4 class="font-medium text-sm">AI Assistant</h4>
+            <p class="text-xs text-gray-500">Get advice</p>
+          </a>
+        </div>
+      </main>
+
+      <!-- Navigation -->
+      <nav class="bg-white border-t border-gray-200 flex justify-around py-2">
+        <a href="index.html" class="nav-item active">
+          <i class="fas fa-home text-lg"></i>
+          <span class="text-xs mt-1">Home</span>
+        </a>
+        <a href="skin-health.html" class="nav-item">
+          <i class="fas fa-chart-line text-lg"></i>
+          <span class="text-xs mt-1">Track</span>
+        </a>
+        <a href="insights.html" class="nav-item">
+          <i class="fas fa-lightbulb text-lg"></i>
+          <span class="text-xs mt-1">Insights</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+          <i class="fas fa-comment-alt text-lg"></i>
+          <span class="text-xs mt-1">Chat</span>
+        </a>
+      </nav>
+    </div>
+  </div>
+</body>
+</html>

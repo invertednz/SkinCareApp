@@ -1,0 +1,149 @@
+/* Main stylesheet for SkinCare App */
+
+/* Custom variables */
+:root {
+  --primary-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  --secondary-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+  --accent-color: #ff7eb3;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --border-radius: 12px;
+}
+
+/* Custom styles beyond Tailwind */
+.app-gradient {
+  background-image: var(--primary-gradient);
+}
+
+.secondary-gradient {
+  background-image: var(--secondary-gradient);
+}
+
+.card {
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  background-color: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Mobile frame simulation */
+.mobile-frame {
+  width: 375px;
+  height: 812px;
+  margin: 0 auto;
+  border: 12px solid #f0f0f0;
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Navigation styles */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+  transition: all 0.2s ease;
+}
+
+.nav-item.active {
+  color: var(--accent-color);
+}
+
+/* Emoji rating styles */
+.emoji-rating {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.emoji-rating label {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.emoji-rating label:hover {
+  transform: scale(1.2);
+}
+
+.emoji-rating input[type="radio"] {
+  display: none;
+}
+
+.emoji-rating input[type="radio"]:checked + span {
+  transform: scale(1.2);
+}
+
+/* Progress bar styles */
+.progress-bar {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background-image: var(--primary-gradient);
+  transition: width 0.3s ease;
+}
+
+/* Chat styles */
+.chat-bubble {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  margin-bottom: 8px;
+}
+
+.chat-bubble.user {
+  background-color: #f0f0f0;
+  border-bottom-right-radius: 4px;
+  margin-left: auto;
+}
+
+.chat-bubble.bot {
+  background-image: var(--secondary-gradient);
+  border-bottom-left-radius: 4px;
+  color: white;
+}
+
+/* Photo upload area */
+.photo-upload {
+  border: 2px dashed #e0e0e0;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.photo-upload:hover {
+  border-color: var(--accent-color);
+}
+
+/* Toggle switch styles */
+.toggle-checkbox {
+  transition: all 0.3s ease;
+  right: 0;
+}
+
+.toggle-label {
+  transition: all 0.3s ease;
+}
+
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: var(--accent-color);
+}
+
+.toggle-checkbox:checked + .toggle-label {
+  background-color: var(--accent-color);
+}
