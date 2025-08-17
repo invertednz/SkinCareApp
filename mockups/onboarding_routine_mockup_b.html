@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Onboarding – Current Routine (Mockup B)</title>
+  <style>
+    :root {
+      --primary-start: #A8EDEA;
+      --primary-end: #FED6E3;
+      --accent: #FF7EB3;
+      --radius: 12px;
+      --text: #222;
+      --muted: #666;
+      --bg: #f7f7f8;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); background: var(--bg); }
+    .gradient-header { background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); color:#fff; padding:20px 16px; display:flex; align-items:center; justify-content:space-between; }
+    .title { font-size:20px; font-weight:600; }
+    .container { transform: translateY(-24px); padding: 0 16px 32px; }
+    .card { background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); padding:16px; max-width: 900px; margin: 0 auto; }
+    .progress { height:8px; width:100%; background:#eef2f4; border-radius: 999px; overflow:hidden; margin-bottom: 12px; }
+    .progress > div { height:100%; width: 45%; background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); }
+
+    h2 { margin: 0 0 8px; font-size: 18px; font-weight: 600; }
+    .desc { color: var(--muted); margin-bottom: 12px; }
+
+    .section { margin-top: 14px; }
+    .section h3 { margin: 8px 0; font-size: 16px; font-weight: 600; }
+
+    .list { display:flex; flex-direction: column; gap:10px; }
+    .item { display:flex; align-items:center; gap:12px; padding:10px; border:1px solid #e5e7eb; border-radius: 10px; background:#fff; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+    .item[draggable="true"] { cursor: grab; }
+    .drag-handle { font-size: 16px; color:#999; cursor: grab; }
+    .item .label { display:flex; align-items:center; gap:10px; min-width: 180px; }
+
+    .freq { display:flex; flex-wrap: wrap; gap:8px; }
+    .chip { padding:6px 10px; border-radius: 999px; border:1px solid #e5e7eb; cursor:pointer; user-select:none; font-size: 13px; background:#fff; }
+    .chip.active { background:#111827; color:#fff; border-color:#111827; }
+
+    .add-row { display:flex; gap:8px; margin-top: 10px; }
+    .add-row input { flex: 1; padding:10px 12px; border-radius:8px; border:1px solid #e5e7eb; }
+    .btn { padding:10px 14px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; }
+    .btn.primary { background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); border:none; color:#111; font-weight:600; }
+    .footer { display:flex; align-items:center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+
+    .skip { display:flex; align-items:center; gap:10px; color:#444; }
+
+    @media (max-width: 720px){
+      .item { flex-direction: column; align-items: stretch; }
+      .item .label { min-width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="gradient-header">
+    <div class="title">Onboarding</div>
+    <button class="btn" title="Close">✕</button>
+  </header>
+  <main class="container">
+    <section class="card">
+      <div class="progress"><div></div></div>
+      <h2>Current routine</h2>
+      <p class="desc">Organize your morning and evening routine. Drag to reorder, add steps, or skip for now.</p>
+
+      <!-- Morning section -->
+      <div class="section" data-section="am">
+        <h3>Morning</h3>
+        <div class="list" id="amList">
+          <div class="item" draggable="true" data-key="cleanser">
+            <div class="drag-handle">⠿</div>
+            <label class="label"><input type="checkbox" checked /> Cleanser</label>
+            <div class="freq" role="listbox" aria-label="Morning Cleanser frequency">
+              <div class="chip active" data-val="daily">Daily</div>
+              <div class="chip" data-val="2-3x">2–3x/wk</div>
+              <div class="chip" data-val="weekly">Weekly</div>
+            </div>
+          </div>
+          <div class="item" draggable="true" data-key="sunscreen">
+            <div class="drag-handle">⠿</div>
+            <label class="label"><input type="checkbox" checked /> Sunscreen</label>
+            <div class="freq" role="listbox" aria-label="Morning Sunscreen frequency">
+              <div class="chip active" data-val="daily">Daily</div>
+              <div class="chip" data-val="as-needed">As needed</div>
+            </div>
+          </div>
+        </div>
+        <div class="add-row">
+          <input placeholder="Add morning step (e.g., Vitamin C)" id="amInput" />
+          <button class="btn primary" onclick="addStep('am')">Add</button>
+        </div>
+      </div>
+
+      <!-- Evening section -->
+      <div class="section" data-section="pm">
+        <h3>Evening</h3>
+        <div class="list" id="pmList">
+          <div class="item" draggable="true" data-key="cleanser">
+            <div class="drag-handle">⠿</div>
+            <label class="label"><input type="checkbox" checked /> Cleanser</label>
+            <div class="freq" role="listbox" aria-label="Evening Cleanser frequency">
+              <div class="chip active" data-val="daily">Daily</div>
+              <div class="chip" data-val="2-3x">2–3x/wk</div>
+              <div class="chip" data-val="weekly">Weekly</div>
+            </div>
+          </div>
+          <div class="item" draggable="true" data-key="actives">
+            <div class="drag-handle">⠿</div>
+            <label class="label"><input type="checkbox" /> Actives</label>
+            <div class="freq" role="listbox" aria-label="Evening Actives frequency">
+              <div class="chip" data-val="daily">Daily</div>
+              <div class="chip active" data-val="2-3x">2–3x/wk</div>
+              <div class="chip" data-val="weekly">Weekly</div>
+            </div>
+          </div>
+        </div>
+        <div class="add-row">
+          <input placeholder="Add evening step (e.g., Moisturizer)" id="pmInput" />
+          <button class="btn primary" onclick="addStep('pm')">Add</button>
+        </div>
+      </div>
+
+      <div class="footer">
+        <label class="skip"><input type="checkbox" id="skip" /> I don't have a routine yet</label>
+        <div style="display:flex; gap:12px;">
+          <button class="btn">Back</button>
+          <button class="btn primary">Next</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Drag & drop reorder
+    document.querySelectorAll('.list').forEach(list => {
+      let draggingEl = null;
+      list.addEventListener('dragstart', e => {
+        const target = e.target.closest('.item');
+        if (!target) return;
+        draggingEl = target;
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      list.addEventListener('dragover', e => {
+        e.preventDefault();
+        const after = getDragAfterElement(list, e.clientY);
+        if (after == null) {
+          list.appendChild(draggingEl);
+        } else {
+          list.insertBefore(draggingEl, after);
+        }
+      });
+    });
+
+    function getDragAfterElement(container, y) {
+      const elements = [...container.querySelectorAll('.item:not([dragging])')];
+      return elements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // Frequency chips: mutually exclusive per item
+    document.querySelectorAll('.item').forEach(item => {
+      const chips = item.querySelectorAll('.chip');
+      chips.forEach(ch => ch.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        ch.classList.add('active');
+      }));
+    });
+
+    // Add step into AM/PM lists
+    function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+    function addStep(section){
+      const input = document.getElementById(section + 'Input');
+      const name = input.value.trim();
+      if(!name) return; input.value='';
+      const key = slugify(name);
+      const list = document.getElementById(section + 'List');
+
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.setAttribute('draggable', 'true');
+      item.setAttribute('data-key', key);
+      item.innerHTML = `
+        <div class="drag-handle">⠿</div>
+        <label class="label"><input type="checkbox" checked /> ${name}</label>
+        <div class="freq" role="listbox" aria-label="${section === 'am' ? 'Morning' : 'Evening'} ${name} frequency">
+          <div class="chip active" data-val="daily">Daily</div>
+          <div class="chip" data-val="2-3x">2–3x/wk</div>
+          <div class="chip" data-val="weekly">Weekly</div>
+          <div class="chip" data-val="as-needed">As needed</div>
+        </div>`;
+
+      list.appendChild(item);
+
+      // wire drag + chips
+      item.addEventListener('dragstart', e => { e.dataTransfer.effectAllowed = 'move'; });
+      const chips = item.querySelectorAll('.chip');
+      chips.forEach(ch => ch.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        ch.classList.add('active');
+      }));
+      input.focus();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Onboarding – Current Routine (Mockup C)</title>
+  <style>
+    :root {
+      --primary-start: #A8EDEA;
+      --primary-end: #FED6E3;
+      --accent: #FF7EB3;
+      --radius: 12px;
+      --text: #222;
+      --muted: #666;
+      --bg: #f7f7f8;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+      --chip-bg: #fff;
+      --chip-border: #e5e7eb;
+      --chip-active: #111827;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); background: var(--bg); }
+    .gradient-header { background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); color:#fff; padding:20px 16px; display:flex; align-items:center; justify-content:space-between; }
+    .title { font-size:20px; font-weight:600; }
+    .container { transform: translateY(-24px); padding: 0 16px 32px; }
+    .card { background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); padding:16px; max-width: 960px; margin: 0 auto; }
+
+    .progress { height:8px; width:100%; background:#eef2f4; border-radius: 999px; overflow:hidden; margin-bottom: 12px; }
+    .progress > div { height:100%; width: 55%; background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); }
+
+    h2 { margin: 0 0 8px; font-size: 18px; font-weight: 600; }
+    .desc { color: var(--muted); margin-bottom: 12px; }
+
+    /* Templates */
+    .templates { display:flex; gap:12px; overflow-x:auto; padding-bottom: 6px; }
+    .tpl { min-width: 260px; border:1px solid #e5e7eb; border-radius: 12px; padding:12px; background:#fff; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+    .tpl h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+    .tpl .hint { color:#777; font-size: 13px; margin-bottom: 8px; }
+    .pill { display:inline-block; margin: 2px 6px 2px 0; padding:6px 10px; border-radius:999px; background:#f3f4f6; font-size: 13px; color:#333; }
+    .tpl .actions { display:flex; gap:8px; margin-top: 8px; }
+    .btn { padding:8px 12px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; }
+    .btn.primary { background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); border:none; color:#111; font-weight:600; }
+
+    /* Your routine */
+    .section { margin-top: 16px; }
+    .section h3 { margin: 8px 0; font-size: 16px; font-weight: 600; }
+    .selected { display:flex; flex-wrap:wrap; gap:8px; }
+    .chip { display:inline-flex; align-items:center; gap:8px; padding:6px 8px; border-radius:12px; border:1px solid var(--chip-border); background: var(--chip-bg); box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+    .chip .name { font-size: 13px; color:#333; }
+    .chip .freq { display:flex; gap:6px; }
+    .chip .freq .fchip { padding:4px 8px; border-radius:999px; border:1px solid var(--chip-border); background:#fff; font-size: 12px; cursor:pointer; }
+    .chip .freq .fchip.active { background: var(--chip-active); color:#fff; border-color: var(--chip-active); }
+    .chip .remove { border:none; background: transparent; color:#999; cursor:pointer; font-size: 14px; }
+
+    .add-row { display:flex; gap:8px; margin-top: 12px; }
+    .add-row input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid #e5e7eb; }
+
+    .footer { display:flex; justify-content: flex-end; gap:12px; margin-top: 16px; }
+
+    @media (max-width: 680px){
+      .chip { width: 100%; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+  <header class="gradient-header">
+    <div class="title">Onboarding</div>
+    <button class="btn" title="Close">✕</button>
+  </header>
+  <main class="container">
+    <section class="card">
+      <div class="progress"><div></div></div>
+      <h2>Current routine</h2>
+      <p class="desc">Start fast with a template, then customize your routine below.</p>
+
+      <!-- Templates carousel -->
+      <div class="templates">
+        <div class="tpl" data-template="basic">
+          <h3>Basic</h3>
+          <div class="hint">Cleanser, Moisturizer, Sunscreen</div>
+          <div>
+            <span class="pill">Cleanser</span>
+            <span class="pill">Moisturizer</span>
+            <span class="pill">Sunscreen</span>
+          </div>
+          <div class="actions">
+            <button class="btn primary" onclick="applyTemplate('basic')">Use Template</button>
+          </div>
+        </div>
+        <div class="tpl" data-template="acne">
+          <h3>Acne-focus</h3>
+          <div class="hint">Cleanser, Actives, Moisturizer, Sunscreen</div>
+          <div>
+            <span class="pill">Cleanser</span>
+            <span class="pill">Actives</span>
+            <span class="pill">Moisturizer</span>
+            <span class="pill">Sunscreen</span>
+          </div>
+          <div class="actions">
+            <button class="btn primary" onclick="applyTemplate('acne')">Use Template</button>
+          </div>
+        </div>
+        <div class="tpl" data-template="minimal">
+          <h3>Minimal</h3>
+          <div class="hint">Cleanser, Sunscreen</div>
+          <div>
+            <span class="pill">Cleanser</span>
+            <span class="pill">Sunscreen</span>
+          </div>
+          <div class="actions">
+            <button class="btn primary" onclick="applyTemplate('minimal')">Use Template</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Your routine -->
+      <div class="section">
+        <h3>Your routine</h3>
+        <div id="selected" class="selected"></div>
+        <div class="add-row">
+          <input id="addInput" placeholder="Add another step (e.g., Toner)" />
+          <button class="btn primary" onclick="addStep()">Add</button>
+        </div>
+      </div>
+
+      <div class="footer">
+        <button class="btn">Back</button>
+        <button class="btn primary">Next</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const templates = {
+      basic: ["Cleanser","Moisturizer","Sunscreen"],
+      acne: ["Cleanser","Actives","Moisturizer","Sunscreen"],
+      minimal: ["Cleanser","Sunscreen"],
+    };
+
+    const selectedEl = document.getElementById('selected');
+
+    function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+    function applyTemplate(key){
+      const items = templates[key] || [];
+      selectedEl.innerHTML = '';
+      items.forEach(name => createChip(name));
+    }
+
+    function addStep(){
+      const input = document.getElementById('addInput');
+      const name = input.value.trim();
+      if(!name) return; input.value='';
+      // avoid duplicates (case-insensitive)
+      const exists = [...selectedEl.querySelectorAll('.chip .name')].some(n => n.textContent.toLowerCase() === name.toLowerCase());
+      if (exists) return;
+      createChip(name);
+      input.focus();
+    }
+
+    function createChip(name){
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.dataset.key = slugify(name);
+      chip.innerHTML = `
+        <span class="name">${name}</span>
+        <div class="freq" role="listbox" aria-label="${name} frequency">
+          <button class="fchip active" data-val="daily" type="button">Daily</button>
+          <button class="fchip" data-val="2-3x" type="button">2–3x/wk</button>
+          <button class="fchip" data-val="weekly" type="button">Weekly</button>
+          <button class="fchip" data-val="as-needed" type="button">As needed</button>
+        </div>
+        <button class="remove" title="Remove" aria-label="Remove ${name}">✕</button>
+      `;
+
+      // wire frequency exclusivity
+      const fchips = chip.querySelectorAll('.fchip');
+      fchips.forEach(fc => fc.addEventListener('click', () => {
+        fchips.forEach(c => c.classList.remove('active'));
+        fc.classList.add('active');
+      }));
+
+      // wire delete
+      chip.querySelector('.remove').addEventListener('click', () => chip.remove());
+
+      selectedEl.appendChild(chip);
+    }
+
+    // Seed with Basic by default
+    applyTemplate('basic');
+  </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Onboarding – Current Routine (Mockup A)</title>
+  <style>
+    :root {
+      --primary-start: #A8EDEA;
+      --primary-end: #FED6E3;
+      --accent: #FF7EB3;
+      --radius: 12px;
+      --text: #222;
+      --muted: #666;
+      --bg: #f7f7f8;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); background: var(--bg); }
+    .gradient-header {
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      color: #fff; padding: 20px 16px; display:flex; align-items:center; justify-content:space-between;
+    }
+    .title { font-size: 20px; font-weight: 600; }
+    .container { transform: translateY(-24px); padding: 0 16px 32px; }
+    .card { background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); padding:16px; max-width: 720px; margin: 0 auto; }
+    h2 { margin: 0 0 8px; font-size: 18px; font-weight: 600; }
+    .desc { color: var(--muted); margin-bottom: 12px; }
+
+    .row { display:flex; align-items:center; gap:12px; margin: 10px 0; }
+    .row .label { flex: 1; display:flex; align-items:center; gap:10px; }
+    .checkbox { width: 18px; height: 18px; }
+    .freq { display:flex; flex-wrap: wrap; gap:8px; }
+    .chip { padding:6px 10px; border-radius: 999px; border:1px solid #e5e7eb; cursor:pointer; user-select:none; font-size: 13px; color:#333; background:#fff; }
+    .chip.active { background: #111827; color:#fff; border-color: #111827; }
+
+    .product { display:none; margin: 8px 0 0 30px; }
+    .product input { width: 100%; padding:10px 12px; border-radius: 8px; border:1px solid #e5e7eb; }
+
+    .add-line { display:flex; gap:8px; margin-top: 14px; }
+    .add-line input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid #e5e7eb; }
+
+    .actions { display:flex; gap:12px; margin-top:16px; }
+    .btn { padding:10px 14px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; }
+    .btn.primary { background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); border:none; color:#111; font-weight:600; }
+
+    .progress { height:8px; width:100%; background:#eef2f4; border-radius: 999px; overflow:hidden; margin-bottom: 12px; }
+    .progress > div { height:100%; width: 35%; background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); }
+
+    @media (max-width: 520px){
+      .row { align-items: stretch; flex-direction: column; }
+      .freq { justify-content: flex-start; }
+      .product { margin-left:0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="gradient-header">
+    <div class="title">Onboarding</div>
+    <button class="btn" title="Close">✕</button>
+  </header>
+  <main class="container">
+    <section class="card">
+      <div class="progress"><div></div></div>
+      <h2>Current routine</h2>
+      <p class="desc">Select what you use and how often. Add products if you like.</p>
+
+      <!-- Cleanser row -->
+      <div class="row" data-key="cleanser">
+        <label class="label">
+          <input type="checkbox" class="checkbox" checked />
+          <span>Cleanser</span>
+        </label>
+        <div class="freq" role="listbox" aria-label="Cleanser frequency">
+          <div class="chip active" data-val="daily">Daily</div>
+          <div class="chip" data-val="2-3x">2–3x/wk</div>
+          <div class="chip" data-val="weekly">Weekly</div>
+          <div class="chip" data-val="as-needed">As needed</div>
+        </div>
+      </div>
+      <div class="product" data-for="cleanser">
+        <input placeholder="Product (optional) e.g., CeraVe Foaming Cleanser" />
+      </div>
+
+      <!-- Moisturizer row -->
+      <div class="row" data-key="moisturizer">
+        <label class="label">
+          <input type="checkbox" class="checkbox" />
+          <span>Moisturizer</span>
+        </label>
+        <div class="freq" role="listbox" aria-label="Moisturizer frequency">
+          <div class="chip active" data-val="daily">Daily</div>
+          <div class="chip" data-val="2-3x">2–3x/wk</div>
+          <div class="chip" data-val="weekly">Weekly</div>
+          <div class="chip" data-val="as-needed">As needed</div>
+        </div>
+      </div>
+      <div class="product" data-for="moisturizer">
+        <input placeholder="Product (optional)" />
+      </div>
+
+      <!-- Sunscreen row -->
+      <div class="row" data-key="sunscreen">
+        <label class="label">
+          <input type="checkbox" class="checkbox" checked />
+          <span>Sunscreen</span>
+        </label>
+        <div class="freq" role="listbox" aria-label="Sunscreen frequency">
+          <div class="chip active" data-val="daily">Daily</div>
+          <div class="chip" data-val="2-3x">2–3x/wk</div>
+          <div class="chip" data-val="weekly">Weekly</div>
+          <div class="chip" data-val="as-needed">As needed</div>
+        </div>
+      </div>
+      <div class="product" data-for="sunscreen" style="display:block;">
+        <input placeholder="Product (optional) e.g., UV Shield SPF 50" />
+      </div>
+
+      <!-- Actives row -->
+      <div class="row" data-key="actives">
+        <label class="label">
+          <input type="checkbox" class="checkbox" />
+          <span>Actives</span>
+        </label>
+        <div class="freq" role="listbox" aria-label="Actives frequency">
+          <div class="chip" data-val="daily">Daily</div>
+          <div class="chip active" data-val="2-3x">2–3x/wk</div>
+          <div class="chip" data-val="weekly">Weekly</div>
+          <div class="chip" data-val="as-needed">As needed</div>
+        </div>
+      </div>
+      <div class="product" data-for="actives">
+        <input placeholder="Product (optional) e.g., Adapalene" />
+      </div>
+
+      <!-- Add custom step -->
+      <div class="add-line">
+        <input id="addStepInput" placeholder="Add another step (e.g., Toner)" />
+        <button class="btn primary" id="addStepBtn">Add</button>
+      </div>
+
+      <div class="actions">
+        <button class="btn">Back</button>
+        <button class="btn primary">Next</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Toggle product field visibility based on checkbox
+    document.querySelectorAll('.row').forEach(row => {
+      const key = row.getAttribute('data-key');
+      const cb = row.querySelector('.checkbox');
+      const product = document.querySelector(`.product[data-for="${key}"]`);
+      const setVisible = () => { product.style.display = cb.checked ? 'block' : 'none'; };
+      cb.addEventListener('change', setVisible);
+      setVisible();
+
+      // Make frequency chips mutually exclusive
+      const chips = row.querySelectorAll('.chip');
+      chips.forEach(ch => ch.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        ch.classList.add('active');
+      }));
+    });
+
+    // Add custom step
+    document.getElementById('addStepBtn').addEventListener('click', () => addStep());
+    document.getElementById('addStepInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); addStep(); }
+    });
+
+    function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+    function addStep(){
+      const input = document.getElementById('addStepInput');
+      const name = input.value.trim();
+      if(!name) return;
+      const key = slugify(name);
+      const container = document.querySelector('.card');
+
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.setAttribute('data-key', key);
+      row.innerHTML = `
+        <label class="label">
+          <input type="checkbox" class="checkbox" checked />
+          <span>${name}</span>
+        </label>
+        <div class="freq" role="listbox" aria-label="${name} frequency">
+          <div class="chip active" data-val="daily">Daily</div>
+          <div class="chip" data-val="2-3x">2–3x/wk</div>
+          <div class="chip" data-val="weekly">Weekly</div>
+          <div class="chip" data-val="as-needed">As needed</div>
+        </div>`;
+
+      const product = document.createElement('div');
+      product.className = 'product';
+      product.setAttribute('data-for', key);
+      product.innerHTML = `<input placeholder="Product (optional)" />`;
+
+      const addLine = document.querySelector('.add-line');
+      container.insertBefore(product, addLine);
+      container.insertBefore(row, product);
+
+      // wire up events
+      const cb = row.querySelector('.checkbox');
+      const setVisible = () => { product.style.display = cb.checked ? 'block' : 'none'; };
+      cb.addEventListener('change', setVisible);
+      setVisible();
+      const chips = row.querySelectorAll('.chip');
+      chips.forEach(ch => ch.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        ch.classList.add('active');
+      }));
+
+      input.value = '';
+      input.focus();
+    }
+  </script>
+</body>
+</html>

@@ -38,7 +38,7 @@ Implement basic analytics and strong privacy. Track key events across auth, onbo
 ## Technical Considerations
 - Consent banner not required beyond Terms/Privacy; analytics opt-out toggle in settings (optional MVP).
 - Crash reporting (e.g., Sentry/Crashlytics) optional but recommended.
- - PostHog client initialized in `lib/services/analytics.dart`; server key not embedded; use public key for client, secure anything sensitive server-side.
+ - PostHog client initialized in `app/lib/services/analytics.dart`; server key not embedded; use public key for client, secure anything sensitive server-side.
  - Standard wrapper `Analytics.track(event, props)` to centralize schema; lint unknown events in CI.
 
 ## Success Metrics

@@ -3,7 +3,9 @@
 Guidelines for managing task lists in markdown files to track progress on completing a PRD
 
 ## Task Implementation
-- **One sub-task at a time:** Do **NOT** start the next sub‑task until you ask the user for permission and they say "yes" or "y"
+- **One sub-task at a time:** Do **NOT** start the next sub‑task until that sub-task is completed or unless told to skip the parent task/sub task.
+- **One parent task at a time:** Do **NOT** start the next parent task until that parent task is completed, or unless told to skip the parent task/sub task.
+- **One task file at a time:** Do **NOT** start the next task file until that task file is completed.
 - **Completion protocol:**  
   1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
@@ -44,4 +46,5 @@ When working with task lists, the AI must:
 3. Add newly discovered tasks.
 4. Keep "Relevant Files" accurate and up to date.
 5. Before starting work, check which sub‑task is next.
-6. After implementing a sub‑task, update the file and then pause for user approval.
+6. After implementing a sub‑task, update the file immediately; do not pause for user approval or ask to continue.
+7. Make sure all pages match their designs/corresponding html page, or that new pages use brand.md or design.md ensuring they match other pages already created.

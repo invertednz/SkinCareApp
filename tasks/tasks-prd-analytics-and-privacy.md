@@ -1,8 +1,11 @@
 ## Relevant Files
 
-- `lib/services/analytics.dart` - Analytics wrapper and initialization.
-- `lib/services/crash_reporting.dart` - Crash reporting integration.
-- `lib/settings/privacy_screen.dart` - Data deletion/export links and analytics opt-out.
+- `app/lib/services/analytics.dart` - Analytics wrapper and initialization (stubbed).
+- `app/lib/services/env.dart` - Provides PostHog keys/host from env.
+- `app/lib/main.dart` - Calls `AnalyticsService.init(...)` at startup.
+- `app/lib/router/analytics_observer.dart` - Emits `screen_view` events via `AnalyticsService`.
+- `app/pubspec.yaml` - Declares dependencies (`go_router`, `supabase_flutter`, `posthog_flutter`).
+- `app/lib/settings/privacy_screen.dart` - Data deletion/export links and analytics opt-out.
 - `supabase/functions/_shared/analytics.ts` - Optional server-side forwarding.
 
 ### Notes
@@ -11,20 +14,27 @@
 
 ## Tasks
 
-- [ ] 1.0 Implement analytics wrapper and PostHog initialization
-  - [ ] 1.1 Add PostHog dependency and initialize in `lib/services/analytics.dart`
-  - [ ] 1.2 Load public key and host from env; ensure no server-secret in client
-  - [ ] 1.3 Implement `track(event, props)`, `screen(screenName)`, and safe property filtering (no PII/PHI)
-  - [ ] 1.4 Add router observer to emit `screen_view` with `screen_name`
-  - [ ] 1.5 Gate analytics with a runtime flag and optional user opt-out
+- [x] 1.0 Implement analytics wrapper and PostHog initialization
+  - [x] 1.1 Add PostHog dependency and initialize in `app/lib/services/analytics.dart`
+  - [x] 1.2 Load public key and host from env; ensure no server-secret in client
+  - [x] 1.3 Implement `track(event, props)`, `screen(screenName)`, and safe property filtering (no PII/PHI)
+  - [x] 1.4 Add router observer to emit `screen_view` with `screen_name`
+  - [x] 1.5 Gate analytics with a runtime flag and optional user opt-out
 
 - [ ] 2.0 Add event tracking across auth, onboarding, paywall, logs, photos, insights, chat, notifications
-  - [ ] 2.1 Define centralized event constants/types; compile-time lint for unknown events
-  - [ ] 2.2 Auth: `auth_start/success/failure` (method, error_code)
-  - [ ] 2.3 Onboarding: `onboarding_start/step_submit/complete` (step_key)
-  - [ ] 2.4 Paywall/IAP: `paywall_view/select_plan/start_trial/purchase_success/purchase_failure/entitlement_sync`
-  - [ ] 2.5 Logging: `log_create_*` with `has_photo`, `ts`; Photos: upload start/success/failure
-  - [ ] 2.6 Insights: generate request/success/rate_limited, view, add_to_routine
+  - [x] 2.1 Define centralized event constants/types; compile-time lint for unknown events
+  - [x] 2.2 Auth: `auth_start/success/failure` (method, error_code)
+  - [x] 2.3 Onboarding: `onboarding_start/step_submit/complete` (step_key)
+  - [x] 2.4 Paywall/IAP events
+    - [x] `paywall_view`
+    - [x] `paywall_select_plan`
+    - [x] `start_trial`
+    - [x] `purchase_success`
+    - [x] `purchase_failure`
+    - [x] `entitlement_sync`
+  - [x] 2.5a Logging: `log_create_*` with `has_photo`, `ts`
+  - [x] 2.5b Photos: upload start/success/failure; analyze start/success/failure; delete; moderation_block
+  - [x] 2.6 Insights: generate request/success/rate_limited, view, add_to_routine
   - [ ] 2.7 Chat: open, send(has_image), stream_start/end(duration_ms), blocked_moderation(category), thumbsup/thumbsdown
   - [ ] 2.8 Notifications: delivered/open(category), settings_update
 
@@ -34,7 +44,7 @@
   - [ ] 3.3 Implement analytics opt-out toggle (optional MVP)
 
 - [ ] 4.0 Integrate crash reporting (optional) and error breadcrumbs
-  - [ ] 4.1 Add `lib/services/crash_reporting.dart` with initialization
+  - [ ] 4.1 Add `app/lib/services/crash_reporting.dart` with initialization
   - [ ] 4.2 Capture unhandled errors and attach minimal breadcrumbs
   - [ ] 4.3 Ensure no PII/PHI in crash payloads
 

@@ -1,0 +1,40 @@
+﻿ERROR|COMPILE_TIME_ERROR|UNDEFINED_ENUM_CONSTANT|C:\\Trae Apps\\SkinCareApp\\app\\test\\features\\onboarding\\onboarding_state_test.dart|135|29|8|There's no constant named 'timezone' in 'OnboardingStepKey'.
+ERROR|COMPILE_TIME_ERROR|UNDEFINED_ENUM_CONSTANT|C:\\Trae Apps\\SkinCareApp\\app\\test\\features\\onboarding\\onboarding_state_test.dart|142|29|8|There's no constant named 'timezone' in 'OnboardingStepKey'.
+WARNING|STATIC_WARNING|UNUSED_FIELD|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\chat_screen.dart|26|8|10|The value of the field '_isLoading' isn't used.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\data\\chat_repository.dart|5|8|29|Unused import: '../models/chat_message.dart'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\data\\chat_repository.dart|6|8|32|Unused import: '../models/chat_attachment.dart'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\data\\chat_repository.dart|7|8|34|Unused import: '../models/chat_stream_chunk.dart'.
+WARNING|STATIC_WARNING|UNUSED_LOCAL_VARIABLE|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\services\\moderation_service.dart|102|11|12|The value of the local variable 'lowerContent' isn't used.
+WARNING|STATIC_WARNING|DEAD_NULL_AWARE_EXPRESSION|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\services\\personalization_service.dart|88|58|2|The left operand can't be null, so the right operand is never executed.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\diary\\data\\diary_repository.dart|3|8|34|Unused import: '../../../services/analytics.dart'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\diary\\data\\diary_repository.dart|4|8|41|Unused import: '../../../services/analytics_events.dart'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\insights\\data\\insights_repository.dart|2|8|14|Unused import: 'dart:convert'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\insights\\insights_screen.dart|2|8|32|Unused import: 'package:provider/provider.dart'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\insights\\insights_screen.dart|4|8|38|Unused import: '../../../widgets/loading_widget.dart'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\notifications\\settings_screen.dart|3|8|39|Unused import: '../../services/analytics_service.dart'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\paywall\\paywall_screen.dart|11|8|35|Unused import: 'data/subscription_repository.dart'.
+WARNING|STATIC_WARNING|UNNECESSARY_NULL_COMPARISON|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\analytics.dart|21|16|7|The operand can't be null, so the condition is always 'true'.
+WARNING|STATIC_WARNING|UNNECESSARY_NULL_COMPARISON|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\analytics_service.dart|35|16|7|The operand can't be null, so the condition is always 'true'.
+WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\notifications_service.dart|5|8|48|Unused import: 'package:supabase_flutter/supabase_flutter.dart'.
+INFO|HINT|UNNECESSARY_IMPORT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\chat_screen.dart|2|8|31|The import of 'package:flutter/services.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart'.
+INFO|LINT|PREFER_FINAL_FIELDS|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\chat_screen.dart|29|15|20|The private field _selectedImages could be 'final'.
+INFO|LINT|AVOID_PRINT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\chat_screen.dart|72|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\chat_screen.dart|396|13|5|Don't invoke 'print' in production code.
+INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\chat_screen.dart|675|53|14|'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre.
+INFO|LINT|AVOID_PRINT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\data\\chat_repository.dart|410|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\services\\personalization_service.dart|66|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\services\\personalization_service.dart|90|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\chat\\services\\personalization_service.dart|108|7|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\diary\\data\\diary_repository.dart|333|11|5|Don't invoke 'print' in production code.
+INFO|LINT|AVOID_PRINT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\diary\\data\\diary_repository.dart|344|7|5|Don't invoke 'print' in production code.
+INFO|HINT|UNUSED_ELEMENT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\onboarding\\presentation\\onboarding_wizard.dart|657|7|17|The declaration '_MultiSelectChips' isn't referenced.
+INFO|HINT|UNNECESSARY_CAST|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\paywall\\data\\subscription_repository.dart|74|28|32|Unnecessary cast.
+INFO|HINT|UNUSED_ELEMENT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\features\\paywall\\paywall_screen.dart|105|8|18|The declaration '_showWebMockDialog' isn't referenced.
+INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\notifications_service.dart|64|17|12|'describeEnum' is deprecated and shouldn't be used. Use the `name` getter on enums instead. This feature was deprecated after v3.14.0-2.0.pre.
+INFO|HINT|DEPRECATED_MEMBER_USE|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\notifications_service.dart|83|17|12|'describeEnum' is deprecated and shouldn't be used. Use the `name` getter on enums instead. This feature was deprecated after v3.14.0-2.0.pre.
+INFO|HINT|UNUSED_ELEMENT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\notifications_service.dart|100|16|24|The declaration '_registerTokenServerSide' isn't referenced.
+INFO|HINT|UNUSED_ELEMENT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\notifications_service.dart|125|8|21|The declaration '_setupMessageHandlers' isn't referenced.
+INFO|HINT|UNUSED_ELEMENT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\notifications_service.dart|130|16|24|The declaration '_handleForegroundMessage' isn't referenced.
+INFO|HINT|UNUSED_ELEMENT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\notifications_service.dart|138|16|22|The declaration '_handleNotificationTap' isn't referenced.
+INFO|HINT|UNUSED_ELEMENT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\notifications_service.dart|143|8|17|The declaration '_navigateToScreen' isn't referenced.
+INFO|HINT|UNUSED_ELEMENT|C:\\Trae Apps\\SkinCareApp\\app\\lib\\services\\notifications_service.dart|173|16|22|The declaration '_showLocalNotification' isn't referenced.
