@@ -12,7 +12,7 @@
   <div class="mobile-frame">
     <div class="flex flex-col h-full bg-white">
       <!-- Header -->
-      <header class="secondary-gradient p-4">
+      <header class="deep-gradient p-4">
         <div class="flex justify-between items-center">
           <div class="flex items-center">
             <a href="index.html" class="mr-3">
@@ -21,7 +21,7 @@
             <h1 class="text-xl font-semibold text-white">Supplements</h1>
           </div>
           <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-            <i class="fas fa-history text-gray-500"></i>
+            <i class="fas fa-history text-accent-color"></i>
           </div>
         </div>
       </header>
@@ -50,7 +50,7 @@
         <div class="card p-4 mb-6">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-md font-medium">Current Supplements</h3>
-            <button id="add-supplement" class="px-3 py-1 rounded-full secondary-gradient text-white text-xs">
+            <button id="add-supplement" class="px-3 py-1 rounded-full btn-mint text-white text-xs">
               <i class="fas fa-plus mr-1"></i> Add New
             </button>
           </div>
@@ -223,7 +223,7 @@
               <label for="supplement-photo" class="mt-2 inline-block px-3 py-1 bg-gray-100 rounded-lg text-xs cursor-pointer">Choose File</label>
             </div>
             
-            <button type="submit" class="w-full py-3 rounded-lg secondary-gradient text-white font-medium">Add Supplement</button>
+            <button type="submit" class="w-full py-3 rounded-lg btn-mint text-white font-medium">Add Supplement</button>
           </form>
         </div>
         
@@ -274,4 +274,8 @@
   <script>
     // Display current date
     const dateElement = document.getElementById('current-date');
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day:
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    dateElement.textContent = new Date().toLocaleDateString('en-US', options);
+  </script>
+  </body>
+  </html>

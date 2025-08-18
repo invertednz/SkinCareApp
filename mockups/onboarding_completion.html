@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Onboarding – Completion</title>
+  <style>
+    :root{--surface:#fff;--surface-alt:#F7F8FA;--border:#E5E7EB;--charcoal:#111827;--muted:#6B7280;--accent:#a8edea;--grad:linear-gradient(135deg,#A8EDEA,#FED6E3)}
+    body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
+    .frame{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4);display:flex;flex-direction:column}
+    .top{position:sticky;top:0;background:var(--surface);padding:16px}
+    .bar{height:3px;background:#EEF2F4;border-radius:999px;overflow:hidden}
+    .bar>div{height:100%;width:100%;background:var(--grad)}
+    .appbar{display:flex;align-items:center;justify-content:space-between;padding:0 0 8px}
+    .lang{border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted);font-size:12px}
+    main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;position:relative}
+    h1{font-size:28px;margin:8px 0}
+    p{color:var(--muted)}
+    .confetti{position:absolute;inset:0;pointer-events:none;opacity:.35;background-image:radial-gradient(circle at 20% 30%, #a8edea 2px, transparent 3px),radial-gradient(circle at 70% 20%, #8EC5FC 2px, transparent 3px),radial-gradient(circle at 40% 70%, #E0C3FC 2px, transparent 3px)}
+    .bottom{position:sticky;bottom:0;background:linear-gradient(#FFFFFF 50%, rgba(255,255,255,.85));padding:16px}
+    .cta{width:100%;height:56px;border-radius:999px;border:none;background:var(--accent);color:#fff;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="appbar">
+        <button aria-label="Back" style="background:none;border:none;font-size:20px">←</button>
+        <span class="lang">EN</span>
+      </div>
+      <div class="bar"><div></div></div>
+    </div>
+    <main>
+      <div class="confetti"></div>
+      <div style="font-size:14px;color:#10b981;">✔ All done!</div>
+      <h1>Thank you for trusting us</h1>
+      <p>We promise to always keep your personal information private and secure.</p>
+    </main>
+    <div class="bottom"><button class="cta">Next</button></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Onboarding – Choice Pills</title>
+  <style>
+    :root{
+      --surface:#FFFFFF;--surface-alt:#F7F8FA;--border:#E5E7EB;--charcoal:#111827;--muted:#6B7280;--disabled:#D1D5DB;--accent:#a8edea;
+      --grad: linear-gradient(135deg,#A8EDEA 0%,#FED6E3 100%);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
+    .frame{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4)}
+    .top{position:sticky;top:0;background:var(--surface);padding:16px 16px 0}
+    .bar{height:3px;background:#EEF2F4;border-radius:999px;overflow:hidden}
+    .bar>div{height:100%;width:25%;background:var(--grad)}
+    .appbar{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+    .lang{border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted);font-size:12px}
+    main{padding:24px 16px 96px}
+    h1{font-size:32px;line-height:36px;margin:8px 0 8px}
+    p{color:var(--muted);margin:0 0 16px}
+    .pill{display:block;width:100%;background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin:12px 0;text-align:center;font-weight:600}
+    .pill.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .bottom{position:sticky;bottom:0;background:linear-gradient(#FFFFFF 50%, rgba(255,255,255,.85));padding:16px}
+    .cta{width:100%;height:56px;border-radius:999px;border:none;background:var(--accent);color:#fff;font-weight:700}
+    .cta:disabled{background:#E5E7EB;color:#9CA3AF}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="appbar">
+        <button aria-label="Back" style="background:none;border:none;font-size:20px">←</button>
+        <span class="lang">EN</span>
+      </div>
+      <div class="bar"><div></div></div>
+    </div>
+    <main>
+      <h1>Choose your gender</h1>
+      <p>This helps personalize your skincare plan.</p>
+      <button class="pill">Male</button>
+      <button class="pill selected">Female</button>
+      <button class="pill">Other</button>
+    </main>
+    <div class="bottom">
+      <button class="cta">Next</button>
+    </div>
+  </div>
+</body>
+</html>

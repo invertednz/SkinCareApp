@@ -53,17 +53,6 @@ class _InsightsScreenState extends State<InsightsScreen> {
                     const SizedBox(height: 16),
                     // Dashboard quick links (from index.html design)
                     _buildDashboard(context),
-                    const SizedBox(height: 24),
-                    
-                    // Content based on state
-                    if (_repository.loading)
-                      _buildLoadingState(context, theme)
-                    else if (_repository.error != null)
-                      _buildErrorState(context, theme)
-                    else if (_repository.currentInsights != null)
-                      _buildInsightsContent(context, _repository.currentInsights!)
-                    else
-                      _buildEmptyState(context, theme),
                   ],
                 ),
               ),
@@ -142,6 +131,12 @@ class _InsightsScreenState extends State<InsightsScreen> {
 
     final items = [
       _DashboardItem(
+        title: 'Insights',
+        icon: Icons.insights,
+        color: Colors.blue,
+        onTap: () => context.push('/insights/details'),
+      ),
+      _DashboardItem(
         title: 'Diet',
         icon: Icons.restaurant,
         color: Colors.orange,
@@ -164,12 +159,6 @@ class _InsightsScreenState extends State<InsightsScreen> {
         icon: Icons.book_outlined,
         color: Colors.blueGrey,
         onTap: () => context.go('/tabs/diary'),
-      ),
-      _DashboardItem(
-        title: 'Insights',
-        icon: Icons.insights,
-        color: Colors.blue,
-        onTap: () => context.go('/tabs/insights'),
       ),
       _DashboardItem(
         title: 'Chat',
@@ -227,6 +216,8 @@ class _InsightsScreenState extends State<InsightsScreen> {
       onRetry: () => _repository.generateInsights(),
     );
   }
+
+  
 
   Widget _buildEmptyState(BuildContext context, ThemeData theme) {
     return Card(

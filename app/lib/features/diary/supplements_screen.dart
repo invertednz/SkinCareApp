@@ -780,7 +780,6 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
 
   @override
   void dispose() {
-    _notesController.dispose();
     _formNameController.dispose();
     _formDosageController.dispose();
     super.dispose();

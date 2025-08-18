@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analytics – Trends</title>
+  <style>
+    :root{--surface:#fff;--surface-alt:#F7F8FA;--border:#E5E7EB;--charcoal:#111827;--muted:#6B7280;--grad:linear-gradient(135deg,#A8EDEA,#FED6E3)}
+    body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
+    .phone{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4)}
+    header{display:flex;justify-content:space-between;align-items:center;padding:16px}
+    .tabs{display:flex;gap:8px}
+    .chip{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:#fff}
+    .chip.active{border-color:#111827}
+    .section{padding:0 16px 16px}
+    .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;margin:12px 0}
+    .progress{height:8px;border-radius:999px;background:#EEF2F4;overflow:hidden}
+    .progress>div{height:100%;width:70%;background:var(--grad)}
+    .bars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:12px}
+    .bar{height:120px;background:linear-gradient(180deg, #8EC5FC, #E0C3FC);border-radius:6px;opacity:.85}
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <header>
+      <div style="font-weight:800">Analytics</div>
+      <div class="tabs">
+        <div class="chip active">1 Week</div>
+        <div class="chip">2 Weeks</div>
+        <div class="chip">1 Month</div>
+      </div>
+    </header>
+    <div class="section">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700">Skin health score</div>
+            <div style="font-size:12px;color:var(--muted)">This week vs last week</div>
+          </div>
+          <div style="font-weight:800">90%</div>
+        </div>
+        <div class="progress"><div></div></div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:8px">Breakouts per day</div>
+        <div class="bars">
+          <div class="bar" style="height:60px"></div>
+          <div class="bar" style="height:40px"></div>
+          <div class="bar" style="height:80px"></div>
+          <div class="bar" style="height:50px"></div>
+          <div class="bar" style="height:30px"></div>
+          <div class="bar" style="height:90px"></div>
+          <div class="bar" style="height:70px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

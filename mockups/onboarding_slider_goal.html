@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Onboarding – Goal Speed Slider</title>
+  <style>
+    :root{--surface:#fff;--surface-alt:#F7F8FA;--border:#E5E7EB;--charcoal:#111827;--muted:#6B7280;--accent:#a8edea;--grad:linear-gradient(135deg,#A8EDEA,#FED6E3)}
+    body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
+    .frame{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4)}
+    .top{position:sticky;top:0;background:var(--surface);padding:16px 16px 0}
+    .bar{height:3px;background:#EEF2F4;border-radius:999px;overflow:hidden}
+    .bar>div{height:100%;width:65%;background:var(--grad)}
+    .appbar{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+    .lang{border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted);font-size:12px}
+    main{padding:24px 16px 96px;text-align:center}
+    h1{font-size:28px;line-height:32px;margin:8px 0}
+    p{color:var(--muted);margin:0 0 16px}
+    .icons{display:flex;justify-content:space-between;align-items:center;margin:12px 0 8px;color:#C68C53}
+    .slider{appearance:none;width:100%;height:4px;background:#E5E7EB;border-radius:999px;outline:none}
+    .slider::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--accent)}
+    .value{font-size:28px;font-weight:700;margin:8px 0}
+    .bottom{position:sticky;bottom:0;background:linear-gradient(#FFFFFF 50%, rgba(255,255,255,.85));padding:16px}
+    .cta{width:100%;height:56px;border-radius:999px;border:none;background:var(--accent);color:#fff;font-weight:700}
+    .alt{margin-top:12px;width:100%;height:48px;border-radius:999px;border:1px solid var(--border);background:linear-gradient(180deg,rgba(255,255,255,.8),#fff);color:var(--charcoal);font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="appbar">
+        <button aria-label="Back" style="background:none;border:none;font-size:20px">←</button>
+        <span class="lang">EN</span>
+      </div>
+      <div class="bar"><div></div></div>
+    </div>
+    <main>
+      <h1>How quickly do you want to see results?</h1>
+      <p>Recommended balances speed and skin tolerance.</p>
+      <div class="value" id="val">Balanced</div>
+      <div class="icons"><span>🐢</span><span>🐇</span></div>
+      <input id="slider" type="range" min="0" max="2" value="1" class="slider" />
+    </main>
+    <div class="bottom">
+      <button class="alt">Recommended</button>
+      <button class="cta">Next</button>
+    </div>
+  </div>
+  <script>
+    const s=document.getElementById('slider');const v=document.getElementById('val');
+    const map=['Gentle','Balanced','Fast'];
+    s.addEventListener('input',()=>{v.textContent=map[+s.value];});
+  </script>
+</body>
+</html>

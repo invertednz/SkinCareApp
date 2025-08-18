@@ -12,6 +12,7 @@ import 'analytics_observer.dart';
 import '../features/diary/diet_screen.dart';
 import '../features/diary/supplements_screen.dart';
 import '../features/diary/routine_screen.dart';
+import '../features/insights/insights_details_screen.dart';
 
 class AppRouter {
   static GoRouter create() {
@@ -93,6 +94,17 @@ class AppRouter {
           path: '/tabs',
           name: 'tabs',
           builder: (context, state) => const AppShell(),
+        ),
+        // Alias: direct insights route opens tabs with Insights selected
+        GoRoute(
+          path: '/insights',
+          name: 'insights',
+          builder: (context, state) => const AppShell(initialIndex: 0),
+        ),
+        GoRoute(
+          path: '/insights/details',
+          name: 'insights_details',
+          builder: (context, state) => const InsightsDetailsScreen(),
         ),
         GoRoute(
           path: '/tabs/:tab',

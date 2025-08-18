@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home – Dashboard</title>
+  <style>
+    :root{--surface:#fff;--surface-alt:#F7F8FA;--border:#E5E7EB;--charcoal:#111827;--muted:#6B7280;--grad:linear-gradient(135deg,#A8EDEA,#FED6E3)}
+    body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
+    .phone{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4)}
+    header{display:flex;justify-content:space-between;align-items:center;padding:16px 16px 8px}
+    .title{font-weight:800}
+    .ring{width:160px;height:80px;background:var(--surface);border-radius:18px;margin:16px auto;padding:8px 16px;display:flex;align-items:center;gap:16px;box-shadow:0 12px 28px rgba(0,0,0,.12)}
+    .donut{width:56px;height:56px;border-radius:50%;background:conic-gradient(#111827 70%, #E5E7EB 0);position:relative}
+    .donut::after{content:'';position:absolute;inset:8px;background:#fff;border-radius:50%}
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:0 16px}
+    .metric{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;text-align:center}
+    .section{padding:16px}
+    .card{display:flex;gap:12px;border:1px solid var(--border);border-radius:16px;padding:12px;margin:8px 0}
+    .thumb{width:56px;height:56px;border-radius:12px;background:var(--grad)}
+    nav{position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 0}
+    nav button{background:none;border:none;padding:8px 0;color:var(--muted)}
+    nav button.active{color:#a8edea}
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <header>
+      <div class="title">SkinCare</div>
+      <button style="background:none;border:none">🔔</button>
+    </header>
+
+    <div class="ring">
+      <div class="donut"></div>
+      <div>
+        <div style="font-size:24px;font-weight:800">7/10</div>
+        <div style="font-size:12px;color:var(--muted)">Skin score today</div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div style="font-weight:700">Hydration</div>
+        <div style="font-size:12px;color:var(--muted)">Good</div>
+      </div>
+      <div class="metric">
+        <div style="font-weight:700">Oil</div>
+        <div style="font-size:12px;color:var(--muted)">Balanced</div>
+      </div>
+      <div class="metric">
+        <div style="font-weight:700">Irritation</div>
+        <div style="font-size:12px;color:var(--muted)">Low</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div style="font-weight:700;margin-bottom:8px">Recently uploaded</div>
+      <div class="card">
+        <div class="thumb"></div>
+        <div>
+          <div style="font-weight:600">Morning selfie</div>
+          <div style="font-size:12px;color:var(--muted)">Hydration 8/10 • 9:00 AM</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"></div>
+        <div>
+          <div style="font-weight:600">Evening selfie</div>
+          <div style="font-size:12px;color:var(--muted)">Irritation 3/10 • 9:00 PM</div>
+        </div>
+      </div>
+    </div>
+
+    <nav>
+      <button class="active">Home</button>
+      <button>Analytics</button>
+      <button>Diary</button>
+      <button>Settings</button>
+    </nav>
+  </div>
+</body>
+</html>

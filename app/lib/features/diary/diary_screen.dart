@@ -274,6 +274,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'diary_fab',
         tooltip: 'New entry',
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
