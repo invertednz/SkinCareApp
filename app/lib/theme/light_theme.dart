@@ -3,15 +3,20 @@ import 'brand.dart';
 
 class LightTheme {
   static ThemeData get theme {
+    // Create custom color scheme based on Dusty Rose & Charcoal
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: Brand.deepStart, // deep purple brand
+      seedColor: Brand.primaryStart, // Dusty rose
       brightness: Brightness.light,
+      primary: Brand.primaryStart,
+      secondary: Brand.primaryEnd,
+      surface: Brand.cardBackground,
+      background: Brand.backgroundLight,
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: Colors.white,
+      scaffoldBackgroundColor: Brand.backgroundLight,
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,

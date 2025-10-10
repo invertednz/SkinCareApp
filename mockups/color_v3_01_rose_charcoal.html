@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SkinCare – Dusty Rose & Charcoal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { 
+      background: linear-gradient(135deg, #f8f5f6, #f0eaec); 
+      min-height: 100dvh; 
+    }
+    .rose-shadow {
+      box-shadow: 0 8px 32px rgba(186, 133, 147, 0.14);
+    }
+    .rose-glow {
+      box-shadow: 0 0 0 3px rgba(208, 163, 175, 0.22), 0 8px 28px rgba(186, 133, 147, 0.16);
+    }
+    .goal-card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .goal-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(186, 133, 147, 0.2);
+    }
+    .gradient-rose {
+      background: linear-gradient(135deg, #d0a3af, #ba8593);
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="max-w-3xl mx-auto px-4 py-8 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl gradient-rose"></div>
+        <h1 class="text-2xl font-bold tracking-tight" style="color: #3d3840;">SkinCare</h1>
+      </div>
+      <div class="text-sm" style="color: #8a7b82;">Step 1 of 15</div>
+    </header>
+
+    <!-- Progress bar -->
+    <div class="mb-8">
+      <div class="h-2.5 rounded-full overflow-hidden" style="background: #ebe5e7;">
+        <div class="h-full gradient-rose rose-shadow" style="width: 6.67%;"></div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="flex-1">
+      <div class="rounded-3xl p-10 rose-shadow" style="background: #ffffff; border: 1px solid #e8e0e3;">
+        
+        <h2 class="text-4xl font-bold mb-4" style="color: #3d3840; letter-spacing: -0.02em;">What's Your Main Goal?</h2>
+        <p class="text-lg mb-10" style="color: #6d6168;">Elegant, personalized skincare for your unique journey.</p>
+
+        <!-- Goal options -->
+        <div class="grid gap-5 mb-10">
+          <button class="goal-card text-left rounded-3xl p-6" style="background: #fdfbfc; border: 1px solid #f0e8eb;">
+            <div class="flex items-start gap-5">
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style="background: #f5edef;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" style="color: #ba8593;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-bold text-xl mb-2" style="color: #3d3840;">Clear Acne & Breakouts</h3>
+                <p class="text-base" style="color: #6d6168;">Refined treatments for smooth, confident skin</p>
+              </div>
+            </div>
+          </button>
+
+          <button class="goal-card text-left rounded-3xl p-6 rose-glow gradient-rose">
+            <div class="flex items-start gap-5">
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style="background: rgba(255,255,255,0.35);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-bold text-xl mb-2 text-white">Calm Sensitive Skin</h3>
+                <p class="text-base text-white/95">Gentle sophistication for delicate complexions</p>
+              </div>
+            </div>
+          </button>
+
+          <button class="goal-card text-left rounded-3xl p-6" style="background: #fdfbfc; border: 1px solid #f0e8eb;">
+            <div class="flex items-start gap-5">
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style="background: #3d3840;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" style="color: #d0a3af;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-bold text-xl mb-2" style="color: #3d3840;">Even Skin Tone</h3>
+                <p class="text-base" style="color: #6d6168;">Luminous balance for porcelain-perfect skin</p>
+              </div>
+            </div>
+          </button>
+
+          <button class="goal-card text-left rounded-3xl p-6" style="background: #fdfbfc; border: 1px solid #f0e8eb;">
+            <div class="flex items-start gap-5">
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style="background: #f7f0f2;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" style="color: #a67884;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-bold text-xl mb-2" style="color: #3d3840;">Anti-Aging & Firmness</h3>
+                <p class="text-base" style="color: #6d6168;">Graceful aging with modern, elegant science</p>
+              </div>
+            </div>
+          </button>
+
+          <button class="goal-card text-left rounded-3xl p-6" style="background: #fdfbfc; border: 1px solid #f0e8eb;">
+            <div class="flex items-start gap-5">
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style="background: #f4ebee;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" style="color: #b58a99;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-bold text-xl mb-2" style="color: #3d3840;">Overall Skin Health</h3>
+                <p class="text-base" style="color: #6d6168;">Sophisticated wellness for enduring beauty</p>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <!-- Trust badge -->
+        <div class="rounded-2xl p-5 mb-10" style="background: linear-gradient(135deg, #f7f0f2, #f0e7ea); border: 1px solid #e8dde1;">
+          <p class="text-sm text-center font-medium" style="color: #6d6168;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+            Elegant • Modern • Sophisticated
+          </p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex items-center justify-between">
+          <a href="#" class="text-base font-medium hover:underline" style="color: #6d6168;">← Back</a>
+          <button class="rounded-2xl py-4 px-10 font-bold text-white rose-shadow gradient-rose text-lg">
+            Continue
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-10 text-center">
+      <p class="text-sm" style="color: #9a8a90;">Dusty Rose & Charcoal – Modern Feminine Luxury</p>
+    </footer>
+  </div>
+</body>
+</html>

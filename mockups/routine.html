@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skin Care Routine</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+  <div class="mobile-frame">
+    <div class="flex flex-col h-full bg-white">
+      <!-- Header -->
+      <header class="deep-gradient p-4">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center">
+            <a href="index.html" class="mr-3">
+              <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-xl font-semibold text-white">Skin Care Routine</h1>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+            <i class="fas fa-clock text-accent-color"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-1 overflow-y-auto p-4">
+        <div class="mb-6">
+          <h2 class="text-lg font-medium mb-3">Your Skin Care Routine</h2>
+          <p class="text-sm text-gray-600">Create and manage your personalized skin care regimen.</p>
+        </div>
+
+        <!-- Routine Tabs -->
+        <div class="flex mb-6">
+          <button id="morning-tab" class="flex-1 py-2 text-center border-b-2 border-accent-color text-accent-color font-medium">
+            <i class="fas fa-sun mr-1"></i> Morning
+          </button>
+          <button id="evening-tab" class="flex-1 py-2 text-center border-b-2 border-gray-200 text-gray-500">
+            <i class="fas fa-moon mr-1"></i> Evening
+          </button>
+        </div>
+
+        <!-- Morning Routine -->
+        <div id="morning-routine" class="mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-md font-medium">Morning Routine</h3>
+            <button class="text-xs text-accent-color">
+              <i class="fas fa-plus-circle mr-1"></i> Add Step
+            </button>
+          </div>
+
+          <!-- Routine Steps -->
+          <div class="space-y-3">
+            <!-- Step 1 -->
+            <div class="card p-4">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full app-gradient flex items-center justify-center mr-3 text-white font-medium">1</div>
+                  <h4 class="font-medium">Cleanser</h4>
+                </div>
+                <div class="flex">
+                  <button class="text-gray-400 mr-2">
+                    <i class="fas fa-grip-lines"></i>
+                  </button>
+                  <button class="text-gray-400">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-11">
+                <p class="text-sm text-gray-600 mb-2">Gentle Foaming Cleanser</p>
+                <div class="flex items-center text-xs text-gray-500">
+                  <i class="fas fa-clock mr-1"></i>
+                  <span>1 minute</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="card p-4">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full secondary-gradient flex items-center justify-center mr-3 text-white font-medium">2</div>
+                  <h4 class="font-medium">Toner</h4>
+                </div>
+                <div class="flex">
+                  <button class="text-gray-400 mr-2">
+                    <i class="fas fa-grip-lines"></i>
+                  </button>
+                  <button class="text-gray-400">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-11">
+                <p class="text-sm text-gray-600 mb-2">Hydrating Toner</p>
+                <div class="flex items-center text-xs text-gray-500">
+                  <i class="fas fa-clock mr-1"></i>
+                  <span>30 seconds</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="card p-4">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full app-gradient flex items-center justify-center mr-3 text-white font-medium">3</div>
+                  <h4 class="font-medium">Moisturizer</h4>
+                </div>
+                <div class="flex">
+                  <button class="text-gray-400 mr-2">
+                    <i class="fas fa-grip-lines"></i>
+                  </button>
+                  <button class="text-gray-400">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-11">
+                <p class="text-sm text-gray-600 mb-2">Daily Hydrating Lotion</p>
+                <div class="flex items-center text-xs text-gray-500">
+                  <i class="fas fa-clock mr-1"></i>
+                  <span>1 minute</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="card p-4">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full secondary-gradient flex items-center justify-center mr-3 text-white font-medium">4</div>
+                  <h4 class="font-medium">Sunscreen</h4>
+                </div>
+                <div class="flex">
+                  <button class="text-gray-400 mr-2">
+                    <i class="fas fa-grip-lines"></i>
+                  </button>
+                  <button class="text-gray-400">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-11">
+                <p class="text-sm text-gray-600 mb-2">SPF 50 Broad Spectrum</p>
+                <div class="flex items-center text-xs text-gray-500">
+                  <i class="fas fa-clock mr-1"></i>
+                  <span>1 minute</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evening Routine (Hidden by default) -->
+        <div id="evening-routine" class="hidden mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-md font-medium">Evening Routine</h3>
+            <button class="text-xs text-accent-color">
+              <i class="fas fa-plus-circle mr-1"></i> Add Step
+            </button>
+          </div>
+
+          <!-- Routine Steps -->
+          <div class="space-y-3">
+            <!-- Step 1 -->
+            <div class="card p-4">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full app-gradient flex items-center justify-center mr-3 text-white font-medium">1</div>
+                  <h4 class="font-medium">Makeup Remover</h4>
+                </div>
+                <div class="flex">
+                  <button class="text-gray-400 mr-2">
+                    <i class="fas fa-grip-lines"></i>
+                  </button>
+                  <button class="text-gray-400">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-11">
+                <p class="text-sm text-gray-600 mb-2">Micellar Water</p>
+                <div class="flex items-center text-xs text-gray-500">
+                  <i class="fas fa-clock mr-1"></i>
+                  <span>2 minutes</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="card p-4">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full secondary-gradient flex items-center justify-center mr-3 text-white font-medium">2</div>
+                  <h4 class="font-medium">Cleanser</h4>
+                </div>
+                <div class="flex">
+                  <button class="text-gray-400 mr-2">
+                    <i class="fas fa-grip-lines"></i>
+                  </button>
+                  <button class="text-gray-400">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-11">
+                <p class="text-sm text-gray-600 mb-2">Gentle Foaming Cleanser</p>
+                <div class="flex items-center text-xs text-gray-500">
+                  <i class="fas fa-clock mr-1"></i>
+                  <span>1 minute</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="card p-4">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full app-gradient flex items-center justify-center mr-3 text-white font-medium">3</div>
+                  <h4 class="font-medium">Treatment</h4>
+                </div>
+                <div class="flex">
+                  <button class="text-gray-400 mr-2">
+                    <i class="fas fa-grip-lines"></i>
+                  </button>
+                  <button class="text-gray-400">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-11">
+                <p class="text-sm text-gray-600 mb-2">Retinol Serum</p>
+                <div class="flex items-center text-xs text-gray-500">
+                  <i class="fas fa-clock mr-1"></i>
+                  <span>30 seconds</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="card p-4">
+              <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 rounded-full secondary-gradient flex items-center justify-center mr-3 text-white font-medium">4</div>
+                  <h4 class="font-medium">Night Cream</h4>
+                </div>
+                <div class="flex">
+                  <button class="text-gray-400 mr-2">
+                    <i class="fas fa-grip-lines"></i>
+                  </button>
+                  <button class="text-gray-400">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-11">
+                <p class="text-sm text-gray-600 mb-2">Intensive Repair Cream</p>
+                <div class="flex items-center text-xs text-gray-500">
+                  <i class="fas fa-clock mr-1"></i>
+                  <span>1 minute</span>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add New Product Button -->
+        <div class="mb-6">
+          <button class="card p-4 w-full flex items-center justify-center btn-mint text-white">
+            <i class="fas fa-plus-circle mr-2"></i>
+            <span>Add New Product to Your Collection</span>
+          </button>
+        </div>
+
+        <!-- Reminders Section -->
+        <div class="card p-4 mb-6">
+          <h3 class="text-md font-medium mb-4">Routine Reminders</h3>
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+              <i class="fas fa-sun text-yellow-500 mr-2"></i>
+              <span>Morning Routine</span>
+            </div>
+            <div class="flex items-center">
+              <span class="text-sm text-gray-600 mr-2">7:00 AM</span>
+              <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                <input type="checkbox" name="morning-toggle" id="morning-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked>
+                <label for="morning-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <i class="fas fa-moon text-indigo-400 mr-2"></i>
+              <span>Evening Routine</span>
+            </div>
+            <div class="flex items-center">
+              <span class="text-sm text-gray-600 mr-2">9:00 PM</span>
+              <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                <input type="checkbox" name="evening-toggle" id="evening-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked>
+                <label for="evening-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Navigation -->
+      <nav class="bg-white border-t border-gray-200 flex justify-around py-2">
+        <a href="index.html" class="nav-item">
+          <i class="fas fa-home text-lg"></i>
+          <span class="text-xs mt-1">Home</span>
+        </a>
+        <a href="skin-health.html" class="nav-item">
+          <i class="fas fa-chart-line text-lg"></i>
+          <span class="text-xs mt-1">Track</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+          <i class="fas fa-comment-alt text-lg"></i>
+          <span class="text-xs mt-1">Chat</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fas fa-cog text-lg"></i>
+          <span class="text-xs mt-1">Settings</span>
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching functionality
+    const morningTab = document.getElementById('morning-tab');
+    const eveningTab = document.getElementById('evening-tab');
+    const morningRoutine = document.getElementById('morning-routine');
+    const eveningRoutine = document.getElementById('evening-routine');
+
+    morningTab.addEventListener('click', function() {
+      // Show morning routine, hide evening routine
+      morningRoutine.classList.remove('hidden');
+      eveningRoutine.classList.add('hidden');
+      
+      // Update tab styles
+      morningTab.classList.add('border-accent-color', 'text-accent-color');
+      morningTab.classList.remove('border-gray-200', 'text-gray-500');
+      eveningTab.classList.add('border-gray-200', 'text-gray-500');
+      eveningTab.classList.remove('border-accent-color', 'text-accent-color');
+    });
+
+    eveningTab.addEventListener('click', function() {
+      // Show evening routine, hide morning routine
+      eveningRoutine.classList.remove('hidden');
+      morningRoutine.classList.add('hidden');
+      
+      // Update tab styles
+      eveningTab.classList.add('border-accent-color', 'text-accent-color');
+      eveningTab.classList.remove('border-gray-200', 'text-gray-500');
+      morningTab.classList.add('border-gray-200', 'text-gray-500');
+      morningTab.classList.remove('border-accent-color', 'text-accent-color');
+    });
+
+    // Add custom styles for toggle switches
+    const style = document.createElement('style');
+    style.textContent = `
+      .toggle-checkbox:checked {
+        right: 0;
+        border-color: var(--accent-color);
+      }
+      .toggle-checkbox:checked + .toggle-label {
+        background-color: var(--accent-color);
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

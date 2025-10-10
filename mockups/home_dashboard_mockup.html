@@ -9,6 +9,7 @@
     body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
     .phone{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4)}
     header{display:flex;justify-content:space-between;align-items:center;padding:16px 16px 8px}
+    .lang{border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted);font-size:12px}
     .title{font-weight:800}
     .ring{width:160px;height:80px;background:var(--surface);border-radius:18px;margin:16px auto;padding:8px 16px;display:flex;align-items:center;gap:16px;box-shadow:0 12px 28px rgba(0,0,0,.12)}
     .donut{width:56px;height:56px;border-radius:50%;background:conic-gradient(#111827 70%, #E5E7EB 0);position:relative}
@@ -27,7 +28,10 @@
   <div class="phone">
     <header>
       <div class="title">SkinCare</div>
-      <button style="background:none;border:none">🔔</button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="lang">EN</span>
+        <button style="background:none;border:none">🔔</button>
+      </div>
     </header>
 
     <div class="ring">

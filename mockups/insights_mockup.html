@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Insights – Mockup</title>
+  <style>
+    :root{--surface:#fff;--border:#E5E7EB;--charcoal:#111827;--muted:#6B7280;--grad:linear-gradient(135deg,#A8EDEA,#FED6E3);--accent:#A8EDEA;--radius:16px}
+    *{box-sizing:border-box}
+    body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
+    .frame{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4);display:flex;flex-direction:column}
+    .top{position:sticky;top:0;background:var(--surface);padding:16px 16px 8px}
+    .appbar{display:flex;align-items:center;justify-content:space-between}
+    .lang{border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted);font-size:12px}
+    main{padding:12px 12px 96px}
+    .chips{display:flex;gap:8px;overflow:auto;padding-bottom:8px}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:13px;white-space:nowrap}
+    .chip.active{background:var(--accent);border-color:var(--accent);color:#0b0b0c}
+    .card{border:1px solid var(--border);border-radius:16px;padding:12px;margin:8px 0}
+    .card h3{margin:0 0 4px;font-size:16px}
+    .card p{margin:0;color:var(--muted);font-size:13px}
+    .bottom{position:sticky;bottom:0;background:linear-gradient(#FFFFFF 60%, rgba(255,255,255,.85));padding:12px;border-top:1px solid var(--border)}
+    .primary{width:100%;border:none;padding:12px;border-radius:999px;background:var(--accent);font-weight:700;color:#0b0b0c;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="appbar">
+        <div style="font-weight:800">Insights</div>
+        <span class="lang">EN</span>
+      </div>
+    </div>
+    <main>
+      <div class="chips">
+        <div class="chip active">All</div>
+        <div class="chip">Routine</div>
+        <div class="chip">Diet</div>
+        <div class="chip">Supplements</div>
+        <div class="chip">Symptoms</div>
+      </div>
+
+      <div class="card">
+        <h3>Hydration improved 12% week-over-week</h3>
+        <p>Consistent AM moisturizer correlated with better hydration score.</p>
+      </div>
+      <div class="card">
+        <h3>Evening actives: best at 2–3x/week</h3>
+        <p>Lower irritation when spacing actives on alternate days.</p>
+      </div>
+      <div class="card">
+        <h3>Oily T‑zone linked to high sugar days</h3>
+        <p>Try cutting sugary snacks after 6 PM to reduce oiliness.</p>
+      </div>
+    </main>
+    <div class="bottom">
+      <button class="primary">View Recommendations</button>
+    </div>
+  </div>
+</body>
+</html>

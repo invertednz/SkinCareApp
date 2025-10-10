@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skin Health Insights</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+  <div class="mobile-frame">
+    <div class="flex flex-col h-full bg-white">
+      <!-- Header -->
+      <header class="deep-gradient p-4">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center">
+            <a href="index.html" class="mr-3">
+              <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-xl font-semibold text-white">Insights & Recommendations</h1>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+            <i class="fas fa-lightbulb text-accent-color"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-1 overflow-y-auto p-4">
+        <div class="mb-6">
+          <h2 class="text-lg font-medium mb-3">Your Personalized Insights</h2>
+          <p class="text-sm text-gray-600">Based on your tracking data, here are recommendations to improve your skin health.</p>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="card p-4 mb-6">
+          <h3 class="text-md font-medium mb-3">Progress Overview</h3>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded-full deep-gradient flex items-center justify-center mr-3">
+                <i class="fas fa-chart-line text-white"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium">Skin Health Trend</p>
+                <p class="text-xs text-gray-500">Last 30 days</p>
+              </div>
+            </div>
+            <span class="text-sm font-medium text-accent-color">+12%</span>
+          </div>
+          <div class="progress-bar mb-2">
+            <div class="progress-bar-fill" style="width: 68%"></div>
+          </div>
+          <p class="text-xs text-gray-500 text-right">68% improvement</p>
+        </div>
+
+        <!-- Recommendations -->
+        <h3 class="text-md font-medium mb-3">Recommendations</h3>
+        
+        <!-- Continue Doing -->
+        <div class="card p-4 mb-4 border-l-4 border-accent-color">
+          <h4 class="text-sm font-medium mb-2 flex items-center">
+            <i class="fas fa-check-circle text-accent-color mr-2"></i>
+            Continue Doing
+          </h4>
+          <ul class="text-sm text-gray-700 space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-angle-right text-accent-color mt-1 mr-2"></i>
+              <div>
+                <p class="font-medium">Morning Hydration</p>
+                <p class="text-xs text-gray-500">Your skin shows better hydration on days you use your morning moisturizer.</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-angle-right text-accent-color mt-1 mr-2"></i>
+              <div>
+                <p class="font-medium">Vitamin C Serum</p>
+                <p class="text-xs text-gray-500">Continued use has shown positive effects on your skin tone.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Start Doing -->
+        <div class="card p-4 mb-4 border-l-4 border-blue-400">
+          <h4 class="text-sm font-medium mb-2 flex items-center">
+            <i class="fas fa-play-circle text-blue-500 mr-2"></i>
+            Start Doing
+          </h4>
+          <ul class="text-sm text-gray-700 space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-angle-right text-blue-500 mt-1 mr-2"></i>
+              <div>
+                <p class="font-medium">Increase Water Intake</p>
+                <p class="text-xs text-gray-500">Your skin appears dehydrated. Try drinking at least 8 glasses of water daily.</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-angle-right text-blue-500 mt-1 mr-2"></i>
+              <div>
+                <p class="font-medium">Nighttime Retinol</p>
+                <p class="text-xs text-gray-500">Based on your age and skin concerns, adding retinol could help with texture.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Stop Doing -->
+        <div class="card p-4 mb-6 border-l-4 border-red-400">
+          <h4 class="text-sm font-medium mb-2 flex items-center">
+            <i class="fas fa-stop-circle text-red-500 mr-2"></i>
+            Consider Stopping
+          </h4>
+          <ul class="text-sm text-gray-700 space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-angle-right text-red-500 mt-1 mr-2"></i>
+              <div>
+                <p class="font-medium">Harsh Exfoliation</p>
+                <p class="text-xs text-gray-500">Your skin shows signs of irritation after physical exfoliation. Consider switching to chemical exfoliants.</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-angle-right text-red-500 mt-1 mr-2"></i>
+              <div>
+                <p class="font-medium">Dairy Consumption</p>
+                <p class="text-xs text-gray-500">There's a correlation between your dairy intake and breakouts. Try reducing for 2 weeks.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Correlation Insights -->
+        <div class="card p-4 mb-6">
+          <h3 class="text-md font-medium mb-3">Pattern Analysis</h3>
+          <div class="mb-4">
+            <div class="flex justify-between items-center mb-2">
+              <p class="text-sm font-medium">Sleep Quality & Skin Health</p>
+              <span class="text-xs px-2 py-1 secondary-gradient text-white rounded-full">Strong Correlation</span>
+            </div>
+            <p class="text-xs text-gray-600 mb-2">Your skin health scores are 42% higher on days following 7+ hours of sleep.</p>
+            <div class="progress-bar">
+              <div class="progress-bar-fill" style="width: 85%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <p class="text-sm font-medium">Stress Levels & Breakouts</p>
+              <span class="text-xs px-2 py-1 app-gradient text-white rounded-full">Moderate Correlation</span>
+            </div>
+            <p class="text-xs text-gray-600 mb-2">Breakouts increase by 28% during periods of reported high stress.</p>
+            <div class="progress-bar">
+              <div class="progress-bar-fill" style="width: 65%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Plan -->
+        <div class="card p-4 mb-6">
+          <h3 class="text-md font-medium mb-3">Your Action Plan</h3>
+          <p class="text-sm text-gray-700 mb-3">Based on your data, here's a personalized plan for the next 2 weeks:</p>
+          <ol class="text-sm text-gray-700 space-y-2 list-decimal pl-5">
+            <li>Increase water intake to 8 glasses daily</li>
+            <li>Reduce dairy consumption by 50%</li>
+            <li>Aim for 7-8 hours of sleep consistently</li>
+            <li>Switch to gentle chemical exfoliation 2x weekly</li>
+            <li>Continue with your current morning hydration routine</li>
+          </ol>
+          <div class="mt-4 text-center">
+            <button class="btn-mint text-white px-4 py-2 rounded-full text-sm font-medium">
+              <i class="fas fa-calendar-check mr-1"></i> Add to My Routine
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <!-- Navigation -->
+      <nav class="bg-white border-t border-gray-200 flex justify-around py-2">
+        <a href="index.html" class="nav-item">
+          <i class="fas fa-home text-lg"></i>
+          <span class="text-xs mt-1">Home</span>
+        </a>
+        <a href="skin-health.html" class="nav-item">
+          <i class="fas fa-chart-line text-lg"></i>
+          <span class="text-xs mt-1">Track</span>
+        </a>
+        <a href="insights.html" class="nav-item active">
+          <i class="fas fa-lightbulb text-lg"></i>
+          <span class="text-xs mt-1">Insights</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+          <i class="fas fa-comment-alt text-lg"></i>
+          <span class="text-xs mt-1">Chat</span>
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    // This would be replaced with actual data analysis in a real app
+    // For now, it's just a static demonstration
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Insights page loaded - would analyze real data in production');
+    });
+  </script>
+</body>
+</html>

@@ -60,6 +60,14 @@ class ProfileService extends ChangeNotifier {
         _hasActiveSubscription = null;
         return;
       }
+      // Special bypass: skip onboarding for specific test account
+      final email = user.email?.toLowerCase();
+      if (email == 'skip@gmail.com') {
+        _onboardingCompleted = true;
+        // Keep subscription gating unchanged (still false by default)
+        _hasActiveSubscription = false;
+        return;
+      }
       final data = await Supabase.instance.client
           .from('profiles')
           .select('onboarding_completed_at')

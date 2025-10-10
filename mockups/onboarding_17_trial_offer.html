@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SkinCare – Special Trial Offer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { 
+      background: linear-gradient(135deg, #0a4d4d, #1a3a3a, #2d1f3f); 
+      color: white; 
+      min-height: 100dvh; 
+    }
+    .neon-text { 
+      text-shadow: 0 0 5px rgba(168, 237, 234, 0.8), 0 0 10px rgba(168, 237, 234, 0.6); 
+    }
+    .neon-border { 
+      box-shadow: 0 0 8px rgba(168, 237, 234, 0.5), 0 0 16px rgba(168, 237, 234, 0.3); 
+    }
+    .neon-border-pink { 
+      box-shadow: 0 0 12px rgba(255, 126, 179, 0.6), 0 0 24px rgba(255, 126, 179, 0.4); 
+    }
+    .gradient-mint-pink {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    }
+    .pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+  </style>
+</head>
+<body class="text-white selection:bg-teal-300 selection:text-black">
+  <div class="max-w-3xl mx-auto px-4 py-8 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="flex items-center justify-center mb-8">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl gradient-mint-pink neon-border"></div>
+        <h1 class="text-3xl font-bold tracking-tight neon-text">SkinCare</h1>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex-1 flex items-center">
+      <div class="w-full">
+        <div class="relative mb-8">
+          <div class="absolute -inset-1 bg-pink-500/30 blur-2xl rounded-3xl"></div>
+          <div class="relative bg-black/40 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-pink-500/30 neon-border-pink">
+            
+            <!-- Special offer badge -->
+            <div class="flex justify-center mb-6">
+              <div class="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg shadow-pink-500/50 pulse">
+                ⚡ LIMITED TIME OFFER
+              </div>
+            </div>
+
+            <!-- Heading -->
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 neon-text text-center">Start Your Free Trial</h2>
+            <p class="text-2xl text-pink-200 mb-8 text-center font-bold">7 Days Free</p>
+            
+            <p class="text-lg text-teal-200 mb-8 text-center max-w-xl mx-auto">
+              Experience the full power of AI-driven skin insights, personalized recommendations, and unlimited diary tracking—completely free for 7 days.
+            </p>
+
+            <!-- What's included -->
+            <div class="bg-black/30 backdrop-blur-sm rounded-2xl p-6 border border-teal-500/20 mb-8">
+              <h3 class="font-bold text-xl mb-4 text-center">Everything Included:</h3>
+              <ul class="space-y-3">
+                <li class="flex items-start gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Unlimited daily diary entries and photo uploads</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>AI-powered weekly insights identifying your skin triggers</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>24/7 AI chat assistant for personalized skincare advice</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Smart reminders and daily nudges to stay consistent</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Photo timeline showing your skin transformation</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Trial reminder -->
+            <div class="bg-gradient-to-r from-pink-500/20 to-purple-500/20 backdrop-blur-sm rounded-2xl p-5 border border-pink-500/30 mb-8">
+              <div class="flex items-start gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-pink-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <h4 class="font-bold text-pink-200 mb-1">Trial Reminder</h4>
+                  <p class="text-sm text-pink-100">We'll notify you 2 days before your trial ends. Cancel anytime before then—no questions asked.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <a href="onboarding_18_timeline.html" class="block w-full rounded-2xl gradient-mint-pink py-4 px-8 text-center font-bold text-xl text-gray-900 neon-border mb-4">
+              Start 7-Day Free Trial
+            </a>
+
+            <p class="text-center text-sm text-teal-300">
+              Then $9.99/month • Cancel anytime
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-8 py-4 text-center">
+      <p class="text-teal-300 text-sm">No credit card required for trial</p>
+    </footer>
+  </div>
+</body>
+</html>

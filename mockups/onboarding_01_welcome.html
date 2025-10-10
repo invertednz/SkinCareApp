@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SkinCare – Welcome</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { 
+      background: linear-gradient(135deg, #0a4d4d, #1a3a3a, #2d1f3f); 
+      color: white; 
+      min-height: 100dvh; 
+    }
+    @media (prefers-reduced-motion: reduce) { 
+      * { animation: none !important; transition: none !important; } 
+    }
+    .neon-text { 
+      text-shadow: 0 0 5px rgba(168, 237, 234, 0.8), 0 0 10px rgba(168, 237, 234, 0.6); 
+    }
+    .neon-border { 
+      box-shadow: 0 0 8px rgba(168, 237, 234, 0.5), 0 0 16px rgba(168, 237, 234, 0.3); 
+    }
+    .neon-border-pink { 
+      box-shadow: 0 0 8px rgba(255, 126, 179, 0.5), 0 0 16px rgba(255, 126, 179, 0.3); 
+    }
+    .floating { 
+      animation: floating 3s ease-in-out infinite; 
+    }
+    @keyframes floating { 
+      0%, 100% { transform: translateY(0); } 
+      50% { transform: translateY(-10px); } 
+    }
+    .gradient-mint-pink {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    }
+  </style>
+</head>
+<body class="text-white selection:bg-teal-300 selection:text-black">
+  <div class="max-w-3xl mx-auto px-4 py-8 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="flex items-center justify-center mb-8">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl gradient-mint-pink neon-border"></div>
+        <h1 class="text-3xl font-bold tracking-tight neon-text">SkinCare</h1>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex-1 flex items-center">
+      <div class="w-full">
+        <div class="relative mb-8">
+          <div class="absolute -inset-1 bg-teal-500/30 blur-2xl rounded-3xl"></div>
+          <div class="relative bg-black/40 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-teal-500/30">
+            
+            <!-- Icon -->
+            <div class="flex justify-center mb-6">
+              <div class="w-24 h-24 rounded-full gradient-mint-pink flex items-center justify-center neon-border floating">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Welcome text -->
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-center neon-text">Welcome to Your Skin Journey</h2>
+            <p class="text-teal-200 text-lg text-center mb-8">
+              Congratulations on taking the first step toward healthier, clearer skin!
+            </p>
+
+            <!-- Social proof -->
+            <div class="grid gap-4 mb-8">
+              <div class="bg-black/30 backdrop-blur-sm rounded-2xl p-4 border border-teal-500/20">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 rounded-full bg-teal-500/30 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-white mb-1">Clinically Proven Results</h3>
+                    <p class="text-sm text-teal-200">Studies show that tracking skin health daily reduces flare-ups by 60% and improves clarity by 45% within 90 days.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-black/30 backdrop-blur-sm rounded-2xl p-4 border border-teal-500/20">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 rounded-full bg-pink-500/30 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-pink-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-white mb-1">Trusted by 50,000+ Users</h3>
+                    <p class="text-sm text-teal-200">Join thousands who've transformed their skin with personalized insights and AI-powered recommendations.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-black/30 backdrop-blur-sm rounded-2xl p-4 border border-teal-500/20">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 rounded-full bg-teal-500/30 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-white mb-1">Just 2 Minutes Daily</h3>
+                    <p class="text-sm text-teal-200">Research confirms that consistent daily logging creates lasting behavioral change and sustainable results.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="flex justify-center">
+              <a href="onboarding_02_goal.html" class="w-full md:w-auto rounded-2xl gradient-mint-pink py-4 px-12 text-center font-bold text-lg text-gray-900 neon-border">
+                Get Started
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-8 py-4 text-center">
+      <p class="text-teal-300 text-sm">Your journey to healthier skin starts now</p>
+    </footer>
+  </div>
+</body>
+</html>

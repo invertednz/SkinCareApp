@@ -7,14 +7,14 @@ class RoutineItem {
   String id;
   String name;
   String category;
-  bool completed;
+  String freq;
   String? notes;
 
   RoutineItem({
     required this.id,
     required this.name,
     required this.category,
-    this.completed = false,
+    this.freq = 'daily',
     this.notes,
   });
 
@@ -22,7 +22,7 @@ class RoutineItem {
     'id': id,
     'name': name,
     'category': category,
-    'completed': completed,
+    'freq': freq,
     'notes': notes,
   };
 
@@ -30,7 +30,7 @@ class RoutineItem {
     id: json['id'] as String,
     name: json['name'] as String,
     category: json['category'] as String,
-    completed: json['completed'] as bool? ?? false,
+    freq: (json['freq'] as String?) ?? 'daily',
     notes: json['notes'] as String?,
   );
 }
@@ -54,6 +54,12 @@ class _RoutineScreenState extends State<RoutineScreen> {
   final _notesController = TextEditingController();
   
   List<RoutineItem> _routineItems = [];
+  // New: AM/PM lists to mirror onboarding routine UI
+  static const List<String> _freqOptions = ['daily', 'weekly', 'as-needed'];
+  late List<Map<String, dynamic>> _am; // {key,label,checked,freq}
+  late List<Map<String, dynamic>> _pm; // {key,label,checked,freq}
+  final _amCtrl = TextEditingController();
+  final _pmCtrl = TextEditingController();
   
   // Default routine items organized by category
   final Map<String, List<String>> _defaultRoutineItems = {
@@ -88,14 +94,16 @@ class _RoutineScreenState extends State<RoutineScreen> {
   bool _isLoading = false;
   bool _hasChanges = false;
   // UI state for mockup tabs and reminders
-  int _currentTabIndex = 0; // 0 = Morning, 1 = Evening
-  bool _remindersEnabled = false;
+  int _currentTabIndex = 0; // kept for potential future use
+  bool _remindersEnabled = false; // retained but not shown in UI now
   TimeOfDay _reminderTime = const TimeOfDay(hour: 7, minute: 0);
   final DateTime _today = DateTime.now();
 
   @override
   void initState() {
     super.initState();
+    _am = [];
+    _pm = [];
     _loadInitialData();
     
     // Track screen view
@@ -166,6 +174,18 @@ class _RoutineScreenState extends State<RoutineScreen> {
     return items;
   }
 
+  String _freqLabel(String value) {
+    switch (value) {
+      case 'daily':
+        return 'Daily';
+      case 'weekly':
+        return 'Weekly';
+      case 'as-needed':
+        return 'As needed';
+    }
+    return value;
+  }
+
   Future<void> _pickReminderTime() async {
     final picked = await showTimePicker(context: context, initialTime: _reminderTime);
     if (picked != null) {
@@ -183,6 +203,7 @@ class _RoutineScreenState extends State<RoutineScreen> {
             .map((item) => RoutineItem.fromJson(item as Map<String, dynamic>))
             .toList();
         _notesController.text = data['notes'] as String? ?? '';
+        _populateAmPmFromRoutineItems();
       });
     } else {
       // Initialize with default routine items
@@ -205,7 +226,137 @@ class _RoutineScreenState extends State<RoutineScreen> {
     
     setState(() {
       _routineItems = items;
+      _populateAmPmFromRoutineItems();
     });
+  }
+
+  void _populateAmPmFromRoutineItems() {
+    // Convert existing RoutineItem list into AM/PM sections used by onboarding UI
+    List<Map<String, dynamic>> am = [];
+    List<Map<String, dynamic>> pm = [];
+    for (final item in _routineItems) {
+      final map = {
+        'key': item.id,
+        'label': item.name,
+        'checked': true,
+        'freq': item.freq,
+      };
+      if (_isMorningCategory(item.category)) {
+        am.add(Map<String, dynamic>.from(map));
+      } else if (_isEveningCategory(item.category)) {
+        pm.add(Map<String, dynamic>.from(map));
+      } else {
+        // Default to AM if category is unrecognized
+        am.add(Map<String, dynamic>.from(map));
+      }
+    }
+    _am = am;
+    _pm = pm;
+  }
+
+  Map<String, dynamic> _makeItem(String key, String label, {bool checked = true, String freq = 'daily'}) =>
+      {'key': key, 'label': label, 'checked': checked, 'freq': freq};
+
+  void _emitAmPmChanged() {
+    _markChanged();
+  }
+
+  void _addTo(String section) {
+    final ctrl = section == 'am' ? _amCtrl : _pmCtrl;
+    final list = section == 'am' ? _am : _pm;
+    final name = ctrl.text.trim();
+    if (name.isEmpty) return;
+    final key = name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-').replaceAll(RegExp(r'^-|-$'), '');
+    if (!list.any((e) => (e['key'] as String).toLowerCase() == key)) {
+      setState(() {
+        list.add(_makeItem(key, name, checked: true, freq: 'daily'));
+      });
+      _emitAmPmChanged();
+    }
+    ctrl.clear();
+  }
+
+  Widget _buildSection(String title, String section, List<Map<String, dynamic>> list, TextEditingController ctrl) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        Column(
+          children: [
+            for (var index = 0; index < list.length; index++)
+              Builder(
+                builder: (context) {
+                  final item = list[index];
+                  return Container(
+                    key: ValueKey('$section-${item['key']}-$index'),
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(child: Text(item['label']?.toString() ?? item['key'].toString())),
+                        SizedBox(
+                          height: 36,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                for (final f in _freqOptions) ...[
+                                  ChoiceChip(
+                                    label: Text(_freqLabel(f)),
+                                    selected: item['freq'] == f,
+                                    selectedColor: const Color(0xFFA8EDEA),
+                                    onSelected: (_) {
+                                      setState(() => item['freq'] = f);
+                                      _emitAmPmChanged();
+                                    },
+                                  ),
+                                  const SizedBox(width: 6),
+                                ],
+                                IconButton(
+                                  tooltip: 'Remove',
+                                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                                  onPressed: () {
+                                    setState(() {
+                                      list.removeAt(index);
+                                    });
+                                    _emitAmPmChanged();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: ctrl,
+                decoration: InputDecoration(
+                  hintText: section == 'am' ? 'Add morning step' : 'Add evening step',
+                ),
+                onSubmitted: (_) => _addTo(section),
+              ),
+            ),
+            const SizedBox(width: 8),
+            FilledButton(onPressed: () => _addTo(section), child: const Text('Add')),
+          ],
+        ),
+      ],
+    );
   }
 
   void _markChanged() {
@@ -214,11 +365,11 @@ class _RoutineScreenState extends State<RoutineScreen> {
     }
   }
 
-  void _toggleRoutineItem(String id, bool completed) {
+  void _setItemFreq(String id, String freq) {
     setState(() {
       final index = _routineItems.indexWhere((item) => item.id == id);
       if (index != -1) {
-        _routineItems[index].completed = completed;
+        _routineItems[index].freq = freq;
       }
     });
     _markChanged();
@@ -320,10 +471,26 @@ class _RoutineScreenState extends State<RoutineScreen> {
         throw Exception('User not authenticated');
       }
 
+      // Map AM/PM lists back into flat routine_items for storage
+      final List<RoutineItem> combined = [
+        ..._am.map((e) => RoutineItem(
+              id: (e['key'] as String),
+              name: (e['label'] as String),
+              category: 'Morning',
+              freq: (e['freq'] as String? ?? 'daily'),
+            )),
+        ..._pm.map((e) => RoutineItem(
+              id: (e['key'] as String),
+              name: (e['label'] as String),
+              category: 'Evening',
+              freq: (e['freq'] as String? ?? 'daily'),
+            )),
+      ];
+
       final entryData = {
         'user_id': user.id,
         'entry_id': widget.entryId ?? DateTime.now().millisecondsSinceEpoch.toString(),
-        'routine_items': _routineItems.map((item) => item.toJson()).toList(),
+        'routine_items': combined.map((item) => item.toJson()).toList(),
         'notes': _notesController.text.trim(),
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
@@ -338,18 +505,13 @@ class _RoutineScreenState extends State<RoutineScreen> {
           const SnackBar(content: Text('Routine entry saved')),
         );
 
-        // Track successful save
-        final completedCount = _routineItems.where((item) => item.completed).length;
-        final adherenceRate = _routineItems.isEmpty ? 0.0 : completedCount / _routineItems.length;
-        
+        // Track successful save (simplified, no completion metrics)
         AnalyticsService.capture(AnalyticsEvents.logCreateRoutine, {
           'entry_id': widget.entryId,
           AnalyticsProperties.hasPhoto: false, // Routine entries don't have photos
           'ts': DateTime.now().toIso8601String(),
           'has_notes': _notesController.text.trim().isNotEmpty,
           'total_items': _routineItems.length,
-          'completed_items': completedCount,
-          'adherence_rate': adherenceRate,
         });
 
         Navigator.of(context).pop(true);
@@ -379,9 +541,6 @@ class _RoutineScreenState extends State<RoutineScreen> {
     
     if (categoryItems.isEmpty) return const SizedBox.shrink();
 
-    final completedCount = categoryItems.where((item) => item.completed).length;
-    final totalCount = categoryItems.length;
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -396,53 +555,44 @@ class _RoutineScreenState extends State<RoutineScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: completedCount == totalCount 
-                        ? const Color(0xFFE0C3FC).withOpacity(0.3)
-                        : Theme.of(context).primaryColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '$completedCount/$totalCount',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: completedCount == totalCount 
-                          ? const Color(0xFF6A11CB)
-                          : Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 12),
-            ...categoryItems.map((item) => CheckboxListTile(
-              title: Text(item.name),
-              value: item.completed,
-              onChanged: (value) => _toggleRoutineItem(item.id, value ?? false),
-              controlAffinity: ListTileControlAffinity.leading,
-              contentPadding: EdgeInsets.zero,
-              secondary: PopupMenuButton<String>(
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'remove',
-                    child: Row(
-                      children: [
-                        Icon(Icons.delete, size: 16),
-                        SizedBox(width: 8),
-                        Text('Remove'),
-                      ],
+            ...categoryItems.map((item) => Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[200]!),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Expanded(child: Text(item.name, style: const TextStyle(fontWeight: FontWeight.w600))),
+                  SizedBox(
+                    height: 36,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          for (final f in const ['daily','weekly','as-needed']) ...[
+                            ChoiceChip(
+                              label: Text(_freqLabel(f)),
+                              selected: item.freq == f,
+                              selectedColor: const Color(0xFFA8EDEA),
+                              onSelected: (_) => _setItemFreq(item.id, f),
+                            ),
+                            const SizedBox(width: 6),
+                          ],
+                          IconButton(
+                            tooltip: 'Remove',
+                            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                            onPressed: () => _removeRoutineItem(item.id),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
-                onSelected: (value) {
-                  if (value == 'remove') {
-                    _removeRoutineItem(item.id);
-                  }
-                },
               ),
             )),
           ],
@@ -489,195 +639,24 @@ class _RoutineScreenState extends State<RoutineScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // Intro
-            Text(
-              'Skincare Routine',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            // Title & helper
+            Text('Current routine', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
-            Text(
-              'Check off each step in your morning and evening routine.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 16),
-
-            // Today's Date Card
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Today', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-                        const SizedBox(height: 4),
-                        Text(
-                          _formatDate(_today),
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                    _gradientCircle(child: const Icon(Icons.calendar_today, color: Colors.white, size: 18)),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Tabs: Morning / Evening
-            Row(
-              children: [
-                ChoiceChip(
-                  label: const Text('Morning'),
-                  selected: _currentTabIndex == 0,
-                  onSelected: (v) => setState(() => _currentTabIndex = 0),
-                ),
-                const SizedBox(width: 8),
-                ChoiceChip(
-                  label: const Text('Evening'),
-                  selected: _currentTabIndex == 1,
-                  onSelected: (v) => setState(() => _currentTabIndex = 1),
-                ),
-              ],
-            ),
-
+            Text("Add your morning and evening steps. You can change frequency for each.", style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black54)),
             const SizedBox(height: 12),
 
-            // Steps list
-            Builder(
-              builder: (context) {
-                final items = _itemsForCurrentTab();
-                if (items.isEmpty) {
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.info_outline, color: Colors.grey),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              _currentTabIndex == 0
-                                  ? 'No morning steps yet. Add your morning routine items.'
-                                  : 'No evening steps yet. Add your evening routine items.',
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-                int step = 1;
-                return Column(
-                  children: items.map((item) {
-                    final index = step++;
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey[200]!),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                _gradientCircle(child: Text('$index')),
-                                const SizedBox(width: 12),
-                                Text(item.name, style: const TextStyle(fontWeight: FontWeight.w600)),
-                              ],
-                            ),
-                            Checkbox(
-                              value: item.completed,
-                              onChanged: (v) => _toggleRoutineItem(item.id, v ?? false),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
-
-            // Add step action
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: () {
-                  // Default category based on current tab
-                  final defaultCategory = _currentTabIndex == 0
-                      ? _defaultRoutineItems.keys.firstWhere(_isMorningCategory, orElse: () => 'Morning Cleansing')
-                      : _defaultRoutineItems.keys.firstWhere(_isEveningCategory, orElse: () => 'Evening Cleansing');
-                  _addCustomRoutineItem(defaultCategory);
-                },
-                icon: const Icon(Icons.add),
-                label: const Text('Add Step'),
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            // Add New Product button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _addCustomRoutineItem,
-                icon: const Icon(Icons.add_circle_outline),
-                label: const Text('Add New Product'),
-              ),
-            ),
-
+            // Morning section
+            _buildSection('Morning', 'am', _am, _amCtrl),
             const SizedBox(height: 16),
-
-            // Routine Reminders
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Routine Reminders', style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 8),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('Enable reminders'),
-                      value: _remindersEnabled,
-                      onChanged: (v) {
-                        setState(() => _remindersEnabled = v);
-                        _markChanged();
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        InputChip(
-                          label: Text('Time: ${_reminderTime.format(context)}'),
-                          onPressed: _pickReminderTime,
-                          avatar: const Icon(Icons.access_time, size: 18),
-                        ),
-                        const SizedBox(width: 8),
-                        OutlinedButton.icon(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Reminder management not implemented')),
-                            );
-                          },
-                          icon: const Icon(Icons.settings),
-                          label: const Text('Manage'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+            // Evening section
+            _buildSection('Evening', 'pm', _pm, _pmCtrl),
+            const SizedBox(height: 12),
+            CheckboxListTile(
+              value: false,
+              onChanged: (_) {},
+              title: const Text("I don't have a routine yet"),
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsets.zero,
             ),
           ],
         ),
@@ -688,6 +667,8 @@ class _RoutineScreenState extends State<RoutineScreen> {
   @override
   void dispose() {
     _notesController.dispose();
+    _amCtrl.dispose();
+    _pmCtrl.dispose();
     super.dispose();
   }
 }

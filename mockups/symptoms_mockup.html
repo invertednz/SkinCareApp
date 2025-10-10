@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Symptoms – Mockup</title>
+  <style>
+    :root{--surface:#fff;--border:#E5E7EB;--charcoal:#111827;--muted:#6B7280;--grad:linear-gradient(135deg,#A8EDEA,#FED6E3);--accent:#A8EDEA;--radius:16px}
+    *{box-sizing:border-box}
+    body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
+    .frame{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4);display:flex;flex-direction:column}
+    .top{position:sticky;top:0;background:var(--surface);padding:16px 16px 8px}
+    .appbar{display:flex;align-items:center;justify-content:space-between}
+    .lang{border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted);font-size:12px}
+    main{padding:12px 12px 96px}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:13px}
+    .chip.active{background:var(--accent);border-color:var(--accent);color:#0b0b0c}
+    .card{border:1px solid var(--border);border-radius:16px;padding:12px;margin:8px 0}
+    .row{display:flex;align-items:center;gap:8px;margin:8px 0}
+    input[type=range]{width:100%}
+    .bottom{position:sticky;bottom:0;background:linear-gradient(#FFFFFF 60%, rgba(255,255,255,.85));padding:12px;border-top:1px solid var(--border)}
+    .primary{width:100%;border:none;padding:12px;border-radius:999px;background:var(--accent);font-weight:700;color:#0b0b0c;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="appbar">
+        <div style="font-weight:800">Symptoms</div>
+        <span class="lang">EN</span>
+      </div>
+    </div>
+    <main>
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:4px">Common</div>
+        <div class="chips">
+          <div class="chip active">Dryness</div>
+          <div class="chip">Oiliness</div>
+          <div class="chip">Redness</div>
+          <div class="chip">Acne</div>
+          <div class="chip">Itchiness</div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700">Severity</div>
+        <div class="row"><div style="width:70px;color:var(--muted);font-size:12px">Dryness</div><input type="range" min="0" max="10" value="4"></div>
+        <div class="row"><div style="width:70px;color:var(--muted);font-size:12px">Redness</div><input type="range" min="0" max="10" value="2"></div>
+      </div>
+    </main>
+    <div class="bottom">
+      <button class="primary">Log Today</button>
+    </div>
+  </div>
+</body>
+</html>

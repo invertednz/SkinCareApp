@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:skincare_app/services/analytics.dart';
 import 'package:skincare_app/services/analytics_events.dart';
+import '../onboarding/state/onboarding_state.dart';
 
 class Supplement {
   String id;
@@ -9,6 +10,9 @@ class Supplement {
   String dosage;
   String frequency;
   String? notes;
+  bool enabled;
+  bool am;
+  bool pm;
 
   Supplement({
     required this.id,
@@ -16,6 +20,9 @@ class Supplement {
     required this.dosage,
     required this.frequency,
     this.notes,
+    this.enabled = true,
+    this.am = true,
+    this.pm = false,
   });
 
   Map<String, dynamic> toJson() => {
@@ -24,14 +31,32 @@ class Supplement {
     'dosage': dosage,
     'frequency': frequency,
     'notes': notes,
+    'enabled': enabled,
+    'am': am,
+    'pm': pm,
   };
 
+  static bool _asBool(dynamic v, {bool defaultValue = false}) {
+    if (v == null) return defaultValue;
+    if (v is bool) return v;
+    if (v is num) return v != 0;
+    if (v is String) {
+      final s = v.toLowerCase();
+      if (s == 'true' || s == 'yes' || s == '1') return true;
+      if (s == 'false' || s == 'no' || s == '0') return false;
+    }
+    return defaultValue;
+  }
+
   factory Supplement.fromJson(Map<String, dynamic> json) => Supplement(
-    id: json['id'] as String,
-    name: json['name'] as String,
-    dosage: json['dosage'] as String,
-    frequency: json['frequency'] as String,
+    id: json['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
+    name: (json['name'] ?? '') as String,
+    dosage: (json['dosage'] ?? '') as String,
+    frequency: (json['frequency'] ?? 'Once daily') as String,
     notes: json['notes'] as String?,
+    enabled: _asBool(json['enabled'], defaultValue: true),
+    am: _asBool(json['am'], defaultValue: true),
+    pm: _asBool(json['pm'], defaultValue: false),
   );
 }
 
@@ -55,6 +80,7 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
   List<Supplement> _supplements = [];
   // UI state for mockup-aligned inline form and toggles
   final TextEditingController _formNameController = TextEditingController();
+  final TextEditingController _quickAddController = TextEditingController();
   final TextEditingController _formDosageController = TextEditingController();
   String _formFrequency = 'Once daily';
   bool _formMorning = false;
@@ -169,6 +195,9 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
       name: name,
       dosage: _formDosageController.text.trim(),
       frequency: _formFrequency,
+      enabled: true,
+      am: _formMorning,
+      pm: _formEvening,
     );
 
     setState(() {
@@ -187,18 +216,67 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
   void _loadInitialData() {
     if (widget.initialData != null) {
       final data = widget.initialData!;
-      setState(() {
-        final supplementsData = data['supplements'] as List? ?? [];
-        _supplements = supplementsData
-            .map((s) => Supplement.fromJson(s as Map<String, dynamic>))
-            .toList();
-      });
+      final raw = data['supplements'];
+      if (raw is List) {
+        final parsed = <Supplement>[];
+        for (final item in raw) {
+          if (item is String) {
+            parsed.add(Supplement(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              name: item,
+              dosage: '',
+              frequency: 'Once daily',
+              enabled: true,
+              am: true,
+              pm: false,
+            ));
+          } else if (item is Map<String, dynamic>) {
+            parsed.add(Supplement.fromJson(item));
+          } else if (item is Map) {
+            parsed.add(Supplement.fromJson(Map<String, dynamic>.from(item)));
+          }
+        }
+        setState(() {
+          _supplements = parsed;
+        });
+      }
     }
   }
 
   void _markChanged() {
     if (!_hasChanges) {
       setState(() => _hasChanges = true);
+    }
+  }
+
+  // Quick-add helpers for chips/input
+  void _addByName(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    final exists = _supplements.any((s) => s.name.toLowerCase() == trimmed.toLowerCase());
+    if (exists) return;
+    setState(() {
+      _supplements.add(Supplement(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        name: trimmed,
+        dosage: '',
+        frequency: 'Once daily',
+        enabled: true,
+        am: true,
+        pm: false,
+      ));
+      _hasChanges = true;
+    });
+  }
+
+  void _toggleQuickPick(String label, bool selected) {
+    if (selected) {
+      _addByName(label);
+    } else {
+      setState(() {
+        _supplements.removeWhere((s) => s.name.toLowerCase() == label.toLowerCase());
+        _hasChanges = true;
+      });
     }
   }
 
@@ -373,7 +451,8 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
   }
 
   Future<void> _saveSupplements() async {
-    if (!_formKey.currentState!.validate()) return;
+    // Optional validation (no form fields required in this UI variant)
+    if (!((_formKey.currentState?.validate()) ?? true)) return;
 
     setState(() => _isLoading = true);
 
@@ -431,35 +510,58 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
     }
   }
 
-  Widget _buildSupplementCard(Supplement supplement) {
-    return Card(
-      child: ListTile(
-        title: Text(
-          supplement.name,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (supplement.dosage.isNotEmpty)
-              Text('Dosage: ${supplement.dosage}'),
-            Text('Frequency: ${supplement.frequency}'),
-          ],
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () => _showEditSupplementDialog(supplement),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () => _removeSupplement(supplement.id),
-            ),
-          ],
-        ),
-        isThreeLine: false,
+  Widget _buildSupplementRow(Supplement s, int index) {
+    const mint = Color(0xFFA8EDEA);
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        border: index < _supplements.length - 1
+            ? const Border(bottom: BorderSide(color: Color(0xFFE5E7EB)))
+            : null,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Checkbox(
+                value: s.enabled,
+                onChanged: (v) {
+                  setState(() {
+                    s.enabled = v == true;
+                    _hasChanges = true;
+                  });
+                },
+              ),
+              Text(s.name, style: const TextStyle(fontWeight: FontWeight.w500)),
+            ],
+          ),
+          Wrap(
+            spacing: 8,
+            children: [
+              ChoiceChip(
+                label: const Text('AM'),
+                selected: s.am,
+                selectedColor: mint,
+                onSelected: (_) => setState(() { s.am = !s.am; _hasChanges = true; }),
+              ),
+              ChoiceChip(
+                label: const Text('PM'),
+                selected: s.pm,
+                selectedColor: mint,
+                onSelected: (_) => setState(() { s.pm = !s.pm; _hasChanges = true; }),
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () => _showEditSupplementDialog(s),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: () => _removeSupplement(s.id),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -507,272 +609,103 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
             ),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            // Intro
-            Text(
-              'Track Your Supplements',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Log your supplement intake to monitor their effects on your skin health.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 24),
-
-            // Today's Date Card
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Today', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-                        const SizedBox(height: 4),
-                        Text(
-                          _formatDate(_today),
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                        ),
-                      ],
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Supplements', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
+              // Quick picks chips (match onboarding)
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final opt in OnboardingValidators.allowedSupplements)
+                    FilterChip(
+                      label: Text(opt),
+                      selected: _supplements.any((s) => s.name.toLowerCase() == opt.toLowerCase()),
+                      selectedColor: const Color(0xFFA8EDEA),
+                      onSelected: (sel) => _toggleQuickPick(opt, sel),
                     ),
-                    _gradientCircle(Icons.calendar_today),
-                  ],
-                ),
+                ],
               ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Current Supplements
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text('Current Supplements', style: Theme.of(context).textTheme.titleMedium),
-                        const Spacer(),
-                        ElevatedButton.icon(
-                          onPressed: _showAddSupplementDialog,
-                          icon: const Icon(Icons.add, size: 16),
-                          label: const Text('Add New'),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            shape: const StadiumBorder(),
-                          ),
-                        ),
-                      ],
+              const SizedBox(height: 12),
+              // Input to add custom (match onboarding)
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _quickAddController,
+                      decoration: const InputDecoration(hintText: 'Add a supplement'),
+                      onSubmitted: (v) { _addByName(v); _quickAddController.clear(); },
                     ),
-                    const SizedBox(height: 12),
-                    if (_supplements.isEmpty)
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey[200]!),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: () { _addByName(_quickAddController.text); _quickAddController.clear(); },
+                    child: const Text('Add'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // List section (match onboarding list item: checkbox + label + AM/PM chips)
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFFE5E7EB)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: _supplements.isEmpty
+                      ? Text('No supplements yet. Use the chips above or add your own.', style: TextStyle(color: Colors.grey[600]))
+                      : Column(
                           children: [
-                            Icon(Icons.medication_outlined, color: Colors.grey[400]),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                'No supplements added yet. Tap "Add New" to get started.',
-                                style: TextStyle(color: Colors.grey[600]),
+                            for (int i = 0; i < _supplements.length; i++)
+                              Container(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                decoration: BoxDecoration(
+                                  border: i < _supplements.length - 1 ? const Border(bottom: BorderSide(color: Color(0xFFE5E7EB))) : null,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Checkbox(
+                                          value: _supplements[i].enabled,
+                                          onChanged: (v) => setState(() { _supplements[i].enabled = v == true; _hasChanges = true; }),
+                                        ),
+                                        Text(_supplements[i].name),
+                                      ],
+                                    ),
+                                    Wrap(
+                                      spacing: 8,
+                                      children: [
+                                        ChoiceChip(
+                                          label: const Text('AM'),
+                                          selected: _supplements[i].am,
+                                          selectedColor: const Color(0xFFA8EDEA),
+                                          onSelected: (_) => setState(() { _supplements[i].am = !_supplements[i].am; _hasChanges = true; }),
+                                        ),
+                                        ChoiceChip(
+                                          label: const Text('PM'),
+                                          selected: _supplements[i].pm,
+                                          selectedColor: const Color(0xFFA8EDEA),
+                                          onSelected: (_) => setState(() { _supplements[i].pm = !_supplements[i].pm; _hasChanges = true; }),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
                           ],
                         ),
-                      )
-                    else
-                      Column(
-                        children: _supplements.map((s) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey[200]!),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      _gradientCircle(Icons.medication_outlined),
-                                      const SizedBox(width: 12),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(s.name, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                          Text(
-                                            '${s.dosage.isNotEmpty ? '${s.dosage}, ' : ''}${s.frequency}',
-                                            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Switch(
-                                    value: _intakeToggle[s.id] ?? false,
-                                    onChanged: (v) => setState(() => _intakeToggle[s.id] = v),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                  ],
                 ),
               ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Add New Supplement Form
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Add New Supplement', style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _formNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Supplement Name',
-                        hintText: 'e.g., Vitamin D, Collagen, etc.',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _formDosageController,
-                            decoration: const InputDecoration(
-                              labelText: 'Dosage',
-                              hintText: 'e.g., 500mg',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            value: _formFrequency,
-                            items: _frequencyOptions
-                                .map((f) => DropdownMenuItem<String>(value: f, child: Text(f)))
-                                .toList(),
-                            onChanged: (v) => setState(() => _formFrequency = v ?? _formFrequency),
-                            decoration: const InputDecoration(
-                              labelText: 'Frequency',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text('Time of Day', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _formMorning,
-                          onChanged: (v) => setState(() => _formMorning = v ?? false),
-                        ),
-                        const Text('Morning'),
-                        const SizedBox(width: 16),
-                        Checkbox(
-                          value: _formAfternoon,
-                          onChanged: (v) => setState(() => _formAfternoon = v ?? false),
-                        ),
-                        const Text('Afternoon'),
-                        const SizedBox(width: 16),
-                        Checkbox(
-                          value: _formEvening,
-                          onChanged: (v) => setState(() => _formEvening = v ?? false),
-                        ),
-                        const Text('Evening'),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _handleAddSupplementFromForm,
-                        child: const Text('Add Supplement'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Supplement History
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text('Supplement History', style: Theme.of(context).textTheme.titleMedium),
-                        const Spacer(),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text('View All', style: TextStyle(fontSize: 12)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.grey[200],
-                            child: const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
-                          ),
-                          const SizedBox(width: 12),
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Last Week', style: TextStyle(fontWeight: FontWeight.w600)),
-                                SizedBox(height: 2),
-                                Text('Added Biotin, Removed Fish Oil', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                              ],
-                            ),
-                          ),
-                          const Icon(Icons.chevron_right, color: Colors.grey),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -781,6 +714,7 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
   @override
   void dispose() {
     _formNameController.dispose();
+    _quickAddController.dispose();
     _formDosageController.dispose();
     super.dispose();
   }

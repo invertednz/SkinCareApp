@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Routine – Mockup</title>
+  <style>
+    :root{--surface:#fff;--border:#E5E7EB;--charcoal:#111827;--muted:#6B7280;--grad:linear-gradient(135deg,#A8EDEA,#FED6E3);--accent:#A8EDEA;--radius:16px}
+    *{box-sizing:border-box}
+    body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
+    .frame{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4);display:flex;flex-direction:column}
+    .top{position:sticky;top:0;background:var(--surface);padding:16px 16px 8px}
+    .appbar{display:flex;align-items:center;justify-content:space-between}
+    .lang{border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted);font-size:12px}
+    main{padding:12px 12px 96px}
+    h2{margin:8px 0 4px;font-size:16px}
+    .card{border:1px solid var(--border);border-radius:16px;padding:12px;margin:8px 0}
+    .item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F3F4F6}
+    .item:last-child{border-bottom:none}
+    .left{display:flex;align-items:center;gap:8px}
+    .chip{padding:4px 8px;border-radius:999px;border:1px solid var(--border);font-size:12px}
+    .chip.active{background:var(--accent);border-color:var(--accent)}
+    .bottom{position:sticky;bottom:0;background:linear-gradient(#FFFFFF 60%, rgba(255,255,255,.85));padding:12px;border-top:1px solid var(--border)}
+    .primary{width:100%;border:none;padding:12px;border-radius:999px;background:var(--accent);font-weight:700;color:#0b0b0c;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="appbar">
+        <div style="font-weight:800">Routine</div>
+        <span class="lang">EN</span>
+      </div>
+    </div>
+    <main>
+      <div class="card">
+        <h2>Morning</h2>
+        <div class="item"><div class="left"><input type="checkbox" checked/><div>Cleanser</div></div><span class="chip active">Daily</span></div>
+        <div class="item"><div class="left"><input type="checkbox"/><div>Vitamin C</div></div><span class="chip">As needed</span></div>
+        <div class="item"><div class="left"><input type="checkbox" checked/><div>Sunscreen</div></div><span class="chip active">Daily</span></div>
+      </div>
+      <div class="card">
+        <h2>Evening</h2>
+        <div class="item"><div class="left"><input type="checkbox" checked/><div>Cleanser</div></div><span class="chip active">Daily</span></div>
+        <div class="item"><div class="left"><input type="checkbox"/><div>Actives</div></div><span class="chip">2–3x/wk</span></div>
+        <div class="item"><div class="left"><input type="checkbox"/><div>Moisturizer</div></div><span class="chip active">Daily</span></div>
+      </div>
+    </main>
+    <div class="bottom">
+      <button class="primary">Save Routine</button>
+    </div>
+  </div>
+</body>
+</html>

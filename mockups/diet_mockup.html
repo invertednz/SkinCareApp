@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diet – Mockup</title>
+  <style>
+    :root{--surface:#fff;--border:#E5E7EB;--charcoal:#111827;--muted:#6B7280;--grad:linear-gradient(135deg,#A8EDEA,#FED6E3);--accent:#A8EDEA;--radius:16px}
+    *{box-sizing:border-box}
+    body{margin:0;background:#0b0b0c;display:grid;place-items:center;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--charcoal)}
+    .frame{max-width:420px;min-height:800px;background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.4);display:flex;flex-direction:column}
+    .top{position:sticky;top:0;background:var(--surface);padding:16px 16px 8px}
+    .appbar{display:flex;align-items:center;justify-content:space-between}
+    .lang{border:1px solid var(--border);padding:4px 8px;border-radius:999px;color:var(--muted);font-size:12px}
+    main{padding:12px 12px 96px}
+    .chips{display:flex;gap:8px;overflow:auto;padding-bottom:8px}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:13px;white-space:nowrap}
+    .chip.active{background:var(--accent);border-color:var(--accent);color:#0b0b0c}
+    .card{border:1px solid var(--border);border-radius:16px;padding:12px;margin:8px 0}
+    .row{display:flex;justify-content:space-between}
+    .meal{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #F3F4F6}
+    .meal:last-child{border-bottom:none}
+    .dot{width:8px;height:8px;border-radius:50%;background:#111827}
+    .bottom{position:sticky;bottom:0;background:linear-gradient(#FFFFFF 60%, rgba(255,255,255,.85));padding:12px;border-top:1px solid var(--border)}
+    .primary{width:100%;border:none;padding:12px;border-radius:999px;background:var(--accent);font-weight:700;color:#0b0b0c;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="appbar">
+        <div style="font-weight:800">Diet</div>
+        <span class="lang">EN</span>
+      </div>
+    </div>
+    <main>
+      <div class="chips">
+        <div class="chip active">Today</div>
+        <div class="chip">Yesterday</div>
+        <div class="chip">7d</div>
+        <div class="chip">30d</div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div><div style="font-size:12px;color:var(--muted)">Calories</div><div style="font-weight:800">1,850</div></div>
+          <div><div style="font-size:12px;color:var(--muted)">Protein</div><div style="font-weight:800">95g</div></div>
+          <div><div style="font-size:12px;color:var(--muted)">Fiber</div><div style="font-weight:800">22g</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:6px">Meals</div>
+        <div class="meal"><div class="dot"></div><div>Breakfast</div><div style="margin-left:auto;color:var(--muted)">Oats + Berries</div></div>
+        <div class="meal"><div class="dot"></div><div>Lunch</div><div style="margin-left:auto;color:var(--muted)">Chicken Salad</div></div>
+        <div class="meal"><div class="dot"></div><div>Dinner</div><div style="margin-left:auto;color:var(--muted)">Salmon + Veg</div></div>
+      </div>
+    </main>
+    <div class="bottom">
+      <button class="primary">Add Meal</button>
+    </div>
+  </div>
+</body>
+</html>

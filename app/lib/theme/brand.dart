@@ -1,20 +1,42 @@
 import 'package:flutter/material.dart';
 
 class Brand {
-  // Colors derived from styles.css
-  static const Color accent = Color(0xFFFF7EB3);
+  // Dusty Rose & Charcoal Color Scheme
+  
+  // Primary rose gradient: #d0a3af -> #ba8593
+  static const Color primaryStart = Color(0xFFD0A3AF);
+  static const Color primaryEnd = Color(0xFFBA8593);
+  
+  // Charcoal accent for contrast
+  static const Color charcoal = Color(0xFF3D3840);
+  
+  // Background colors
+  static const Color backgroundLight = Color(0xFFF8F5F6);
+  static const Color backgroundMedium = Color(0xFFF0EAEC);
+  
+  // Text colors
+  static const Color textPrimary = Color(0xFF3D3840);
+  static const Color textSecondary = Color(0xFF6D6168);
+  static const Color textTertiary = Color(0xFF8A7B82);
+  
+  // Card and surface colors
+  static const Color cardBackground = Color(0xFFFFFFFF);
+  static const Color cardBackgroundSecondary = Color(0xFFFDFBFC);
+  
+  // Border colors
+  static const Color borderLight = Color(0xFFF0E8EB);
+  static const Color borderMedium = Color(0xFFE8E0E3);
+  
+  // Legacy accent (deprecated, use primaryStart instead)
+  static const Color accent = Color(0xFFD0A3AF);
 
-  // Primary gradient: #a8edea -> #fed6e3
-  static const Color primaryStart = Color(0xFFA8EDEA);
-  static const Color primaryEnd = Color(0xFFFED6E3);
+  // Secondary gradient: lighter rose tones
+  static const Color secondaryStart = Color(0xFFF5EDEF);
+  static const Color secondaryEnd = Color(0xFFE8E0E3);
 
-  // Secondary gradient: #e0c3fc -> #8ec5fc
-  static const Color secondaryStart = Color(0xFFE0C3FC);
-  static const Color secondaryEnd = Color(0xFF8EC5FC);
-
-  // Deep gradient: #6A11CB -> #2575FC
-  static const Color deepStart = Color(0xFF6A11CB);
-  static const Color deepEnd = Color(0xFF2575FC);
+  // Deep gradient: charcoal to rose
+  static const Color deepStart = Color(0xFF3D3840);
+  static const Color deepEnd = Color(0xFF6D6168);
 
   static const double radius = 12;
 

@@ -9,20 +9,21 @@
       --primary-start: #A8EDEA;
       --primary-end: #FED6E3;
       --accent: #A8EDEA;
-      --radius: 12px;
-      --text: #222;
-      --muted: #666;
-      --bg: #f7f7f8;
+      --radius: 16px;
+      --surface:#FFFFFF; --border:#E5E7EB; --charcoal:#111827; --muted:#6B7280;
       --shadow: 0 4px 12px rgba(0,0,0,0.08);
       --chip-bg: #fff;
       --chip-border: #e5e7eb;
-      --chip-active: #111827;
     }
     * { box-sizing: border-box; }
-    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); background: var(--bg); }
-    .gradient-header { background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); color:#fff; padding:20px 16px; display:flex; align-items:center; justify-content:space-between; }
-    .title { font-size:20px; font-weight:600; }
-    .container { transform: translateY(-24px); padding: 0 16px 32px; }
+    body { margin:0; background:#0b0b0c; display:grid; place-items:center; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--charcoal); }
+    .frame{ max-width:420px; min-height:800px; background:var(--surface); border-radius:28px; overflow:hidden; box-shadow:0 32px 80px rgba(0,0,0,.4); display:flex; flex-direction:column; }
+    .top{ position:sticky; top:0; background:var(--surface); padding:16px 16px 0; }
+    .bar{ height:3px; background:#EEF2F4; border-radius:999px; overflow:hidden; }
+    .bar>div{ height:100%; width:55%; background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); }
+    .appbar{ display:flex; align-items:center; justify-content:space-between; padding:8px 0; }
+    .lang{ border:1px solid var(--border); padding:4px 8px; border-radius:999px; color:var(--muted); font-size:12px }
+    main { padding:24px 16px 96px; }
     .card { background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); padding:16px; max-width: 960px; margin: 0 auto; }
 
     .progress { height:8px; width:100%; background:#eef2f4; border-radius: 999px; overflow:hidden; margin-bottom: 12px; }
@@ -33,7 +34,7 @@
 
     /* Templates */
     .templates { display:flex; gap:12px; overflow-x:auto; padding-bottom: 6px; }
-    .tpl { min-width: 260px; border:1px solid #e5e7eb; border-radius: 12px; padding:12px; background:#fff; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+    .tpl { min-width: 260px; border:1px solid #e5e7eb; border-radius: 16px; padding:12px; background:#fff; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
     .tpl h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
     .tpl .hint { color:#777; font-size: 13px; margin-bottom: 8px; }
     .pill { display:inline-block; margin: 2px 6px 2px 0; padding:6px 10px; border-radius:999px; background:#f3f4f6; font-size: 13px; color:#333; }
@@ -45,17 +46,17 @@
     .section { margin-top: 16px; }
     .section h3 { margin: 8px 0; font-size: 16px; font-weight: 600; }
     .selected { display:flex; flex-wrap:wrap; gap:8px; }
-    .chip { display:inline-flex; align-items:center; gap:8px; padding:6px 8px; border-radius:12px; border:1px solid var(--chip-border); background: var(--chip-bg); box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+    .chip { display:inline-flex; align-items:center; gap:8px; padding:6px 8px; border-radius:16px; border:1px solid var(--chip-border); background: var(--chip-bg); box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
     .chip .name { font-size: 13px; color:#333; }
     .chip .freq { display:flex; gap:6px; }
     .chip .freq .fchip { padding:4px 8px; border-radius:999px; border:1px solid var(--chip-border); background:#fff; font-size: 12px; cursor:pointer; }
-    .chip .freq .fchip.active { background: var(--chip-active); color:#fff; border-color: var(--chip-active); }
+    .chip .freq .fchip.active { background: var(--accent); color:#fff; border-color: var(--accent); }
     .chip .remove { border:none; background: transparent; color:#999; cursor:pointer; font-size: 14px; }
 
     .add-row { display:flex; gap:8px; margin-top: 12px; }
-    .add-row input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid #e5e7eb; }
+    .add-row input { flex:1; padding:10px 12px; border-radius:16px; border:1px solid #e5e7eb; }
 
-    .footer { display:flex; justify-content: flex-end; gap:12px; margin-top: 16px; }
+    .footer { display:flex; justify-content: flex-end; gap:12px; }
 
     @media (max-width: 680px){
       .chip { width: 100%; justify-content: space-between; }
@@ -63,11 +64,15 @@
   </style>
 </head>
 <body>
-  <header class="gradient-header">
-    <div class="title">Onboarding</div>
-    <button class="btn" title="Close">✕</button>
-  </header>
-  <main class="container">
+  <div class="frame">
+    <div class="top">
+      <div class="appbar">
+        <button aria-label="Back" style="background:none;border:none;font-size:20px">←</button>
+        <span class="lang">EN</span>
+      </div>
+      <div class="bar"><div></div></div>
+    </div>
+    <main>
     <section class="card">
       <div class="progress"><div></div></div>
       <h2>Current routine</h2>
@@ -123,12 +128,15 @@
         </div>
       </div>
 
-      <div class="footer">
-        <button class="btn">Back</button>
-        <button class="btn primary">Next</button>
+      <div class="bottom" style="position:sticky;bottom:0;background:linear-gradient(#FFFFFF 50%, rgba(255,255,255,.85));padding:16px;">
+        <div class="footer">
+          <button class="btn">Back</button>
+          <button class="btn primary">Next</button>
+        </div>
       </div>
     </section>
-  </main>
+    </main>
+  </div>
 
   <script>
     const templates = {

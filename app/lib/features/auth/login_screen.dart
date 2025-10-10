@@ -92,124 +92,269 @@ class _LoginScreenState extends State<LoginScreen> {
     final termsEnabled = terms != null && terms.isNotEmpty;
     final privacyEnabled = privacy != null && privacy.isNotEmpty;
     return Scaffold(
+      backgroundColor: Brand.backgroundLight,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Gradient header
-                  Container(
-                    height: 160,
-                    decoration: Brand.gradientDecoration(),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    alignment: Alignment.centerLeft,
-                    child: const Text(
-                      'Skincare Tracker',
-                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  // Overlapping card with form
-                  Transform.translate(
-                    offset: const Offset(0, -40),
+                  const SizedBox(height: 40),
+                  // Logo/Icon
+                  Center(
                     child: Container(
-                      decoration: Brand.cardDecoration(context),
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      padding: const EdgeInsets.all(16),
-                      child: Form(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        key: _formKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // Social-first layout (disabled per MVP)
-                            const Wrap(
-                              alignment: WrapAlignment.center,
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: [
-                                _DisabledSocialButton(label: 'Continue with Google'),
-                                _DisabledSocialButton(label: 'Continue with Apple'),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            const Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Social sign-in coming soon',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                            TextFormField(
-                              key: const Key('emailField'),
-                              controller: _emailCtrl,
-                              decoration: const InputDecoration(labelText: 'Email'),
-                              keyboardType: TextInputType.emailAddress,
-                              autofillHints: const [AutofillHints.username, AutofillHints.email],
-                              validator: _validateEmail,
-                              enabled: !_loading,
-                            ),
-                            const SizedBox(height: 12),
-                            TextFormField(
-                              key: const Key('passwordField'),
-                              controller: _passwordCtrl,
-                              decoration: const InputDecoration(labelText: 'Password'),
-                              obscureText: true,
-                              autofillHints: const [AutofillHints.password],
-                              validator: _validatePassword,
-                              enabled: !_loading,
-                            ),
-                            const SizedBox(height: 8),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                key: const Key('forgotPasswordLink'),
-                                onPressed: _loading ? null : () => context.push('/reset'),
-                                child: const Text('Forgot password?'),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            if (_error != null)
-                              Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
-                            const SizedBox(height: 8),
-                            FilledButton(
-                              key: const Key('submitButton'),
-                              onPressed: _loading ? null : _submit,
-                              child: _loading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
-                                    )
-                                  : const Text('Sign in'),
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TextButton(
-                                  key: const Key('termsLink'),
-                                  onPressed: termsEnabled ? () => _openUrl(terms) : null,
-                                  child: const Text('Terms'),
-                                ),
-                                const Text('·'),
-                                TextButton(
-                                  key: const Key('privacyLink'),
-                                  onPressed: privacyEnabled ? () => _openUrl(privacy) : null,
-                                  child: const Text('Privacy'),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        gradient: Brand.primaryGradient,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Brand.primaryStart.withOpacity(0.3),
+                            blurRadius: 24,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.spa_outlined,
+                        size: 40,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
+                  // Title
+                  Text(
+                    'Welcome to SkinCare',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Brand.textPrimary,
+                      letterSpacing: -0.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Your journey to healthier skin starts here',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Brand.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 48),
+                  // Form Card
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: Brand.borderLight),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Brand.primaryStart.withOpacity(0.08),
+                          blurRadius: 16,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Form(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      key: _formKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Social buttons (disabled)
+                          const Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: [
+                              _DisabledSocialButton(label: 'Continue with Google'),
+                              _DisabledSocialButton(label: 'Continue with Apple'),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Social sign-in coming soon',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Brand.textTertiary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 24),
+                          // Divider
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: Brand.borderMedium)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  'Or continue with email',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Brand.textTertiary,
+                                  ),
+                                ),
+                              ),
+                              Expanded(child: Divider(color: Brand.borderMedium)),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          // Email field
+                          TextFormField(
+                            key: const Key('emailField'),
+                            controller: _emailCtrl,
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                              prefixIcon: Icon(Icons.email_outlined, color: Brand.primaryStart),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Brand.borderMedium),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Brand.borderMedium),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Brand.primaryStart, width: 2),
+                              ),
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                            autofillHints: const [AutofillHints.username, AutofillHints.email],
+                            validator: _validateEmail,
+                            enabled: !_loading,
+                          ),
+                          const SizedBox(height: 16),
+                          // Password field
+                          TextFormField(
+                            key: const Key('passwordField'),
+                            controller: _passwordCtrl,
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              prefixIcon: Icon(Icons.lock_outline, color: Brand.primaryStart),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Brand.borderMedium),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Brand.borderMedium),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Brand.primaryStart, width: 2),
+                              ),
+                            ),
+                            obscureText: true,
+                            autofillHints: const [AutofillHints.password],
+                            validator: _validatePassword,
+                            enabled: !_loading,
+                          ),
+                          const SizedBox(height: 12),
+                          // Forgot password
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              key: const Key('forgotPasswordLink'),
+                              onPressed: _loading ? null : () => context.push('/reset'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Brand.primaryStart,
+                              ),
+                              child: const Text('Forgot password?'),
+                            ),
+                          ),
+                          if (_error != null) ...[
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.red.shade200),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.error_outline, color: Colors.red.shade700, size: 20),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      _error!,
+                                      style: TextStyle(color: Colors.red.shade900, fontSize: 13),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                          const SizedBox(height: 24),
+                          // Sign in button
+                          SizedBox(
+                            height: 52,
+                            child: ElevatedButton(
+                              key: const Key('submitButton'),
+                              onPressed: _loading ? null : _submit,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Brand.primaryStart,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 0,
+                                disabledBackgroundColor: Brand.borderMedium,
+                              ),
+                              child: _loading
+                                  ? const SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Sign In',
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Terms & Privacy
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        key: const Key('termsLink'),
+                        onPressed: termsEnabled ? () => _openUrl(terms) : null,
+                        style: TextButton.styleFrom(
+                          foregroundColor: Brand.textTertiary,
+                        ),
+                        child: const Text('Terms'),
+                      ),
+                      Text('·', style: TextStyle(color: Brand.textTertiary)),
+                      TextButton(
+                        key: const Key('privacyLink'),
+                        onPressed: privacyEnabled ? () => _openUrl(privacy) : null,
+                        style: TextButton.styleFrom(
+                          foregroundColor: Brand.textTertiary,
+                        ),
+                        child: const Text('Privacy'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),

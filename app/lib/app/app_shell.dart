@@ -58,7 +58,7 @@ class _AppShellState extends State<AppShell> {
               }
             },
             destinations: const [
-              NavigationDestination(icon: Icon(Icons.insights_outlined), label: 'Insights'),
+              NavigationDestination(icon: Icon(Icons.insights_outlined), label: 'Home'),
               NavigationDestination(icon: Icon(Icons.book_outlined), label: 'Diary'),
               NavigationDestination(icon: Icon(Icons.chat_bubble_outline), label: 'Chat'),
               NavigationDestination(icon: Icon(Icons.person_outline), label: 'Profile'),

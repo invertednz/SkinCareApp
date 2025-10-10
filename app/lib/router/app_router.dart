@@ -6,7 +6,7 @@ import '../services/session.dart';
 import '../features/auth/password_reset_screen.dart';
 import '../features/profile/profile_service.dart';
 import 'router_refresh.dart';
-import '../features/onboarding/presentation/onboarding_wizard.dart';
+import '../features/onboarding/presentation/enhanced_onboarding_flow.dart';
 import '../features/paywall/paywall_screen.dart';
 import 'analytics_observer.dart';
 import '../features/diary/diet_screen.dart';
@@ -83,7 +83,7 @@ class AppRouter {
         GoRoute(
           path: '/onboarding',
           name: 'onboarding',
-          builder: (context, state) => const OnboardingWizard(),
+          builder: (context, state) => const EnhancedOnboardingFlow(),
         ),
         GoRoute(
           path: '/paywall',

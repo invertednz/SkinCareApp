@@ -9,20 +9,20 @@
       --primary-start: #A8EDEA;
       --primary-end: #FED6E3;
       --accent: #A8EDEA;
-      --radius: 12px;
-      --text: #222;
-      --muted: #666;
-      --bg: #f7f7f8;
+      --radius: 16px;
+      --surface:#FFFFFF; --border:#E5E7EB; --charcoal:#111827; --muted:#6B7280;
       --shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     * { box-sizing: border-box; }
-    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); background: var(--bg); }
-    .gradient-header { background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); color:#fff; padding:20px 16px; display:flex; align-items:center; justify-content:space-between; }
-    .title { font-size:20px; font-weight:600; }
-    .container { transform: translateY(-24px); padding: 0 16px 32px; }
+    body { margin:0; background:#0b0b0c; display:grid; place-items:center; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--charcoal); }
+    .frame{ max-width:420px; min-height:800px; background:var(--surface); border-radius:28px; overflow:hidden; box-shadow:0 32px 80px rgba(0,0,0,.4); display:flex; flex-direction:column; }
+    .top{ position:sticky; top:0; background:var(--surface); padding:16px 16px 0; }
+    .bar{ height:3px; background:#EEF2F4; border-radius:999px; overflow:hidden; }
+    .bar>div{ height:100%; width:45%; background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); }
+    .appbar{ display:flex; align-items:center; justify-content:space-between; padding:8px 0; }
+    .lang{ border:1px solid var(--border); padding:4px 8px; border-radius:999px; color:var(--muted); font-size:12px }
+    main { padding:24px 16px 96px; }
     .card { background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); padding:16px; max-width: 900px; margin: 0 auto; }
-    .progress { height:8px; width:100%; background:#eef2f4; border-radius: 999px; overflow:hidden; margin-bottom: 12px; }
-    .progress > div { height:100%; width: 45%; background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); }
 
     h2 { margin: 0 0 8px; font-size: 18px; font-weight: 600; }
     .desc { color: var(--muted); margin-bottom: 12px; }
@@ -31,20 +31,20 @@
     .section h3 { margin: 8px 0; font-size: 16px; font-weight: 600; }
 
     .list { display:flex; flex-direction: column; gap:10px; }
-    .item { display:flex; align-items:center; gap:12px; padding:10px; border:1px solid #e5e7eb; border-radius: 10px; background:#fff; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+    .item { display:flex; align-items:center; gap:12px; padding:10px; border:1px solid #e5e7eb; border-radius: 16px; background:#fff; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
     .item[draggable="true"] { cursor: grab; }
     .drag-handle { font-size: 16px; color:#999; cursor: grab; }
     .item .label { display:flex; align-items:center; gap:10px; min-width: 180px; }
 
     .freq { display:flex; flex-wrap: wrap; gap:8px; }
     .chip { padding:6px 10px; border-radius: 999px; border:1px solid #e5e7eb; cursor:pointer; user-select:none; font-size: 13px; background:#fff; }
-    .chip.active { background:#111827; color:#fff; border-color:#111827; }
+    .chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
 
     .add-row { display:flex; gap:8px; margin-top: 10px; }
-    .add-row input { flex: 1; padding:10px 12px; border-radius:8px; border:1px solid #e5e7eb; }
-    .btn { padding:10px 14px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; }
+    .add-row input { flex: 1; padding:10px 12px; border-radius:16px; border:1px solid #e5e7eb; }
+    .btn { padding:10px 14px; border-radius:16px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; }
     .btn.primary { background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); border:none; color:#111; font-weight:600; }
-    .footer { display:flex; align-items:center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+    .footer { display:flex; align-items:center; justify-content: space-between; gap: 12px; }
 
     .skip { display:flex; align-items:center; gap:10px; color:#444; }
 
@@ -55,11 +55,15 @@
   </style>
 </head>
 <body>
-  <header class="gradient-header">
-    <div class="title">Onboarding</div>
-    <button class="btn" title="Close">✕</button>
-  </header>
-  <main class="container">
+  <div class="frame">
+    <div class="top">
+      <div class="appbar">
+        <button aria-label="Back" style="background:none;border:none;font-size:20px">←</button>
+        <span class="lang">EN</span>
+      </div>
+      <div class="bar"><div></div></div>
+    </div>
+    <main>
     <section class="card">
       <div class="progress"><div></div></div>
       <h2>Current routine</h2>
@@ -122,15 +126,18 @@
         </div>
       </div>
 
-      <div class="footer">
-        <label class="skip"><input type="checkbox" id="skip" /> I don't have a routine yet</label>
-        <div style="display:flex; gap:12px;">
-          <button class="btn">Back</button>
-          <button class="btn primary">Next</button>
+      <div class="bottom" style="position:sticky;bottom:0;background:linear-gradient(#FFFFFF 50%, rgba(255,255,255,.85));padding:16px;">
+        <div class="footer">
+          <label class="skip"><input type="checkbox" id="skip" /> I don't have a routine yet</label>
+          <div style="display:flex; gap:12px;">
+            <button class="btn">Back</button>
+            <button class="btn primary">Next</button>
+          </div>
         </div>
       </div>
     </section>
-  </main>
+    </main>
+  </div>
 
   <script>
     // Drag & drop reorder

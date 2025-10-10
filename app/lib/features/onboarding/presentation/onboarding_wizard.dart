@@ -8,10 +8,474 @@ import '../../../theme/brand.dart';
 import '../../../widgets/brand_scaffold.dart';
 
 class OnboardingWizard extends StatefulWidget {
-  const OnboardingWizard({super.key});
+  const OnboardingWizard({super.key, this.onComplete});
+
+  final VoidCallback? onComplete;
 
   @override
   State<OnboardingWizard> createState() => _OnboardingWizardState();
+}
+
+class _ConcernsWithSeverityStep extends StatefulWidget {
+  const _ConcernsWithSeverityStep({
+    required this.title,
+    required this.options,
+    required this.concerns,
+    required this.severities,
+    required this.onChanged,
+    required this.hintText,
+  });
+  final String title;
+  final List<String> options;
+  final List<String> concerns;
+  final Map<String, double> severities; // 0.0 (none) -> 1.0 (severe)
+  final void Function(List<String> concerns, Map<String, double> severities) onChanged;
+  final String hintText;
+
+  @override
+  State<_ConcernsWithSeverityStep> createState() => _ConcernsWithSeverityStepState();
+}
+
+class _ConcernsWithSeverityStepState extends State<_ConcernsWithSeverityStep> {
+  final _ctrl = TextEditingController();
+  static const Color _rose = Color(0xFFD0A3AF); // Dusty rose primary
+
+  // Keep display labels as provided, but normalize severity map keys to lowercase
+  late List<String> _selected; // display labels
+  late Map<String, double> _sev; // keys: lowercase of label
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = List<String>.from(widget.concerns);
+    // Normalize incoming severities to lowercase keys
+    _sev = {
+      for (final e in widget.severities.entries) e.key.toLowerCase(): e.value
+    };
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  void _emit() {
+    // Persist severities with lowercase keys
+    widget.onChanged(_selected, Map<String, double>.from(_sev));
+  }
+
+  bool _containsIgnoreCase(List<String> list, String value) =>
+      list.any((e) => e.toLowerCase() == value.toLowerCase());
+
+  void _toggleChip(String opt, bool sel) {
+    setState(() {
+      if (sel) {
+        if (!_containsIgnoreCase(_selected, opt)) {
+          _selected.add(opt);
+          _sev[opt.toLowerCase()] = _sev[opt.toLowerCase()] ?? 0.0;
+        }
+      } else {
+        _selected.removeWhere((e) => e.toLowerCase() == opt.toLowerCase());
+        _sev.remove(opt.toLowerCase());
+      }
+    });
+    _emit();
+  }
+
+  void _addCustom() {
+    final v = _ctrl.text.trim();
+    if (v.isEmpty) return;
+    setState(() {
+      if (!_containsIgnoreCase(_selected, v)) {
+        _selected.add(v);
+        _sev[v.toLowerCase()] = 0.0;
+      }
+      _ctrl.clear();
+    });
+    _emit();
+  }
+
+  void _remove(String key) {
+    setState(() {
+      _selected.removeWhere((e) => e.toLowerCase() == key.toLowerCase());
+      _sev.remove(key.toLowerCase());
+    });
+    _emit();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedLower = _selected.map((e) => e.toLowerCase()).toSet();
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final opt in widget.options)
+                FilterChip(
+                  label: Text(opt),
+                  selected: selectedLower.contains(opt.toLowerCase()),
+                  selectedColor: _rose,
+                  onSelected: (sel) => _toggleChip(opt, sel),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _ctrl,
+                  decoration: InputDecoration(hintText: widget.hintText),
+                  onSubmitted: (_) => _addCustom(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(onPressed: _addCustom, child: const Text('Add')),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text('Current severity', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          // Sliders for each selected concern
+          Column(
+            children: [
+              for (final item in _selected)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFF0E8EB)), // Light rose border
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Text(item, style: const TextStyle(fontWeight: FontWeight.w600))),
+                          IconButton(
+                            tooltip: 'Remove',
+                            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                            onPressed: () => _remove(item),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: const [
+                          Text('None'),
+                          Spacer(),
+                          Text('Moderate'),
+                          Spacer(),
+                          Text('Severe'),
+                        ],
+                      ),
+                      Slider(
+                        value: (_sev[item.toLowerCase()] ?? 0.0).clamp(0.0, 1.0),
+                        onChanged: (v) {
+                          setState(() => _sev[item.toLowerCase()] = v);
+                          _emit();
+                        },
+                        activeColor: _rose,
+                        min: 0.0,
+                        max: 1.0,
+                        divisions: 4,
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SingleSelectBoxes extends StatelessWidget {
+  const _SingleSelectBoxes({
+    required this.title,
+    required this.options,
+    required this.value,
+    required this.onChanged,
+  });
+  final String title;
+  final List<String> options;
+  final String? value;
+  final ValueChanged<String> onChanged;
+
+  static const _rose = Color(0xFFD0A3AF); // Dusty rose primary
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          Column(
+            children: [
+              for (int i = 0; i < options.length; i++) ...[
+                _Box(
+                  label: options[i],
+                  selected: value != null && value!.toLowerCase() == options[i].toLowerCase(),
+                  onTap: () => onChanged(options[i]),
+                ),
+                if (i < options.length - 1) const SizedBox(height: 8),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Box extends StatelessWidget {
+  const _Box({required this.label, required this.selected, required this.onTap});
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  static const _rose = Color(0xFFD0A3AF); // Dusty rose primary
+  static const _roseAccent = Color(0xFFBA8593); // Deeper rose
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = selected ? _rose : Colors.white;
+    final fg = selected ? Colors.black87 : Colors.black87;
+    final border = selected ? _roseAccent.withOpacity(0.6) : const Color(0xFFE8E0E3);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: border),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: _rose.withOpacity(0.4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  )
+                ]
+              : null,
+        ),
+        child: Text(label, style: TextStyle(fontWeight: FontWeight.w600, color: fg)),
+      ),
+    );
+  }
+}
+
+class _SupplementsStep extends StatefulWidget {
+  const _SupplementsStep({
+    required this.title,
+    required this.options,
+    required this.payload,
+    required this.onChanged,
+  });
+  final String title;
+  final List<String> options;
+  final Map<String, dynamic> payload;
+  final ValueChanged<Map<String, dynamic>> onChanged;
+
+  @override
+  State<_SupplementsStep> createState() => _SupplementsStepState();
+}
+
+class _SupplementsStepState extends State<_SupplementsStep> {
+  final _ctrl = TextEditingController();
+  late List<Map<String, dynamic>> _items; // {label, checked, am, pm}
+
+  static const Color _rose = Color(0xFFD0A3AF); // Dusty rose primary
+
+  @override
+  void initState() {
+    super.initState();
+    final raw = widget.payload['items'];
+    if (raw is List) {
+      // Support both legacy [String] and new [{label,checked,am,pm}] formats
+      _items = raw.map<Map<String, dynamic>>((e) {
+        if (e is String) {
+          return {
+            'label': e,
+            'checked': true,
+            'am': true,
+            'pm': false,
+          };
+        } else if (e is Map) {
+          final m = Map<String, dynamic>.from(e);
+          return {
+            'label': (m['label'] ?? m['name'] ?? '').toString(),
+            'checked': m['checked'] == true,
+            'am': m['am'] == true,
+            'pm': m['pm'] == true,
+          };
+        }
+        return {'label': e.toString(), 'checked': true, 'am': true, 'pm': false};
+      }).toList();
+    } else {
+      _items = [];
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  void _emit() {
+    widget.onChanged({'items': _items});
+  }
+
+  void _toggleQuick(String name, bool selected) {
+    final i = _items.indexWhere((e) => (e['label'] as String).toLowerCase() == name.toLowerCase());
+    if (selected) {
+      if (i < 0) {
+        setState(() {
+          _items.add({'label': name, 'checked': true, 'am': true, 'pm': false});
+        });
+      } else {
+        setState(() => _items[i]['checked'] = true);
+      }
+    } else {
+      if (i >= 0) setState(() => _items.removeAt(i));
+    }
+    _emit();
+  }
+
+  void _addCustom() {
+    final v = _ctrl.text.trim();
+    if (v.isEmpty) return;
+    final exists = _items.any((e) => (e['label'] as String).toLowerCase() == v.toLowerCase());
+    if (!exists) {
+      setState(() {
+        _items.add({'label': v, 'checked': true, 'am': true, 'pm': false});
+      });
+      _emit();
+    }
+    _ctrl.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedLower = _items.map((e) => (e['label'] as String).toLowerCase()).toSet();
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          // Quick picks pills
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final opt in widget.options)
+                FilterChip(
+                  label: Text(opt),
+                  selected: selectedLower.contains(opt.toLowerCase()),
+                  selectedColor: _rose,
+                  onSelected: (sel) => _toggleQuick(opt, sel),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Input to add custom
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _ctrl,
+                  decoration: const InputDecoration(hintText: 'Add a supplement'),
+                  onSubmitted: (_) => _addCustom(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(onPressed: _addCustom, child: const Text('Add')),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // List section
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  for (int i = 0; i < _items.length; i++)
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        border: i < _items.length - 1
+                            ? const Border(bottom: BorderSide(color: Color(0xFFF0E8EB))) // Light rose border
+                            : null,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _items[i]['checked'] == true,
+                                onChanged: (v) {
+                                  setState(() => _items[i]['checked'] = v == true);
+                                  _emit();
+                                },
+                              ),
+                              Text(_items[i]['label']?.toString() ?? ''),
+                            ],
+                          ),
+                          Wrap(
+                            spacing: 8,
+                            children: [
+                              ChoiceChip(
+                                label: const Text('AM'),
+                                selected: _items[i]['am'] == true,
+                                selectedColor: _rose,
+                                onSelected: (_) {
+                                  setState(() => _items[i]['am'] = !(_items[i]['am'] == true));
+                                  _emit();
+                                },
+                              ),
+                              ChoiceChip(
+                                label: const Text('PM'),
+                                selected: _items[i]['pm'] == true,
+                                selectedColor: _rose,
+                                onSelected: (_) {
+                                  setState(() => _items[i]['pm'] = !(_items[i]['pm'] == true));
+                                  _emit();
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _RoutineBuilderStep extends StatefulWidget {
@@ -32,7 +496,7 @@ class _RoutineBuilderStep extends StatefulWidget {
 }
 
 class _RoutineBuilderStepState extends State<_RoutineBuilderStep> {
-  static const List<String> _freqOptions = ['daily', '2-3x', 'weekly', 'as-needed'];
+  static const List<String> _freqOptions = ['daily', 'weekly', 'as-needed'];
 
   late List<Map<String, dynamic>> _am;
   late List<Map<String, dynamic>> _pm;
@@ -120,164 +584,64 @@ class _RoutineBuilderStepState extends State<_RoutineBuilderStep> {
       children: [
         Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
-        if (widget.isActive)
-          ReorderableListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: list.length,
-            onReorder: (oldIndex, newIndex) {
-              setState(() {
-                if (newIndex > oldIndex) newIndex -= 1;
-                final item = list.removeAt(oldIndex);
-                list.insert(newIndex, item);
-              });
-              _emit();
-            },
-            itemBuilder: (context, index) {
-              final item = list[index];
-              return Container(
-                key: ValueKey('$section-${item['key']}-$index'),
-                margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFE5E7EB)),
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ReorderableDragStartListener(
-                      index: index,
-                      child: const Padding(
-                        padding: EdgeInsets.only(right: 8, top: 4),
-                        child: Icon(Icons.drag_handle, color: Colors.grey),
-                      ),
+        // Single-line items: label + frequency chips, no drag, no delete, no checkbox
+        Column(
+          children: [
+            for (var index = 0; index < list.length; index++)
+              Builder(
+                builder: (context) {
+                  final item = list[index];
+                  return Container(
+                    key: ValueKey('$section-${item['key']}-$index'),
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFFF0E8EB)), // Light rose border
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
                     ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: item['checked'] == true,
-                                onChanged: (v) {
-                                  setState(() => item['checked'] = v == true);
-                                  _emit();
-                                },
-                              ),
-                              Expanded(child: Text(item['label']?.toString() ?? item['key'].toString())),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              for (final f in _freqOptions)
-                                ChoiceChip(
-                                  label: Text(_freqLabel(f)),
-                                  selected: item['freq'] == f,
-                                  onSelected: (_) {
-                                    setState(() => item['freq'] = f);
+                    child: Row(
+                      children: [
+                        Expanded(child: Text(item['label']?.toString() ?? item['key'].toString())),
+                        SizedBox(
+                          height: 36,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                for (final f in _freqOptions) ...[
+                                  ChoiceChip(
+                                    label: Text(_freqLabel(f)),
+                                    selected: item['freq'] == f,
+                                    selectedColor: const Color(0xFFD0A3AF), // Dusty rose
+                                    onSelected: (_) {
+                                      setState(() => item['freq'] = f);
+                                      _emit();
+                                    },
+                                  ),
+                                  const SizedBox(width: 6),
+                                ],
+                                IconButton(
+                                  tooltip: 'Remove',
+                                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                                  onPressed: () {
+                                    setState(() {
+                                      list.removeAt(index);
+                                    });
                                     _emit();
                                   },
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.redAccent),
-                      tooltip: 'Delete',
-                      onPressed: () {
-                        setState(() {
-                          list.removeAt(index);
-                        });
-                        _emit();
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-          )
-        else
-          Column(
-            children: [
-              for (var index = 0; index < list.length; index++)
-                Builder(
-                  builder: (context) {
-                    final item = list[index];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFE5E7EB)),
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(right: 8, top: 4),
-                            child: Icon(Icons.drag_handle, color: Colors.grey),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Checkbox(
-                                      value: item['checked'] == true,
-                                      onChanged: (v) {
-                                        setState(() => item['checked'] = v == true);
-                                        _emit();
-                                      },
-                                    ),
-                                    Expanded(child: Text(item['label']?.toString() ?? item['key'].toString())),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: [
-                                    for (final f in _freqOptions)
-                                      ChoiceChip(
-                                        label: Text(_freqLabel(f)),
-                                        selected: item['freq'] == f,
-                                        onSelected: (_) {
-                                          setState(() => item['freq'] = f);
-                                          _emit();
-                                        },
-                                      ),
-                                  ],
                                 ),
                               ],
                             ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.redAccent),
-                            tooltip: 'Delete',
-                            onPressed: () {
-                              setState(() {
-                                list.removeAt(index);
-                              });
-                              _emit();
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-            ],
-          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -301,7 +665,6 @@ class _RoutineBuilderStepState extends State<_RoutineBuilderStep> {
   String _freqLabel(String value) {
     switch (value) {
       case 'daily': return 'Daily';
-      case '2-3x': return '2–3x/wk';
       case 'weekly': return 'Weekly';
       case 'as-needed': return 'As needed';
     }
@@ -410,14 +773,22 @@ class _OnboardingWizardState extends State<OnboardingWizard> {
         'final': true,
       });
 
-      await ProfileService.instance.markOnboardingCompleted();
-      await OnboardingDraftStore.instance.clear();
-      AnalyticsService.capture('onboarding_complete');
-      if (!mounted) return;
-      if (context.mounted) {
-        // Router guard will send to paywall
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
+      // If onComplete callback is provided, use it (for enhanced flow)
+      if (widget.onComplete != null) {
+        await OnboardingDraftStore.instance.clear();
+        if (!mounted) return;
+        widget.onComplete!();
+      } else {
+        // Legacy standalone behavior
+        await ProfileService.instance.markOnboardingCompleted();
+        await OnboardingDraftStore.instance.clear();
+        AnalyticsService.capture('onboarding_complete');
+        if (!mounted) return;
+        if (context.mounted) {
+          // Router guard will send to paywall
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
         }
       }
     } catch (e) {
@@ -435,30 +806,36 @@ class _OnboardingWizardState extends State<OnboardingWizard> {
     final steps = _state.steps;
     final progress = (_index + 1) / steps.length;
     return Scaffold(
+      backgroundColor: Brand.backgroundLight,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Brand.textPrimary),
+          onPressed: _saving || _index == 0 ? null : _back,
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.close, color: Brand.textPrimary),
+            onPressed: _saving ? null : () => Navigator.of(context).maybePop(),
+            tooltip: 'Save & exit',
+          ),
+        ],
+      ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Gradient header with close
-            GradientHeader(
-              title: 'Onboarding',
-              trailing: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
-                onPressed: _saving ? null : () => Navigator.of(context).maybePop(),
-                tooltip: 'Save & exit',
-              ),
-            ),
-            // Card body
-            Expanded(
-              child: OverlapCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Gradient progress bar
-                    Container(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Progress indicator
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
                       height: 8,
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Brand.borderMedium,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       clipBehavior: Clip.antiAlias,
@@ -475,48 +852,127 @@ class _OnboardingWizardState extends State<OnboardingWizard> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text('Step ${_index + 1} of ${steps.length}', style: Theme.of(context).textTheme.bodySmall),
-                    if (_error != null) ...[
-                      const SizedBox(height: 8),
-                      Text(_error!, style: const TextStyle(color: Colors.red)),
-                    ],
-                    const SizedBox(height: 8),
-                    Expanded(
-                      child: PageView.builder(
-                        controller: _controller,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: steps.length,
-                        itemBuilder: (context, i) => _buildStep(context, steps[i], i == _index),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    '${_index + 1}/${steps.length}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Brand.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              // Error message
+              if (_error != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.red.shade200),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.error_outline, color: Colors.red.shade700, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _error!,
+                          style: TextStyle(color: Colors.red.shade900, fontSize: 13),
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+              // Content card
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: Brand.borderLight),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Brand.primaryStart.withOpacity(0.08),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: PageView.builder(
+                      controller: _controller,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: steps.length,
+                      itemBuilder: (context, i) => _buildStep(context, steps[i], i == _index),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: _saving || _index == 0 ? null : _back,
-                            child: const Text('Back'),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: FilledButton(
-                            onPressed: _saving || !_currentValid
-                                ? null
-                                : (_isLast ? _submit : _next),
-                            child: _saving
-                                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                                : Text(_isLast ? 'Submit' : 'Next'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              // Navigation buttons
+              Row(
+                children: [
+                  if (_index > 0)
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: _saving ? null : _back,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Brand.primaryStart,
+                          side: BorderSide(color: Brand.primaryStart, width: 2),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Back',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                  if (_index > 0) const SizedBox(width: 12),
+                  Expanded(
+                    flex: _index == 0 ? 1 : 1,
+                    child: ElevatedButton(
+                      onPressed: _saving || !_currentValid
+                          ? null
+                          : (_isLast ? _submit : _next),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Brand.primaryStart,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                        disabledBackgroundColor: Brand.borderMedium,
+                      ),
+                      child: _saving
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : Text(
+                              _isLast ? 'Complete' : 'Continue',
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -524,21 +980,29 @@ class _OnboardingWizardState extends State<OnboardingWizard> {
 
   Widget _buildStep(BuildContext context, OnboardingStepKey step, bool isActive) {
     switch (step) {
-      case OnboardingStepKey.skinConcerns:
-        return _ConcernsStep(
+      case OnboardingStepKey.skinConcerns: {
+        final payload = _state.getStepPayload(step);
+        final concerns = (payload['concerns'] as List?)?.cast<String>() ?? const [];
+        final severities = Map<String, num>.from(payload['severities'] as Map? ?? {});
+        return _ConcernsWithSeverityStep(
           title: 'Skin concerns',
           options: OnboardingValidators.allowedConcerns.toList(),
-          values: (_state.getStepPayload(step)['concerns'] as List?)?.cast<String>() ?? const [],
+          concerns: concerns,
+          severities: severities.map((k, v) => MapEntry(k, (v as num).toDouble())),
           hintText: 'Add another concern',
-          onChanged: (values) async {
-            setState(() => _state.setStepPayload(step, {'concerns': values}));
+          onChanged: (nextConcerns, nextSeverities) async {
+            setState(() => _state.setStepPayload(step, {
+                  'concerns': nextConcerns,
+                  'severities': nextSeverities,
+                }));
             await _persistStep(step);
           },
         );
+      }
       case OnboardingStepKey.skinType:
         final options = OnboardingValidators.allowedSkinTypes.toList();
         final current = _state.getStepPayload(step)['type'] as String?;
-        return _DropdownStep(
+        return _SingleSelectBoxes(
           title: 'Skin type',
           options: options,
           value: current,
@@ -581,13 +1045,13 @@ class _OnboardingWizardState extends State<OnboardingWizard> {
           },
         );
       case OnboardingStepKey.supplements:
-        return _ConcernsStep(
+        final payload = _state.getStepPayload(step);
+        return _SupplementsStep(
           title: 'Supplements',
           options: OnboardingValidators.allowedSupplements.toList(),
-          values: (_state.getStepPayload(step)['items'] as List?)?.cast<String>() ?? const [],
-          hintText: 'Add a supplement',
-          onChanged: (values) async {
-            setState(() => _state.setStepPayload(step, {'items': values}));
+          payload: payload,
+          onChanged: (next) async {
+            setState(() => _state.setStepPayload(step, next));
             await _persistStep(step);
           },
         );

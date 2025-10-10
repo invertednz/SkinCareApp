@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- Permissions for camera capture and picking images from gallery -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Android 13+ -->

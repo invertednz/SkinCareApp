@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verify – Concept A: Guided (Common first)</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --text: #111827;
+      --border: #e5e7eb;
+      --accent: #2563eb;
+      --danger: #ef4444;
+      --success: #059669;
+      --radius: 12px;
+      --shadow: 0 6px 24px rgba(0,0,0,0.06);
+    }
+    * { box-sizing: border-box; font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding: 24px; }
+    .panel { max-width: 720px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .panel-header { display:flex; align-items:center; gap:12px; padding: 16px 20px; border-bottom: 1px solid var(--border); background: #f7f7f8; border-top-left-radius: var(--radius); border-top-right-radius: var(--radius); }
+    .panel-header h2 { margin: 0; font-size: 16px; font-weight: 650; }
+    .hint { margin-left: auto; color: var(--muted); font-size: 12px; }
+    .section { padding: 16px 20px; display: grid; grid-template-columns: 32px 1fr; grid-row-gap: 16px; grid-column-gap: 12px; }
+    .n { width: 28px; height: 28px; border-radius: 50%; display:grid; place-items:center; font-weight:650; color:#334155; background:#eef2ff; border:1px solid #dbeafe; }
+    label { font-size: 12px; color: #374151; display:block; margin-bottom: 6px; font-weight: 600; }
+    select, input[type="text"], input[type="number"], textarea { width:100%; padding: 10px 12px; border:1px solid var(--border); border-radius: 10px; background:#fff; font-size: 14px; }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; }
+    .chip { padding:8px 10px; border-radius: 999px; border:1px solid var(--border); background:#fff; cursor:pointer; font-size: 12px; }
+    .chip.is-active { background:#eaf0ff; border-color:#c7d2fe; color:#1d4ed8; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .inline { display:flex; gap: 8px; align-items:center; }
+    .seg { display:inline-grid; grid-auto-flow:column; border:1px solid var(--border); border-radius: 10px; overflow:hidden; }
+    .seg button { padding:8px 10px; border:none; background:#fff; cursor:pointer; font-size:12px; }
+    .seg button.is-on { background:#eef2ff; color:#1d4ed8; font-weight:600; }
+    details { border-top:1px dashed var(--border); padding-top:14px; grid-column: span 2; }
+    details summary { cursor:pointer; color:#374151; font-weight:600; }
+    .footer { border-top: 1px solid var(--border); padding: 16px 20px; display:flex; justify-content: space-between; align-items:center; border-bottom-left-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+    .danger { background:#fff1f2; color:#b91c1c; border:1px solid #fecaca; padding:12px 16px; border-radius:10px; cursor:pointer; font-weight:600; }
+    .code { background:#0b1021; color:#e5e7eb; padding:12px; border-radius:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; overflow:auto; }
+    .pill { padding: 4px 8px; border-radius: 999px; border:1px solid var(--border); background:#fff; font-size: 12px; }
+    .group { padding: 10px 12px; border:1px dashed var(--border); border-radius:10px; }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <div class="panel-header">
+      <h2>Verify Parameters</h2>
+      <span class="muted">Set up verify conditions</span>
+      <span class="hint">?</span>
+    </div>
+    <div class="section">
+      <div class="n">1</div>
+      <div>
+        <label>Choose a common check</label>
+        <div class="chips" id="common-chips">
+          <button class="chip is-active">Present</button>
+          <button class="chip">Visible</button>
+          <button class="chip">Enabled</button>
+          <button class="chip">Checked</button>
+          <button class="chip">Text/Value</button>
+          <button class="chip">Has Attribute</button>
+          <button class="chip">Has Class</button>
+          <button class="chip">Count</button>
+        </div>
+        <div class="muted" style="margin-top:6px">These cover 90%+ of verifications. More options below.</div>
+      </div>
+
+      <div class="n">2</div>
+      <div>
+        <label>Target</label>
+        <div class="row">
+          <input type="text" placeholder="button[name=Save] (getByRole)" value="getByRole(button, name=\"Save\")" />
+          <div class="inline">
+            <span class="pill">Occurrence: 1</span>
+            <span class="pill">Timeout: 15s</span>
+            <button class="chip">Change…</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="n">3</div>
+      <div>
+        <label>Condition</label>
+        <div class="group" id="condition-group">
+          <!-- Guided condition panel that adapts to selected chip -->
+          <div class="row">
+            <div>
+              <label>Mode</label>
+              <div class="seg">
+                <button class="is-on">Present</button>
+                <button>Not present</button>
+                <button>Visible</button>
+                <button>Hidden</button>
+              </div>
+            </div>
+            <div>
+              <label>When content is relevant</label>
+              <div class="seg">
+                <button class="is-on">Text</button>
+                <button>Value</button>
+                <button>Label</button>
+                <button>Placeholder</button>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label>Operator</label>
+              <select>
+                <option>contains</option>
+                <option>equals</option>
+                <option>starts with</option>
+                <option>ends with</option>
+                <option>matches regex</option>
+              </select>
+            </div>
+            <div>
+              <label>Match</label>
+              <input type="text" placeholder="e.g. \"Thank you\" or /thanks/i" />
+            </div>
+          </div>
+          <div class="inline" style="margin-top:10px">
+            <label class="muted"><input type="checkbox" /> Exact match</label>
+            <label class="muted"><input type="checkbox" /> Negate (expect failure)</label>
+            <label class="muted"><input type="checkbox" /> Soft assert</label>
+          </div>
+        </div>
+      </div>
+
+      <details>
+        <summary>Advanced section</summary>
+        <div style="margin-top:12px; display:grid; grid-template-columns: 32px 1fr; grid-column-gap:12px; grid-row-gap:14px;">
+          <div class="n">4</div>
+          <div class="row">
+            <div>
+              <label>Timeout (s)</label>
+              <input type="number" value="15" />
+            </div>
+            <div>
+              <label>Custom error message (optional)</label>
+              <input type="text" placeholder="Describe what should have happened" />
+            </div>
+          </div>
+          <div class="n">5</div>
+          <div class="row">
+            <div>
+              <label>Attribute</label>
+              <input type="text" placeholder="e.g. data-test-id" />
+            </div>
+            <div>
+              <label>Attribute operator/value</label>
+              <input type="text" placeholder="= \"primary\" or contains 'btn'" />
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="footer">
+      <div>
+        <div class="muted">Playwright preview</div>
+        <pre class="code">await expect(page.getByRole('button', { name: 'Save' })).toBeVisible({ timeout: 15000 });</pre>
+      </div>
+      <button class="danger">Remove Step</button>
+    </div>
+  </div>
+</body>
+</html>
