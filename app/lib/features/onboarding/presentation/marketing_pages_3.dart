@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/brand.dart';
+import '../../../widgets/staggered_animation.dart';
 
 class TimelineVisualizationPage extends StatelessWidget {
   final VoidCallback onContinue;
@@ -43,7 +44,7 @@ class TimelineVisualizationPage extends StatelessWidget {
               ),
               const SizedBox(height: 48),
               Expanded(
-                child: Column(
+                child: StaggeredAnimation(
                   children: [
                     _buildTimelineItem(
                       icon: Icons.play_circle_outline,

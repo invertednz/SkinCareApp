@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/brand.dart';
+import '../../../widgets/staggered_animation.dart';
 
 /// Enhanced onboarding marketing pages matching Dusty Rose & Charcoal design
 class WelcomePage extends StatelessWidget {
@@ -49,23 +50,27 @@ class WelcomePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 48),
-              // Social proof cards
-              _buildProofCard(
-                icon: Icons.psychology_outlined,
-                title: '94% Success Rate',
-                subtitle: 'Users report improved skin within 30 days',
-              ),
-              const SizedBox(height: 16),
-              _buildProofCard(
-                icon: Icons.science_outlined,
-                title: 'Evidence-Based',
-                subtitle: 'Backed by dermatological research',
-              ),
-              const SizedBox(height: 16),
-              _buildProofCard(
-                icon: Icons.people_outline,
-                title: '50,000+ Users',
-                subtitle: 'Join our thriving skin wellness community',
+              // Social proof cards with staggered animation
+              StaggeredAnimation(
+                children: [
+                  _buildProofCard(
+                    icon: Icons.psychology_outlined,
+                    title: '94% Success Rate',
+                    subtitle: 'Users report improved skin within 30 days',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildProofCard(
+                    icon: Icons.science_outlined,
+                    title: 'Evidence-Based',
+                    subtitle: 'Backed by dermatological research',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildProofCard(
+                    icon: Icons.people_outline,
+                    title: '50,000+ Users',
+                    subtitle: 'Join our thriving skin wellness community',
+                  ),
+                ],
               ),
               const Spacer(),
               // Continue button
@@ -228,88 +233,17 @@ class _GoalSelectionPageState extends State<GoalSelectionPage> {
               ),
               const SizedBox(height: 32),
               Expanded(
-                child: ListView.builder(
-                  itemCount: _goals.length,
-                  itemBuilder: (context, index) {
-                    final goal = _goals[index];
-                    final isSelected = _selectedGoal == goal['title'];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: InkWell(
-                        onTap: () => setState(() => _selectedGoal = goal['title']),
-                        borderRadius: BorderRadius.circular(24),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            gradient: isSelected ? Brand.primaryGradient : null,
-                            color: isSelected ? null : Colors.white,
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: isSelected 
-                                  ? Brand.primaryEnd.withOpacity(0.6) 
-                                  : Brand.borderLight,
-                              width: isSelected ? 2 : 1,
-                            ),
-                            boxShadow: isSelected
-                                ? [
-                                    BoxShadow(
-                                      color: Brand.primaryStart.withOpacity(0.4),
-                                      blurRadius: 16,
-                                      offset: const Offset(0, 4),
-                                    )
-                                  ]
-                                : [],
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 56,
-                                height: 56,
-                                decoration: BoxDecoration(
-                                  color: isSelected 
-                                      ? Colors.white.withOpacity(0.35)
-                                      : Brand.secondaryStart,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Icon(
-                                  goal['icon'],
-                                  color: isSelected ? Colors.white : Brand.primaryEnd,
-                                  size: 28,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      goal['title'],
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: isSelected ? Colors.white : Brand.textPrimary,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      goal['subtitle'],
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: isSelected 
-                                            ? Colors.white.withOpacity(0.95)
-                                            : Brand.textSecondary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                child: ListView(
+                  children: [
+                    for (int index = 0; index < _goals.length; index++)
+                      AnimatedCard(
+                        delay: Duration(milliseconds: index * 100),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: _buildGoalCard(_goals[index]),
                         ),
                       ),
-                    );
-                  },
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
@@ -337,6 +271,83 @@ class _GoalSelectionPageState extends State<GoalSelectionPage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGoalCard(Map<String, dynamic> goal) {
+    final isSelected = _selectedGoal == goal['title'];
+    return InkWell(
+      onTap: () => setState(() => _selectedGoal = goal['title']),
+      borderRadius: BorderRadius.circular(24),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: isSelected ? Brand.primaryGradient : null,
+          color: isSelected ? null : Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isSelected 
+                ? Brand.primaryEnd.withOpacity(0.6) 
+                : Brand.borderLight,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: Brand.primaryStart.withOpacity(0.4),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  )
+                ]
+              : [],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: isSelected 
+                    ? Colors.white.withOpacity(0.35)
+                    : Brand.secondaryStart,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                goal['icon'],
+                color: isSelected ? Colors.white : Brand.primaryEnd,
+                size: 28,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    goal['title'],
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : Brand.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    goal['subtitle'],
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isSelected 
+                          ? Colors.white.withOpacity(0.95)
+                          : Brand.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -394,64 +405,68 @@ class ResultsPage extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               
-              // Stats Grid
-              Row(
+              // Stats Grid with staggered animation
+              StaggeredAnimation(
                 children: [
-                  Expanded(
-                    child: _buildStatCard(
-                      '87%',
-                      'Reduced breakouts',
-                      'Our users report dramatically improved skin clarity after just 2 weeks',
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildStatCard(
+                          '87%',
+                          'Reduced breakouts',
+                          'Our users report dramatically improved skin clarity after just 2 weeks',
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildStatCard(
+                          '92%',
+                          'Improved texture',
+                          'Smoother, more radiant skin through consistent tracking',
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildStatCard(
-                      '92%',
-                      'Improved texture',
-                      'Smoother, more radiant skin through consistent tracking',
+                  const SizedBox(height: 32),
+                  
+                  // Before/After Comparison
+                  Text(
+                    'See the real difference tracking makes',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Brand.textPrimary,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              
-              // Before/After Comparison
-              Text(
-                'See the real difference tracking makes',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Brand.textPrimary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              
-              // Without Tracking Card
-              _buildComparisonCard(
-                title: 'Without Tracking',
-                isPositive: false,
-                items: [
-                  'Guessing which products work for you',
-                  'Repeating the same skincare mistakes',
-                  'Missing patterns in flare-ups',
-                  'Wasting money on ineffective products',
-                  'Slow to see what triggers breakouts',
-                ],
-              ),
-              const SizedBox(height: 16),
-              
-              // With SkinCare Card
-              _buildComparisonCard(
-                title: 'With SkinCare',
-                isPositive: true,
-                items: [
-                  'Know exactly what works for your skin',
-                  'Learn from your patterns and progress',
-                  'Identify triggers before they cause flare-ups',
-                  'Save money with data-driven decisions',
-                  'Clear skin through personalized insights',
+                  const SizedBox(height: 24),
+                  
+                  // Without Tracking Card
+                  _buildComparisonCard(
+                    title: 'Without Tracking',
+                    isPositive: false,
+                    items: [
+                      'Guessing which products work for you',
+                      'Repeating the same skincare mistakes',
+                      'Missing patterns in flare-ups',
+                      'Wasting money on ineffective products',
+                      'Slow to see what triggers breakouts',
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // With SkinCare Card
+                  _buildComparisonCard(
+                    title: 'With SkinCare',
+                    isPositive: true,
+                    items: [
+                      'Know exactly what works for your skin',
+                      'Learn from your patterns and progress',
+                      'Identify triggers before they cause flare-ups',
+                      'Save money with data-driven decisions',
+                      'Clear skin through personalized insights',
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 32),
@@ -738,11 +753,15 @@ class ProgressGraphPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      _buildMilestone('Week 1-2', 'Adjustment period'),
-                      const SizedBox(height: 12),
-                      _buildMilestone('Week 3-4', 'First improvements'),
-                      const SizedBox(height: 12),
-                      _buildMilestone('Week 8+', 'Significant results'),
+                      StaggeredAnimation(
+                        children: [
+                          _buildMilestone('Week 1-2', 'Adjustment period'),
+                          const SizedBox(height: 12),
+                          _buildMilestone('Week 3-4', 'First improvements'),
+                          const SizedBox(height: 12),
+                          _buildMilestone('Week 8+', 'Significant results'),
+                        ],
+                      ),
                     ],
                   ),
                 ),

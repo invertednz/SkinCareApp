@@ -4,6 +4,7 @@ import 'marketing_pages_2.dart';
 import 'marketing_pages_3.dart';
 import 'onboarding_wizard.dart';
 import '../../profile/profile_service.dart';
+import '../../../widgets/page_transitions.dart';
 
 /// Enhanced onboarding flow coordinator with Dusty Rose & Charcoal design
 class EnhancedOnboardingFlow extends StatefulWidget {
@@ -43,15 +44,37 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
 
   @override
   Widget build(BuildContext context) {
-    // Enhanced flow steps
+    // Check for reduced motion preference
+    final reducedMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    
+    // Enhanced flow steps with cross-fade transition
+    return AnimatedSwitcher(
+      duration: reducedMotion 
+          ? const Duration(milliseconds: 1)
+          : const Duration(milliseconds: 300),
+      switchInCurve: Curves.linear,
+      switchOutCurve: Curves.linear,
+      transitionBuilder: (child, animation) {
+        if (reducedMotion) return child;
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      child: _buildCurrentStep(),
+    );
+  }
+
+  Widget _buildCurrentStep() {
     switch (_currentStep) {
       case 0:
         // Welcome page with social proof
-        return WelcomePage(onContinue: _nextStep);
+        return WelcomePage(key: const ValueKey(0), onContinue: _nextStep);
       
       case 1:
         // Goal selection
         return GoalSelectionPage(
+          key: const ValueKey(1),
           onGoalSelected: (goal) {
             setState(() => _selectedGoal = goal);
             _nextStep();
@@ -60,19 +83,20 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
       
       case 2:
         // Results/expectations page
-        return ResultsPage(onContinue: _nextStep);
+        return ResultsPage(key: const ValueKey(2), onContinue: _nextStep);
       
       case 3:
         // Progress graph visualization
-        return ProgressGraphPage(onContinue: _nextStep);
+        return ProgressGraphPage(key: const ValueKey(3), onContinue: _nextStep);
       
       case 4:
         // App features carousel
-        return AppFeaturesCarouselPage(onContinue: _nextStep);
+        return AppFeaturesCarouselPage(key: const ValueKey(4), onContinue: _nextStep);
       
       case 5:
         // Notification timing
         return NotificationTimingPage(
+          key: const ValueKey(5),
           onTimingSelected: (timing) {
             setState(() => _notificationTiming = timing);
             _nextStep();
@@ -82,13 +106,14 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
       case 6:
         // Existing onboarding wizard (skin concerns, etc.)
         return OnboardingWizard(
-          key: const Key('onboarding_wizard'),
+          key: const ValueKey(6),
           onComplete: _nextStep,
         );
       
       case 7:
         // Thank you page
         return ThankYouPage(
+          key: const ValueKey(7),
           onReview: () {
             // Open app store review
             // TODO: Implement app store review
@@ -100,6 +125,7 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
       case 8:
         // Free trial offer
         return FreeTrialOfferPage(
+          key: const ValueKey(8),
           onAccept: _nextStep,
           onSkip: () {
             // Skip to end
@@ -109,11 +135,12 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
       
       case 9:
         // Timeline visualization
-        return TimelineVisualizationPage(onContinue: _nextStep);
+        return TimelineVisualizationPage(key: const ValueKey(9), onContinue: _nextStep);
       
       case 10:
         // Payment page
         return PaymentPage(
+          key: const ValueKey(10),
           onComplete: (didComplete) {
             if (didComplete) {
               // Payment successful
@@ -129,6 +156,7 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
         // Show discount offer if user declined payment
         if (_showDiscountOffer) {
           return SpecialDiscountPage(
+            key: const ValueKey(11),
             onAccept: () {
               // Accept discount and complete
               _completeOnboarding();
@@ -143,6 +171,7 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
         // Fallback - complete onboarding
         Future.microtask(_completeOnboarding);
         return const Scaffold(
+          key: ValueKey(99),
           body: Center(
             child: CircularProgressIndicator(),
           ),

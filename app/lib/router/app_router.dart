@@ -13,6 +13,7 @@ import '../features/diary/diet_screen.dart';
 import '../features/diary/supplements_screen.dart';
 import '../features/diary/routine_screen.dart';
 import '../features/insights/insights_details_screen.dart';
+import '../widgets/page_transitions.dart';
 
 class AppRouter {
   static GoRouter create() {
@@ -83,12 +84,46 @@ class AppRouter {
         GoRoute(
           path: '/onboarding',
           name: 'onboarding',
-          builder: (context, state) => const EnhancedOnboardingFlow(),
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const EnhancedOnboardingFlow(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              // Check for reduced motion
+              final reducedMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+              if (reducedMotion) return child;
+              
+              return FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.linear,
+                ),
+                child: child,
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
         ),
         GoRoute(
           path: '/paywall',
           name: 'paywall',
-          builder: (context, state) => const PaywallScreen(),
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const PaywallScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              // Check for reduced motion
+              final reducedMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+              if (reducedMotion) return child;
+              
+              return FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.linear,
+                ),
+                child: child,
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
         ),
         GoRoute(
           path: '/tabs',

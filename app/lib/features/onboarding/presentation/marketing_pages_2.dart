@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/brand.dart';
+import '../../../widgets/staggered_animation.dart';
 
 class AppFeaturesCarouselPage extends StatefulWidget {
   final VoidCallback onContinue;
@@ -224,89 +225,17 @@ class _NotificationTimingPageState extends State<NotificationTimingPage> {
               ),
               const SizedBox(height: 32),
               Expanded(
-                child: ListView.builder(
-                  itemCount: _times.length,
-                  itemBuilder: (context, index) {
-                    final timeSlot = _times[index];
-                    final isSelected = _selectedTime == timeSlot['time'];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: InkWell(
-                        onTap: () => setState(() => _selectedTime = timeSlot['time']),
-                        borderRadius: BorderRadius.circular(20),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            gradient: isSelected ? Brand.primaryGradient : null,
-                            color: isSelected ? null : Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isSelected 
-                                  ? Brand.primaryEnd.withOpacity(0.6) 
-                                  : Brand.borderLight,
-                              width: isSelected ? 2 : 1,
-                            ),
-                            boxShadow: isSelected
-                                ? [
-                                    BoxShadow(
-                                      color: Brand.primaryStart.withOpacity(0.4),
-                                      blurRadius: 16,
-                                      offset: const Offset(0, 4),
-                                    )
-                                  ]
-                                : [],
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 56,
-                                height: 56,
-                                decoration: BoxDecoration(
-                                  color: isSelected 
-                                      ? Colors.white.withOpacity(0.25)
-                                      : Brand.secondaryStart,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    timeSlot['icon']!,
-                                    style: const TextStyle(fontSize: 28),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      timeSlot['time']!,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: isSelected ? Colors.white : Brand.textPrimary,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      timeSlot['subtitle']!,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: isSelected 
-                                            ? Colors.white.withOpacity(0.9)
-                                            : Brand.textSecondary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                child: ListView(
+                  children: [
+                    for (int index = 0; index < _times.length; index++)
+                      AnimatedCard(
+                        delay: Duration(milliseconds: index * 100),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: _buildTimeSlotCard(_times[index]),
                         ),
                       ),
-                    );
-                  },
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
@@ -334,6 +263,84 @@ class _NotificationTimingPageState extends State<NotificationTimingPage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeSlotCard(Map<String, String> timeSlot) {
+    final isSelected = _selectedTime == timeSlot['time'];
+    return InkWell(
+      onTap: () => setState(() => _selectedTime = timeSlot['time']),
+      borderRadius: BorderRadius.circular(20),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: isSelected ? Brand.primaryGradient : null,
+          color: isSelected ? null : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected 
+                ? Brand.primaryEnd.withOpacity(0.6) 
+                : Brand.borderLight,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: Brand.primaryStart.withOpacity(0.4),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  )
+                ]
+              : [],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: isSelected 
+                    ? Colors.white.withOpacity(0.25)
+                    : Brand.secondaryStart,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Text(
+                  timeSlot['icon']!,
+                  style: const TextStyle(fontSize: 28),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    timeSlot['time']!,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : Brand.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    timeSlot['subtitle']!,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isSelected 
+                          ? Colors.white.withOpacity(0.9)
+                          : Brand.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
