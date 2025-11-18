@@ -26,6 +26,9 @@ class Brand {
   // Border colors
   static const Color borderLight = Color(0xFFF0E8EB);
   static const Color borderMedium = Color(0xFFE8E0E3);
+
+  // Accent mint for pay-it-forward elements
+  static const Color mintColor = Color(0xFF2ECC71);
   
   // Legacy accent (deprecated, use primaryStart instead)
   static const Color accent = Color(0xFFD0A3AF);

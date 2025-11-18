@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'marketing_pages.dart';
 import 'marketing_pages_2.dart';
 import 'marketing_pages_3.dart';
 import 'onboarding_wizard.dart';
 import '../../profile/profile_service.dart';
 import '../../../widgets/page_transitions.dart';
+import '../../../services/session.dart';
 
 /// Enhanced onboarding flow coordinator with Dusty Rose & Charcoal design
 class EnhancedOnboardingFlow extends StatefulWidget {
@@ -144,7 +146,14 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
           onComplete: (didComplete) {
             if (didComplete) {
               // Payment successful
-              _completeOnboarding();
+              if (!SessionService.instance.isSignedIn) {
+                if (mounted) {
+                  // Redirect unsigned users to sign up / log in before entering main app
+                  context.go('/auth');
+                }
+              } else {
+                _completeOnboarding();
+              }
             } else {
               // User closed payment - show discount
               setState(() => _showDiscountOffer = true);

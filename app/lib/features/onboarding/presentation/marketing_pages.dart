@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../theme/brand.dart';
 import '../../../widgets/staggered_animation.dart';
 
@@ -90,6 +91,20 @@ class WelcomePage extends StatelessWidget {
                   child: const Text(
                     'Get Started',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => context.go('/auth'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Brand.textSecondary,
+                  ),
+                  child: const Text(
+                    'Already have an account? Log in',
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),

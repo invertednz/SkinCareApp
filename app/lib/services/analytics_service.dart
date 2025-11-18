@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
-import 'package:posthog_flutter/posthog_flutter.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'analytics_events.dart';
 
-/// Singleton analytics service that wraps PostHog functionality
+/// Singleton analytics service that wraps Mixpanel functionality
 class AnalyticsService {
   static AnalyticsService? _instance;
   static bool _enabled = false;
   static bool _optedOut = false;
+  static Mixpanel? _client;
 
   AnalyticsService._();
 
@@ -19,23 +20,28 @@ class AnalyticsService {
   /// Factory constructor for easy instantiation
   factory AnalyticsService() => instance;
 
-  /// Initialize analytics with API key and host
+  /// Initialize analytics with API key and optional host override
   static Future<void> init({String? apiKey, String? host}) async {
     try {
-      if (apiKey == null || apiKey.isEmpty || host == null || host.isEmpty) {
-        debugPrint('Analytics disabled: missing API key or host');
+      if (apiKey == null || apiKey.isEmpty) {
+        debugPrint('Analytics disabled: missing API key');
         _enabled = false;
         return;
       }
 
-      // Initialize PostHog with manual setup
-      final config = PostHogConfig(apiKey);
-      config.debug = kDebugMode;
-      config.captureApplicationLifecycleEvents = true;
+      // Initialize Mixpanel client
+      final client = await Mixpanel.init(
+        apiKey,
+        trackAutomaticEvents: true,
+        optOutTrackingDefault: false,
+      );
+
       if (host != null && host.isNotEmpty) {
-        config.host = host;
+        client.setServerURL(host);
       }
-      await Posthog().setup(config);
+
+      client.setLoggingEnabled(kDebugMode);
+      _client = client;
       _enabled = true;
       debugPrint('Analytics initialized successfully');
       
@@ -47,6 +53,7 @@ class AnalyticsService {
         debugPrint('Analytics initialization failed: $error');
       }
       _enabled = false;
+      _client = null;
     }
   }
 
@@ -58,11 +65,10 @@ class AnalyticsService {
       // Filter out any PII/PHI from screen names
       final sanitizedName = _sanitizeString(name);
       
-      Posthog().screen(
-        screenName: sanitizedName,
-        properties: {
+      captureEvent(
+        AnalyticsEvents.screenView,
+        {
           'screen_name': sanitizedName,
-          'timestamp': DateTime.now().toIso8601String(),
         },
       );
       
@@ -92,10 +98,7 @@ class AnalyticsService {
         'platform': defaultTargetPlatform.name,
       };
       
-      Posthog().capture(
-        eventName: sanitizedEvent,
-        properties: finalProperties,
-      );
+      _client?.track(sanitizedEvent, properties: finalProperties);
       
       if (kDebugMode) {
         debugPrint('Analytics capture: $sanitizedEvent with ${finalProperties.length} properties');
@@ -116,11 +119,10 @@ class AnalyticsService {
   void setOptOut(bool optOut) {
     _optedOut = optOut;
     if (_enabled) {
-      // Use disable/enable instead of optOut which doesn't exist in current API
       if (optOut) {
-        Posthog().disable();
+        _client?.optOutTracking();
       } else {
-        Posthog().enable();
+        _client?.optInTracking();
       }
     }
     if (kDebugMode) {

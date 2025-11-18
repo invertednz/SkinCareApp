@@ -14,13 +14,15 @@ class IAPService {
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   
   // Product IDs - these will need to match the products created in App Store Connect and Google Play Console
-  static const String monthlyProductId = 'skincare_monthly_7day_trial'; // $7.99/month with 7-day trial
-  static const String annualProductId = 'skincare_annual_47'; // $47/year
+  static const String monthlyProductId = 'skincare_monthly_9'; // $9/month
+  static const String annualProductId = 'skincare_annual_47'; // $47/year (base annual plan)
+  static const String payItForwardProductId = 'skincare_pay_it_forward_57'; // $57/year (annual + $10 donation)
   
   // Product configuration
   static const Set<String> productIds = {
     monthlyProductId,
     annualProductId,
+    payItForwardProductId,
   };
   
   // Cached products from stores
@@ -116,6 +118,9 @@ class IAPService {
   
   /// Get annual subscription product
   ProductDetails? get annualProduct => getProduct(annualProductId);
+  
+  /// Get pay-it-forward subscription product
+  ProductDetails? get payItForwardProduct => getProduct(payItForwardProductId);
   
   /// Start purchase flow for a product
   Future<bool> purchaseProduct(String productId) async {
@@ -281,22 +286,26 @@ class IAPService {
     return product?.price ?? 'Price unavailable';
   }
   
-  /// Get localized price for annual plan as monthly equivalent
-  String getAnnualMonthlyEquivalent() {
-    final ProductDetails? annualProduct = getProduct(annualProductId);
-    if (annualProduct == null) return 'Price unavailable';
+  /// Get localized price for a yearly plan as monthly equivalent
+  String getYearlyMonthlyEquivalent(String productId) {
+    final ProductDetails? product = getProduct(productId);
+    if (product == null) return 'Price unavailable';
     
-    // Extract numeric price and calculate monthly equivalent
-    // This is a simplified implementation - in production you'd want more robust price parsing
     try {
-      final String priceString = annualProduct.price.replaceAll(RegExp(r'[^\d.]'), '');
-      final double annualPrice = double.parse(priceString);
-      final double monthlyEquivalent = annualPrice / 12;
-      
+      final String priceString = product.price.replaceAll(RegExp(r'[^\d.]'), '');
+      final double yearlyPrice = double.parse(priceString.isEmpty ? '0' : priceString);
+      if (yearlyPrice == 0) return 'Price unavailable';
+      final double monthlyEquivalent = yearlyPrice / 12;
       return '\$${monthlyEquivalent.toStringAsFixed(2)}/month';
     } catch (e) {
       debugPrint('Error calculating monthly equivalent: $e');
       return 'Price unavailable';
     }
   }
+  
+  /// Get annual plan monthly equivalent
+  String getAnnualMonthlyEquivalent() => getYearlyMonthlyEquivalent(annualProductId);
+  
+  /// Get pay-it-forward plan monthly equivalent
+  String getPayItForwardMonthlyEquivalent() => getYearlyMonthlyEquivalent(payItForwardProductId);
 }

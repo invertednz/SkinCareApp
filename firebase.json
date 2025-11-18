@@ -1,0 +1,34 @@
+{
+  "hosting": [
+    {
+      "target": "mock",
+      "public": "mockups",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/color_scheme_01_clinical.html"
+        }
+      ]
+    },
+    {
+      "target": "app",
+      "public": "app/build/web",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

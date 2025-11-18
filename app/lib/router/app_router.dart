@@ -7,13 +7,14 @@ import '../features/auth/password_reset_screen.dart';
 import '../features/profile/profile_service.dart';
 import 'router_refresh.dart';
 import '../features/onboarding/presentation/enhanced_onboarding_flow.dart';
-import '../features/paywall/paywall_screen.dart';
+import '../features/paywall/paywall_screen_v2.dart';
 import 'analytics_observer.dart';
 import '../features/diary/diet_screen.dart';
 import '../features/diary/supplements_screen.dart';
 import '../features/diary/routine_screen.dart';
 import '../features/insights/insights_details_screen.dart';
 import '../widgets/page_transitions.dart';
+import '../features/referrals/presentation/share_success_screen.dart';
 
 class AppRouter {
   static GoRouter create() {
@@ -21,7 +22,7 @@ class AppRouter {
     final profile = ProfileService.instance;
     final refresh = MultiListenable([session, profile]);
     return GoRouter(
-      initialLocation: '/auth',
+      initialLocation: '/onboarding',
       refreshListenable: refresh,
       observers: [AnalyticsNavigatorObserver()],
       redirect: (context, state) {
@@ -31,9 +32,9 @@ class AppRouter {
         final onboarding = state.matchedLocation == '/onboarding';
         final paywall = state.matchedLocation == '/paywall';
 
-        // Signed-out: only allow auth and reset
-        if (!signedIn && !(loggingIn || resetting)) {
-          return '/auth';
+        // Signed-out: allow onboarding, auth, and reset only
+        if (!signedIn && !(loggingIn || resetting || onboarding)) {
+          return '/onboarding';
         }
 
         // Signed-in and on auth/reset -> push to tabs; further gating below will reroute
@@ -108,7 +109,7 @@ class AppRouter {
           name: 'paywall',
           pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
-            child: const PaywallScreen(),
+            child: const PaywallScreenV2(),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               // Check for reduced motion
               final reducedMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
@@ -124,6 +125,14 @@ class AppRouter {
             },
             transitionDuration: const Duration(milliseconds: 300),
           ),
+        ),
+        GoRoute(
+          path: '/share-success',
+          name: 'share_success',
+          builder: (context, state) {
+            final donorName = state.extra as String?;
+            return ShareSuccessScreen(donorName: donorName);
+          },
         ),
         GoRoute(
           path: '/tabs',

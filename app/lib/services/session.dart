@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'data_mode.dart';
 
 class SessionService extends ChangeNotifier {
   Session? _session;
@@ -10,22 +11,31 @@ class SessionService extends ChangeNotifier {
 
   static final SessionService instance = SessionService._();
   SessionService._() {
-    try {
-      _session = Supabase.instance.client.auth.currentSession;
-      _sub = Supabase.instance.client.auth.onAuthStateChange.listen((event) {
-        _session = event.session;
-        notifyListeners();
-      });
-    } catch (_) {
-      // Supabase not initialized; operate in signed-out mode without subscription.
+    if (DataModeService.isSupabase) {
+      try {
+        _session = Supabase.instance.client.auth.currentSession;
+        _sub = Supabase.instance.client.auth.onAuthStateChange.listen((event) {
+          _session = event.session;
+          notifyListeners();
+        });
+      } catch (_) {
+        // Supabase not initialized; operate in signed-out mode without subscription.
+        _session = null;
+      } finally {
+        _initialized = true;
+      }
+    } else {
       _session = null;
-    } finally {
       _initialized = true;
     }
   }
 
   /// Rebind to Supabase auth after Supabase.initialize() has been called.
   void rebind() {
+    if (!DataModeService.isSupabase) {
+      notifyListeners();
+      return;
+    }
     try {
       _sub?.cancel();
       _session = Supabase.instance.client.auth.currentSession;
@@ -50,9 +60,10 @@ class SessionService extends ChangeNotifier {
     super.dispose();
   }
 
-  /// Debug helper to simulate signed-in state without Supabase auth.
+  /// Helper to simulate signed-in state without Supabase auth.
+  /// Always allowed in mock/firebase modes; restricted to debug otherwise.
   void setMockSignedIn(bool value) {
-    if (!kDebugMode) return;
+    if (!kDebugMode && DataModeService.isSupabase) return;
     _mockSignedIn = value;
     notifyListeners();
   }

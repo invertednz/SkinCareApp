@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SessionService.instance.setMockSignedIn(true);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Signed in (mock).')));
-        context.go('/tabs');
+        context.go('/onboarding');
         return;
       }
       final supabase = Supabase.instance.client;
@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Signed in.')));
-        context.go('/tabs');
+        context.go('/onboarding');
       }
     } on AuthException catch (e) {
       setState(() => _error = e.message);

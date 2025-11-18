@@ -37,7 +37,7 @@ Future<void> main() async {
       // Bind profile service to session changes and fetch profile
       ProfileService.instance.rebind(SessionService.instance);
     }
-    await AnalyticsService.init(apiKey: Env.posthogKey, host: Env.posthogHost);
+    await AnalyticsService.init(apiKey: Env.mixpanelToken, host: Env.mixpanelHost);
     
     // Initialize notifications service
     await NotificationsService().initialize();
