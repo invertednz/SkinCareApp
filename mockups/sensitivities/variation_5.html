@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensitivities - Variation 5: Binary Focus</title>
+    <style>
+        :root {
+            --primary: #D0A3AF;
+            --primary-dark: #BA8593;
+            --charcoal: #3D3840;
+            --text-secondary: #6D6168;
+            --bg-light: #F8F5F6;
+            --white: #FFFFFF;
+            --radius: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--charcoal);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .phone-frame {
+            width: 100%;
+            max-width: 390px;
+            background: var(--white);
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            height: 844px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .icon-large {
+            font-size: 64px;
+            margin-bottom: 32px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--charcoal);
+        }
+
+        .description {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            line-height: 1.5;
+        }
+
+        .toggle-card {
+            background: #F8F5F6;
+            border-radius: 24px;
+            padding: 8px;
+            display: flex;
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .toggle-option {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            z-index: 1;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .toggle-option.active {
+            color: white;
+        }
+
+        .toggle-bg {
+            position: absolute;
+            left: 50%;
+            top: 8px;
+            bottom: 8px;
+            width: calc(50% - 8px);
+            background: var(--primary);
+            border-radius: 18px;
+            transition: left 0.3s;
+            box-shadow: 0 4px 12px rgba(208, 163, 175, 0.4);
+        }
+
+        /* State for "Yes" selected */
+        .toggle-card[data-state="yes"] .toggle-bg {
+            left: 50%;
+        }
+
+        .toggle-card[data-state="no"] .toggle-bg {
+            left: 8px;
+        }
+
+        .details-panel {
+            background: white;
+            border: 1px solid #F0E8EB;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: left;
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.3s;
+        }
+
+        .details-panel.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            background: #FFF0F3;
+            color: var(--primary-dark);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .bottom-nav {
+            padding: 24px;
+        }
+
+        .continue-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--charcoal);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-frame">
+        <div class="content">
+            <div class="icon-large">🛡️</div>
+            <h1>Sensitive Skin?</h1>
+            <p class="description">Do you need to avoid specific ingredients or products?</p>
+
+            <div class="toggle-card" data-state="yes">
+                <div class="toggle-bg"></div>
+                <div class="toggle-option" onclick="this.parentElement.setAttribute('data-state', 'no')">No</div>
+                <div class="toggle-option active" onclick="this.parentElement.setAttribute('data-state', 'yes')">Yes
+                </div>
+            </div>
+
+            <div class="details-panel">
+                <div style="font-weight: 600; margin-bottom: 8px;">What should we avoid?</div>
+                <div class="chip-group">
+                    <div class="chip">Fragrance</div>
+                    <div class="chip">Essential Oils</div>
+                    <div class="chip"
+                        style="background: #F8F5F6; color: var(--text-secondary); border: 1px dashed #ccc;">+ Add</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <button class="continue-btn">Continue</button>
+        </div>
+    </div>
+
+</body>
+
+</html>

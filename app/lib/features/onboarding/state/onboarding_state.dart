@@ -93,8 +93,8 @@ class OnboardingValidators {
 
 class OnboardingState extends ChangeNotifier {
   final List<OnboardingStepKey> steps = const [
-    OnboardingStepKey.skinConcerns,
-    OnboardingStepKey.skinType,
+    // OnboardingStepKey.skinConcerns, // Handled in new flow
+    // OnboardingStepKey.skinType,     // Handled in new flow
     OnboardingStepKey.routine,
     OnboardingStepKey.sensitivities,
     OnboardingStepKey.dietFlags,

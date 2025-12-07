@@ -3,6 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'marketing_pages.dart';
 import 'marketing_pages_2.dart';
 import 'marketing_pages_3.dart';
+import 'marketing_pages.dart';
+import 'marketing_pages_2.dart';
+import 'marketing_pages_3.dart';
+import 'question_pages.dart';
 import 'onboarding_wizard.dart';
 import '../../profile/profile_service.dart';
 import '../../../widgets/page_transitions.dart';
@@ -20,6 +24,11 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
   int _currentStep = 0;
   String? _selectedGoal;
   String? _notificationTiming;
+  int _currentStep = 0;
+  String? _selectedGoal;
+  String? _notificationTiming;
+  Map<String, double>? _skinConcerns;
+  String? _skinType;
   bool _showDiscountOffer = false;
 
   void _nextStep() {
@@ -106,16 +115,38 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
         );
       
       case 6:
-        // Existing onboarding wizard (skin concerns, etc.)
-        return OnboardingWizard(
+        // Skin concerns (New UI)
+        return SkinConcernsPage(
           key: const ValueKey(6),
+          onConcernsSelected: (concerns) {
+            setState(() => _skinConcerns = concerns);
+            // Save to profile/state if needed
+            _nextStep();
+          },
+        );
+
+      case 7:
+        // Skin type (New UI)
+        return SkinTypePage(
+          key: const ValueKey(7),
+          onSkinTypeSelected: (type) {
+            setState(() => _skinType = type);
+            // Save to profile/state if needed
+            _nextStep();
+          },
+        );
+      
+      case 8:
+        // Existing onboarding wizard (remaining steps)
+        return OnboardingWizard(
+          key: const ValueKey(8),
           onComplete: _nextStep,
         );
       
-      case 7:
+      case 9:
         // Thank you page
         return ThankYouPage(
-          key: const ValueKey(7),
+          key: const ValueKey(9),
           onReview: () {
             // Open app store review
             // TODO: Implement app store review
@@ -124,10 +155,10 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
           onContinue: _nextStep,
         );
       
-      case 8:
+      case 10:
         // Free trial offer
         return FreeTrialOfferPage(
-          key: const ValueKey(8),
+          key: const ValueKey(10),
           onAccept: _nextStep,
           onSkip: () {
             // Skip to end
@@ -135,14 +166,14 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
           },
         );
       
-      case 9:
+      case 11:
         // Timeline visualization
-        return TimelineVisualizationPage(key: const ValueKey(9), onContinue: _nextStep);
+        return TimelineVisualizationPage(key: const ValueKey(11), onContinue: _nextStep);
       
-      case 10:
+      case 12:
         // Payment page
         return PaymentPage(
-          key: const ValueKey(10),
+          key: const ValueKey(12),
           onComplete: (didComplete) {
             if (didComplete) {
               // Payment successful
@@ -165,7 +196,7 @@ class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
         // Show discount offer if user declined payment
         if (_showDiscountOffer) {
           return SpecialDiscountPage(
-            key: const ValueKey(11),
+            key: const ValueKey(13),
             onAccept: () {
               // Accept discount and complete
               _completeOnboarding();

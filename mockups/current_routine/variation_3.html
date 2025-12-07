@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Routine - Variation 3: Conversational</title>
+    <style>
+        :root {
+            --primary: #D0A3AF;
+            --primary-dark: #BA8593;
+            --charcoal: #3D3840;
+            --text-secondary: #6D6168;
+            --bg-light: #F8F5F6;
+            --white: #FFFFFF;
+            --radius: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--charcoal);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .phone-frame {
+            width: 100%;
+            max-width: 390px;
+            background: var(--white);
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            height: 844px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #F0E8EB;
+            margin: 60px 24px 20px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 30%;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .step-indicator {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--charcoal);
+            line-height: 1.2;
+        }
+
+        .description {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 20px;
+            font-size: 18px;
+            border: 2px solid #F0E8EB;
+            border-radius: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #FAFAFA;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            background: var(--white);
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+
+        .chip {
+            padding: 10px 20px;
+            background: #F8F5F6;
+            border: 1px solid #F0E8EB;
+            border-radius: 100px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: #FFF0F3;
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+
+        .skip-btn {
+            text-align: center;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 16px;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .skip-btn:hover {
+            background: #F8F5F6;
+        }
+
+        .bottom-nav {
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            transition: transform 0.2s;
+        }
+
+        .back-btn {
+            background: #F8F5F6;
+            color: var(--charcoal);
+        }
+
+        .next-btn {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 8px 20px rgba(208, 163, 175, 0.4);
+        }
+
+        .nav-btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-frame">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div class="content">
+            <div class="step-indicator">Step 1 of 5</div>
+            <h1>What cleanser do you use?</h1>
+            <p class="description">Starting with a clean slate is key. Tell us what you wash your face with.</p>
+
+            <div class="input-group">
+                <input type="text" placeholder="e.g., CeraVe Hydrating Cleanser">
+            </div>
+
+            <div class="suggestions">
+                <div class="chip">CeraVe</div>
+                <div class="chip">Cetaphil</div>
+                <div class="chip">La Roche-Posay</div>
+                <div class="chip">Vanicream</div>
+            </div>
+
+            <div class="skip-btn">I don't use a cleanser</div>
+        </div>
+
+        <div class="bottom-nav">
+            <button class="nav-btn back-btn">←</button>
+            <button class="nav-btn next-btn">→</button>
+        </div>
+    </div>
+
+</body>
+
+</html>

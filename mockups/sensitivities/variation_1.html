@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensitivities - Variation 1: Icon Grid</title>
+    <style>
+        :root {
+            --primary: #D0A3AF;
+            --primary-dark: #BA8593;
+            --charcoal: #3D3840;
+            --text-secondary: #6D6168;
+            --bg-light: #F8F5F6;
+            --white: #FFFFFF;
+            --radius: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--charcoal);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .phone-frame {
+            width: 100%;
+            max-width: 390px;
+            background: var(--white);
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            height: 844px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 60px 24px 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--charcoal);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 24px 100px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .sensitivity-card {
+            background: var(--white);
+            border: 1px solid #F0E8EB;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .sensitivity-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .sensitivity-card.selected {
+            background: linear-gradient(135deg, #D0A3AF 0%, #BA8593 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        .icon-circle {
+            width: 56px;
+            height: 56px;
+            background: #F8F5F6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .sensitivity-card.selected .icon-circle {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .label {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .sensitivity-card.selected .label {
+            color: white;
+        }
+
+        .description {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+
+        .sensitivity-card.selected .description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .check-mark {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.2s;
+        }
+
+        .sensitivity-card.selected .check-mark {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 24px;
+            background: var(--white);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .continue-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(208, 163, 175, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-frame">
+        <div class="header">
+            <h1>Sensitivities</h1>
+            <p class="subtitle">Do you have any known allergies or sensitivities?</p>
+        </div>
+
+        <div class="content">
+            <div class="grid-container">
+                <div class="sensitivity-card selected">
+                    <div class="check-mark">✓</div>
+                    <div class="icon-circle">🌸</div>
+                    <div class="label">Fragrance</div>
+                    <div class="description">Perfumes & scents</div>
+                </div>
+
+                <div class="sensitivity-card">
+                    <div class="check-mark">✓</div>
+                    <div class="icon-circle">🍷</div>
+                    <div class="label">Alcohol</div>
+                    <div class="description">Drying alcohols</div>
+                </div>
+
+                <div class="sensitivity-card selected">
+                    <div class="check-mark">✓</div>
+                    <div class="icon-circle">🌿</div>
+                    <div class="label">Essential Oils</div>
+                    <div class="description">Natural oils</div>
+                </div>
+
+                <div class="sensitivity-card">
+                    <div class="check-mark">✓</div>
+                    <div class="icon-circle">🍞</div>
+                    <div class="label">Gluten</div>
+                    <div class="description">Wheat derived</div>
+                </div>
+
+                <div class="sensitivity-card">
+                    <div class="check-mark">✓</div>
+                    <div class="icon-circle">🥜</div>
+                    <div class="label">Nuts</div>
+                    <div class="description">Almond, shea, etc</div>
+                </div>
+
+                <div class="sensitivity-card">
+                    <div class="check-mark">✓</div>
+                    <div class="icon-circle">🧪</div>
+                    <div class="label">Retinol</div>
+                    <div class="description">Vitamin A</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <button class="continue-btn">Continue</button>
+        </div>
+    </div>
+
+</body>
+
+</html>

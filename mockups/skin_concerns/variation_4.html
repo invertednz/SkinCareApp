@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Concerns - Variation 4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            primary: '#D0A3AF',
+                            accent: '#BA8593',
+                            light: '#F8F5F6',
+                            medium: '#F0EAEC',
+                        },
+                        charcoal: {
+                            primary: '#3D3840',
+                            secondary: '#6D6168',
+                            tertiary: '#8A7B82',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-rose-light text-charcoal-primary min-h-screen flex justify-center items-center p-4">
+
+    <!-- Phone Frame -->
+    <div
+        class="w-full max-w-[400px] bg-[#F5F2F3] h-[850px] rounded-[32px] shadow-2xl overflow-hidden relative flex flex-col">
+
+        <!-- Progress -->
+        <div class="px-8 pt-12 pb-4 flex justify-between items-center">
+            <span class="text-charcoal-tertiary font-medium">Question 2 of 5</span>
+            <button class="text-rose-primary font-semibold">Skip</button>
+        </div>
+
+        <!-- Card Stack -->
+        <div class="flex-1 relative flex items-center justify-center px-6">
+
+            <!-- Background Card (Next) -->
+            <div
+                class="absolute w-full max-w-[320px] h-[500px] bg-white rounded-[32px] shadow-xl transform scale-95 translate-y-4 opacity-50 z-0">
+            </div>
+
+            <!-- Active Card -->
+            <div
+                class="w-full max-w-[340px] h-[520px] bg-white rounded-[32px] shadow-2xl z-10 flex flex-col p-8 relative overflow-hidden">
+
+                <!-- Decorative Gradient -->
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-rose-primary to-rose-accent"></div>
+
+                <div class="flex-1 flex flex-col items-center text-center mt-8">
+                    <div class="w-24 h-24 bg-rose-light rounded-full flex items-center justify-center text-5xl mb-8">
+                        🌋
+                    </div>
+                    <h2 class="text-3xl font-bold text-charcoal-primary mb-4">Do you experience Acne?</h2>
+                    <p class="text-charcoal-secondary leading-relaxed">Includes blackheads, whiteheads, and occasional
+                        breakouts.</p>
+                </div>
+
+                <!-- Options -->
+                <div class="space-y-3 w-full">
+                    <button
+                        class="w-full py-4 rounded-xl border-2 border-rose-light hover:border-rose-primary hover:bg-rose-light/50 transition-all font-semibold text-charcoal-primary">
+                        No, never
+                    </button>
+                    <button
+                        class="w-full py-4 rounded-xl bg-rose-primary text-white shadow-lg shadow-rose-primary/30 font-semibold">
+                        Yes, sometimes
+                    </button>
+                    <button
+                        class="w-full py-4 rounded-xl border-2 border-rose-light hover:border-rose-primary hover:bg-rose-light/50 transition-all font-semibold text-charcoal-primary">
+                        Yes, frequently
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Navigation -->
+        <div class="h-24 flex items-center justify-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-rose-medium"></div>
+            <div class="w-2 h-2 rounded-full bg-rose-primary"></div>
+            <div class="w-2 h-2 rounded-full bg-rose-medium"></div>
+            <div class="w-2 h-2 rounded-full bg-rose-medium"></div>
+            <div class="w-2 h-2 rounded-full bg-rose-medium"></div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

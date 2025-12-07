@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Concerns - Variation 3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            primary: '#D0A3AF',
+                            accent: '#BA8593',
+                            light: '#F8F5F6',
+                            medium: '#F0EAEC',
+                        },
+                        charcoal: {
+                            primary: '#3D3840',
+                            secondary: '#6D6168',
+                            tertiary: '#8A7B82',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .face-shape {
+            clip-path: ellipse(45% 55% at 50% 50%);
+        }
+    </style>
+</head>
+
+<body class="bg-rose-light text-charcoal-primary min-h-screen flex justify-center items-center p-4">
+
+    <!-- Phone Frame -->
+    <div
+        class="w-full max-w-[400px] bg-[#FDFCFD] h-[850px] rounded-[32px] shadow-2xl overflow-hidden relative flex flex-col">
+
+        <!-- Header -->
+        <div class="px-6 pt-12 pb-2 z-10 text-center">
+            <h1 class="text-2xl font-bold text-charcoal-primary mb-2">Where is it happening?</h1>
+            <p class="text-charcoal-secondary text-sm">Tap the areas on the face.</p>
+        </div>
+
+        <!-- Face Map Interaction -->
+        <div class="flex-1 relative flex items-center justify-center">
+
+            <!-- Abstract Face -->
+            <div class="w-64 h-80 bg-[#F5E6EA] rounded-[100px] relative shadow-inner">
+
+                <!-- Forehead Zone -->
+                <div
+                    class="absolute top-4 left-1/2 -translate-x-1/2 w-40 h-20 rounded-full border-2 border-dashed border-rose-primary/30 hover:bg-rose-primary/10 cursor-pointer flex items-center justify-center group">
+                    <div
+                        class="w-6 h-6 bg-rose-primary rounded-full text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- T-Zone / Nose -->
+                <div
+                    class="absolute top-24 left-1/2 -translate-x-1/2 w-16 h-28 rounded-full border-2 border-dashed border-rose-primary/30 hover:bg-rose-primary/10 cursor-pointer flex items-center justify-center group">
+                </div>
+
+                <!-- Left Cheek (Active) -->
+                <div
+                    class="absolute top-32 left-4 w-20 h-24 rounded-full bg-rose-primary/20 border-2 border-rose-primary cursor-pointer flex items-center justify-center animate-pulse">
+                    <div
+                        class="w-8 h-8 bg-rose-primary rounded-full text-white flex items-center justify-center shadow-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right Cheek -->
+                <div
+                    class="absolute top-32 right-4 w-20 h-24 rounded-full border-2 border-dashed border-rose-primary/30 hover:bg-rose-primary/10 cursor-pointer">
+                </div>
+
+                <!-- Chin -->
+                <div
+                    class="absolute bottom-6 left-1/2 -translate-x-1/2 w-24 h-16 rounded-full border-2 border-dashed border-rose-primary/30 hover:bg-rose-primary/10 cursor-pointer">
+                </div>
+
+            </div>
+
+            <!-- Floating Label -->
+            <div
+                class="absolute top-1/2 left-8 bg-white px-3 py-1.5 rounded-lg shadow-lg text-xs font-semibold text-rose-primary -translate-y-12">
+                Cheeks
+                <div
+                    class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-white">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Selected Concerns Panel -->
+        <div class="bg-white rounded-t-[32px] shadow-[0_-4px_20px_rgba(0,0,0,0.05)] p-6 pb-8">
+            <h3 class="text-sm font-bold text-charcoal-secondary uppercase tracking-wider mb-4">Selected Areas</h3>
+
+            <div class="space-y-3 mb-6">
+                <div class="flex items-center justify-between p-3 bg-rose-light rounded-xl">
+                    <span class="font-medium">Left Cheek</span>
+                    <div class="flex gap-2">
+                        <span
+                            class="px-2 py-1 bg-white rounded-md text-xs font-medium text-rose-primary shadow-sm">Redness</span>
+                        <span
+                            class="px-2 py-1 bg-white rounded-md text-xs font-medium text-rose-primary shadow-sm">Dryness</span>
+                    </div>
+                </div>
+            </div>
+
+            <button
+                class="w-full h-14 bg-rose-primary text-white rounded-full font-semibold text-lg shadow-lg shadow-rose-primary/30 hover:bg-rose-accent transition-colors">
+                Continue
+            </button>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
