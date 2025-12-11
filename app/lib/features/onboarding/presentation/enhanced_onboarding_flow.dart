@@ -3,9 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'marketing_pages.dart';
 import 'marketing_pages_2.dart';
 import 'marketing_pages_3.dart';
-import 'marketing_pages.dart';
-import 'marketing_pages_2.dart';
-import 'marketing_pages_3.dart';
 import 'question_pages.dart';
 import 'onboarding_wizard.dart';
 import '../../profile/profile_service.dart';
@@ -21,9 +18,6 @@ class EnhancedOnboardingFlow extends StatefulWidget {
 }
 
 class _EnhancedOnboardingFlowState extends State<EnhancedOnboardingFlow> {
-  int _currentStep = 0;
-  String? _selectedGoal;
-  String? _notificationTiming;
   int _currentStep = 0;
   String? _selectedGoal;
   String? _notificationTiming;

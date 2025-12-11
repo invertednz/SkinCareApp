@@ -8,6 +8,7 @@ import '../features/profile/profile_service.dart';
 import 'router_refresh.dart';
 import '../features/onboarding/presentation/enhanced_onboarding_flow.dart';
 import '../features/paywall/paywall_screen_v2.dart';
+import '../features/paywall/trial_offer_screen.dart';
 import 'analytics_observer.dart';
 import '../features/diary/diet_screen.dart';
 import '../features/diary/supplements_screen.dart';
@@ -31,6 +32,7 @@ class AppRouter {
         final resetting = state.matchedLocation == '/reset';
         final onboarding = state.matchedLocation == '/onboarding';
         final paywall = state.matchedLocation == '/paywall';
+        final trialOffer = state.matchedLocation == '/trial-offer';
 
         // Signed-out: allow onboarding, auth, and reset only
         if (!signedIn && !(loggingIn || resetting || onboarding)) {
@@ -54,12 +56,12 @@ class AppRouter {
             return '/onboarding';
           }
 
-          if (onboarded && !hasSub && !paywall) {
-            return '/paywall';
+          if (onboarded && !hasSub && !paywall && !trialOffer) {
+            return '/trial-offer';
           }
 
-          // If trying to access onboarding/paywall while fully eligible, go to tabs
-          if (onboarded && hasSub && (onboarding || paywall)) {
+          // If trying to access onboarding/paywall/trial while fully eligible, go to tabs
+          if (onboarded && hasSub && (onboarding || paywall || trialOffer)) {
             return '/tabs';
           }
         }
@@ -90,6 +92,27 @@ class AppRouter {
             child: const EnhancedOnboardingFlow(),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               // Check for reduced motion
+              final reducedMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+              if (reducedMotion) return child;
+              
+              return FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.linear,
+                ),
+                child: child,
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+        ),
+        GoRoute(
+          path: '/trial-offer',
+          name: 'trial_offer',
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const TrialOfferScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
               final reducedMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
               if (reducedMotion) return child;
               
