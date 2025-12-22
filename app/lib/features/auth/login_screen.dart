@@ -20,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordCtrl = TextEditingController();
   bool _loading = false;
   String? _error;
+  bool _consentAccepted = false;
 
   @override
   void dispose() {
@@ -295,13 +296,77 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ],
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 16),
+                          // Consent checkbox
+                          InkWell(
+                            onTap: () => setState(() => _consentAccepted = !_consentAccepted),
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: _consentAccepted 
+                                    ? Brand.primaryStart.withOpacity(0.08)
+                                    : Brand.backgroundLight,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: _consentAccepted ? Brand.primaryStart : Brand.borderMedium,
+                                ),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 22,
+                                    height: 22,
+                                    margin: const EdgeInsets.only(top: 2),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                        color: _consentAccepted ? Colors.transparent : Brand.borderMedium,
+                                        width: 2,
+                                      ),
+                                      gradient: _consentAccepted ? Brand.primaryGradient : null,
+                                      color: _consentAccepted ? null : Colors.white,
+                                    ),
+                                    child: _consentAccepted
+                                        ? const Icon(Icons.check, size: 14, color: Colors.white)
+                                        : null,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'I agree to the Terms & Privacy Policy',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: Brand.textPrimary,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'We use your data to personalize insights. You can delete your data at any time.',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Brand.textSecondary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
                           // Sign in button
                           SizedBox(
                             height: 52,
                             child: ElevatedButton(
                               key: const Key('submitButton'),
-                              onPressed: _loading ? null : _submit,
+                              onPressed: (_loading || !_consentAccepted) ? null : _submit,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Brand.primaryStart,
                                 foregroundColor: Colors.white,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../app/app_shell.dart';
+import '../app/tracking_app_shell.dart';
 import '../features/auth/login_screen.dart';
 import '../services/session.dart';
 import '../features/auth/password_reset_screen.dart';
@@ -160,13 +161,13 @@ class AppRouter {
         GoRoute(
           path: '/tabs',
           name: 'tabs',
-          builder: (context, state) => const AppShell(),
+          builder: (context, state) => const TrackingAppShell(),
         ),
-        // Alias: direct insights route opens tabs with Insights selected
+        // Alias: direct insights route opens tabs with Home selected
         GoRoute(
           path: '/insights',
           name: 'insights',
-          builder: (context, state) => const AppShell(initialIndex: 0),
+          builder: (context, state) => const TrackingAppShell(initialIndex: 0),
         ),
         GoRoute(
           path: '/insights/details',
@@ -178,15 +179,18 @@ class AppRouter {
           name: 'tabs_by_name',
           builder: (context, state) {
             final tab = state.pathParameters['tab']?.toLowerCase();
+            // New navigation: Home(0), Symptoms(1), Routine(2), Supps(3), Chat(4)
             final map = {
               'home': 0,
               'insights': 0,
-              'diary': 1,
-              'chat': 2,
-              'profile': 3,
+              'symptoms': 1,
+              'routine': 2,
+              'supps': 3,
+              'supplements': 3,
+              'chat': 4,
             };
             final index = map[tab] ?? 0;
-            return AppShell(initialIndex: index);
+            return TrackingAppShell(initialIndex: index);
           },
         ),
         GoRoute(
@@ -195,15 +199,16 @@ class AppRouter {
           builder: (context, state) {
             final cat = state.pathParameters['category']?.toLowerCase();
             // Map notification categories to tabs
+            // New navigation: Home(0), Symptoms(1), Routine(2), Supps(3), Chat(4)
             final map = {
-              'routine': 1, // diary tab where routine actions live
-              'log': 1,     // diary/logging
+              'routine': 2,
+              'log': 0,
               'insights': 0,
-              'chat': 2,
-              'profile': 3,
+              'chat': 4,
+              'supplements': 3,
             };
             final index = map[cat] ?? 0;
-            return AppShell(initialIndex: index);
+            return TrackingAppShell(initialIndex: index);
           },
         ),
         GoRoute(

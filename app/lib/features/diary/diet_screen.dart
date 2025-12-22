@@ -1,6 +1,9 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../onboarding/state/onboarding_state.dart';
 import '../../theme/brand.dart';
+import '../../services/gemini_service.dart';
 
 class DietScreen extends StatefulWidget {
   const DietScreen({super.key, this.entryId, this.initialData});
@@ -13,9 +16,10 @@ class DietScreen extends StatefulWidget {
 }
 
 class _FoodItem {
-  _FoodItem({required this.text, this.meal});
+  _FoodItem({required this.text, this.meal, this.portion});
   String text;
   String? meal; // 'breakfast' | 'lunch' | 'dinner' | 'snack'
+  String? portion;
 }
 
 class _DietScreenState extends State<DietScreen> {
@@ -27,6 +31,10 @@ class _DietScreenState extends State<DietScreen> {
   final List<String> _customTriggers = <String>[]; // user-added triggers
   int _water = 0; // glasses 0..10
   DateTime _current = DateTime.now();
+  
+  // Meal photo state
+  bool _isAnalyzing = false;
+  String? _analysisError;
 
   String _formatDate(DateTime d) {
     const months = [
@@ -49,6 +57,187 @@ class _DietScreenState extends State<DietScreen> {
       _foods.add(_FoodItem(text: t));
       _foodCtrl.clear();
     });
+  }
+
+  /// Take or select a meal photo and analyze with Gemini AI
+  Future<void> _captureAndAnalyzeMeal(ImageSource source) async {
+    final picker = ImagePicker();
+    
+    try {
+      final XFile? image = await picker.pickImage(
+        source: source,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+      
+      if (image == null) return; // User cancelled
+      
+      setState(() {
+        _isAnalyzing = true;
+        _analysisError = null;
+      });
+
+      // Read image bytes
+      final Uint8List imageBytes = await image.readAsBytes();
+      
+      // Analyze with Gemini
+      final result = await GeminiService.instance.analyzeMealPhoto(imageBytes);
+      
+      if (!mounted) return;
+      
+      if (result.hasError) {
+        setState(() {
+          _isAnalyzing = false;
+          _analysisError = result.error;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Analysis failed: ${result.error}')),
+        );
+        return;
+      }
+      
+      if (result.isEmpty) {
+        setState(() {
+          _isAnalyzing = false;
+          _analysisError = 'No food items detected in the image';
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No food items detected. Try a clearer photo.')),
+        );
+        return;
+      }
+      
+      // Add detected foods to the list
+      setState(() {
+        for (final food in result.foods) {
+          _foods.add(_FoodItem(
+            text: food.name,
+            meal: food.category ?? result.mealType,
+            portion: food.portion,
+          ));
+        }
+        _isAnalyzing = false;
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Added ${result.foods.length} food items from photo'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isAnalyzing = false;
+        _analysisError = e.toString();
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  void _showMealPhotoOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '📸 Scan Your Meal',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Brand.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Take a photo of your meal and AI will identify the foods',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Brand.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildPhotoOptionButton(
+                      icon: Icons.camera_alt,
+                      label: 'Camera',
+                      onTap: () {
+                        Navigator.pop(context);
+                        _captureAndAnalyzeMeal(ImageSource.camera);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildPhotoOptionButton(
+                      icon: Icons.photo_library,
+                      label: 'Gallery',
+                      onTap: () {
+                        Navigator.pop(context);
+                        _captureAndAnalyzeMeal(ImageSource.gallery);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPhotoOptionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        decoration: BoxDecoration(
+          gradient: Brand.primaryGradient,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Brand.primaryStart.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: Colors.white, size: 32),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -100,6 +289,61 @@ class _DietScreenState extends State<DietScreen> {
 
             const SizedBox(height: 16),
 
+            // Scan Meal Photo Card
+            _card(
+              child: InkWell(
+                onTap: _isAnalyzing ? null : _showMealPhotoOptions,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    gradient: Brand.primaryGradient,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: _isAnalyzing
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            const Text(
+                              'Analyzing your meal...',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.camera_alt, color: Colors.white, size: 24),
+                            SizedBox(width: 12),
+                            Text(
+                              '📸 Scan Your Meal',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
             // Add What You Ate
             _card(
               child: Column(
@@ -126,7 +370,7 @@ class _DietScreenState extends State<DietScreen> {
                           foregroundColor: Colors.black87,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ).copyWith(
-                          side: const MaterialStatePropertyAll(BorderSide(color: Color(0xFFE5E7EB))),
+                          side: const WidgetStatePropertyAll(BorderSide(color: Color(0xFFE5E7EB))),
                         ),
                         onPressed: _addFood,
                         child: const Text('Add'),
@@ -151,7 +395,19 @@ class _DietScreenState extends State<DietScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Expanded(child: Text(_foods[i].text)),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(_foods[i].text, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                        if (_foods[i].portion != null && _foods[i].portion!.isNotEmpty)
+                                          Text(
+                                            _foods[i].portion!,
+                                            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
                                   IconButton(
                                     icon: const Icon(Icons.close),
                                     tooltip: 'Remove',
@@ -258,7 +514,7 @@ class _DietScreenState extends State<DietScreen> {
                         style: FilledButton.styleFrom(
                           backgroundColor: _mint,
                           foregroundColor: Colors.black87,
-                        ).copyWith(side: const MaterialStatePropertyAll(BorderSide(color: Color(0xFFE5E7EB)))),
+                        ).copyWith(side: const WidgetStatePropertyAll(BorderSide(color: Color(0xFFE5E7EB)))),
                         onPressed: () {
                           final t = _triggerCtrl.text.trim();
                           if (t.isEmpty) return;

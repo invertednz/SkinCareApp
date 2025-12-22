@@ -25,6 +25,9 @@ class Env {
   static String? get mixpanelToken => dotenv.maybeGet('MIXPANEL_TOKEN');
   static String? get mixpanelHost => dotenv.maybeGet('MIXPANEL_HOST');
 
+  // Gemini AI
+  static String? get geminiApiKey => dotenv.maybeGet('GEMINI_API_KEY');
+
   // Firebase
   static String? get firebaseApiKey => dotenv.maybeGet('FIREBASE_API_KEY');
   static String? get firebaseAppId => dotenv.maybeGet('FIREBASE_APP_ID');

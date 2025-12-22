@@ -302,22 +302,22 @@ class _SupplementsStepState extends State<_SupplementsStep> {
   final _ctrl = TextEditingController();
   late List<Map<String, dynamic>> _items; // {label, checked, am, pm}
 
-  static const Color _rose = Color(0xFFD0A3AF); // Dusty rose primary
+  static const Map<String, String> _icons = {
+    'zinc': '🔩',
+    'omega-3': '🐟',
+    'vitamin d': '☀️',
+    'probiotics': '🦠',
+    'collagen': '💪',
+  };
 
   @override
   void initState() {
     super.initState();
     final raw = widget.payload['items'];
     if (raw is List) {
-      // Support both legacy [String] and new [{label,checked,am,pm}] formats
       _items = raw.map<Map<String, dynamic>>((e) {
         if (e is String) {
-          return {
-            'label': e,
-            'checked': true,
-            'am': true,
-            'pm': false,
-          };
+          return {'label': e, 'checked': true, 'am': true, 'pm': false};
         } else if (e is Map) {
           final m = Map<String, dynamic>.from(e);
           return {
@@ -344,18 +344,15 @@ class _SupplementsStepState extends State<_SupplementsStep> {
     widget.onChanged({'items': _items});
   }
 
-  void _toggleQuick(String name, bool selected) {
+  bool _isSelected(String name) =>
+      _items.any((e) => (e['label'] as String).toLowerCase() == name.toLowerCase());
+
+  void _toggleOption(String name) {
     final i = _items.indexWhere((e) => (e['label'] as String).toLowerCase() == name.toLowerCase());
-    if (selected) {
-      if (i < 0) {
-        setState(() {
-          _items.add({'label': name, 'checked': true, 'am': true, 'pm': false});
-        });
-      } else {
-        setState(() => _items[i]['checked'] = true);
-      }
+    if (i >= 0) {
+      setState(() => _items.removeAt(i));
     } else {
-      if (i >= 0) setState(() => _items.removeAt(i));
+      setState(() => _items.add({'label': name, 'checked': true, 'am': true, 'pm': false}));
     }
     _emit();
   }
@@ -363,112 +360,215 @@ class _SupplementsStepState extends State<_SupplementsStep> {
   void _addCustom() {
     final v = _ctrl.text.trim();
     if (v.isEmpty) return;
-    final exists = _items.any((e) => (e['label'] as String).toLowerCase() == v.toLowerCase());
-    if (!exists) {
-      setState(() {
-        _items.add({'label': v, 'checked': true, 'am': true, 'pm': false});
-      });
+    if (!_isSelected(v)) {
+      setState(() => _items.add({'label': v, 'checked': true, 'am': true, 'pm': false}));
       _emit();
     }
     _ctrl.clear();
   }
 
+  String _getIcon(String name) => _icons[name.toLowerCase()] ?? '💊';
+
   @override
   Widget build(BuildContext context) {
-    final selectedLower = _items.map((e) => (e['label'] as String).toLowerCase()).toSet();
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
-          // Quick picks pills
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final opt in widget.options)
-                FilterChip(
-                  label: Text(opt),
-                  selected: selectedLower.contains(opt.toLowerCase()),
-                  selectedColor: _rose,
-                  onSelected: (sel) => _toggleQuick(opt, sel),
-                ),
-            ],
+          Text(
+            widget.title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Brand.textPrimary,
+            ),
           ),
-          const SizedBox(height: 12),
-          // Input to add custom
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _ctrl,
-                  decoration: const InputDecoration(hintText: 'Add a supplement'),
-                  onSubmitted: (_) => _addCustom(),
-                ),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(onPressed: _addCustom, child: const Text('Add')),
-            ],
+          const SizedBox(height: 4),
+          Text(
+            'Select supplements you take and when you take them',
+            style: TextStyle(fontSize: 14, color: Brand.textSecondary),
           ),
-          const SizedBox(height: 12),
-          // List section
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
+          const SizedBox(height: 20),
+
+          // Default options as cards
+          ...widget.options.map((opt) => _buildSupplementCard(opt)),
+
+          // Custom items
+          ..._items
+              .where((item) => !widget.options.any(
+                  (opt) => opt.toLowerCase() == (item['label'] as String).toLowerCase()))
+              .map((item) => _buildSupplementCard(item['label'] as String, isCustom: true)),
+
+          // Add custom row
+          _buildAddCustomRow(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSupplementCard(String name, {bool isCustom = false}) {
+    final isSelected = _isSelected(name);
+    final item = _items.firstWhere(
+      (e) => (e['label'] as String).toLowerCase() == name.toLowerCase(),
+      orElse: () => {},
+    );
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: isSelected ? Brand.primaryStart.withOpacity(0.12) : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? Brand.primaryStart : Brand.borderLight,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Brand.primaryStart.withOpacity(0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () => _toggleOption(name),
+              child: Row(
                 children: [
-                  for (int i = 0; i < _items.length; i++)
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                        border: i < _items.length - 1
-                            ? const Border(bottom: BorderSide(color: Color(0xFFF0E8EB))) // Light rose border
-                            : null,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: _items[i]['checked'] == true,
-                                onChanged: (v) {
-                                  setState(() => _items[i]['checked'] = v == true);
-                                  _emit();
-                                },
-                              ),
-                              Text(_items[i]['label']?.toString() ?? ''),
-                            ],
-                          ),
-                          Wrap(
-                            spacing: 8,
-                            children: [
-                              ChoiceChip(
-                                label: const Text('AM'),
-                                selected: _items[i]['am'] == true,
-                                selectedColor: _rose,
-                                onSelected: (_) {
-                                  setState(() => _items[i]['am'] = !(_items[i]['am'] == true));
-                                  _emit();
-                                },
-                              ),
-                              ChoiceChip(
-                                label: const Text('PM'),
-                                selected: _items[i]['pm'] == true,
-                                selectedColor: _rose,
-                                onSelected: (_) {
-                                  setState(() => _items[i]['pm'] = !(_items[i]['pm'] == true));
-                                  _emit();
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      gradient: Brand.primaryGradient,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(_getIcon(name), style: const TextStyle(fontSize: 20)),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      name[0].toUpperCase() + name.substring(1),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Brand.textPrimary,
                       ),
                     ),
+                  ),
+                  Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: isSelected ? Colors.transparent : Brand.borderLight,
+                        width: 2,
+                      ),
+                      gradient: isSelected ? Brand.primaryGradient : null,
+                      color: isSelected ? null : Colors.white,
+                    ),
+                    child: isSelected
+                        ? const Icon(Icons.check, size: 14, color: Colors.white)
+                        : null,
+                  ),
                 ],
+              ),
+            ),
+            // AM/PM toggles when selected
+            if (isSelected && item.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Text('When:', style: TextStyle(fontSize: 12, color: Brand.textSecondary)),
+                  const Spacer(),
+                  _buildTimeButton(item, 'am', '☀️ AM'),
+                  const SizedBox(width: 8),
+                  _buildTimeButton(item, 'pm', '🌙 PM'),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeButton(Map<String, dynamic> item, String key, String label) {
+    final isActive = item[key] == true;
+    return InkWell(
+      onTap: () {
+        setState(() => item[key] = !isActive);
+        _emit();
+      },
+      borderRadius: BorderRadius.circular(6),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          gradient: isActive ? Brand.primaryGradient : null,
+          color: isActive ? null : Brand.cardBackgroundSecondary,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: isActive ? Colors.transparent : Brand.borderLight),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: isActive ? Colors.white : Brand.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddCustomRow() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Brand.borderLight),
+              ),
+              child: TextField(
+                controller: _ctrl,
+                decoration: InputDecoration(
+                  hintText: 'Add a supplement',
+                  hintStyle: TextStyle(color: Brand.textSecondary, fontSize: 14),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                ),
+                onSubmitted: (_) => _addCustom(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          InkWell(
+            onTap: _addCustom,
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              height: 44,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                gradient: Brand.primaryGradient,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Center(
+                child: Text(
+                  'Add',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                ),
               ),
             ),
           ),
@@ -476,6 +576,30 @@ class _SupplementsStepState extends State<_SupplementsStep> {
       ),
     );
   }
+}
+
+class _RoutineItem {
+  final String id;
+  final String name;
+  final String icon;
+  bool isSelected;
+  String frequency; // 'daily', 'weekly', 'as-needed'
+
+  _RoutineItem({
+    required this.id,
+    required this.name,
+    required this.icon,
+    this.isSelected = false,
+    this.frequency = 'daily',
+  });
+
+  Map<String, dynamic> toJson() => {
+    'key': id,
+    'label': name,
+    'icon': icon,
+    'checked': isSelected,
+    'freq': frequency,
+  };
 }
 
 class _RoutineBuilderStep extends StatefulWidget {
@@ -488,7 +612,6 @@ class _RoutineBuilderStep extends StatefulWidget {
   final String title;
   final Map<String, dynamic> payload;
   final ValueChanged<Map<String, dynamic>> onChanged;
-  // Whether this step is currently visible in the PageView
   final bool isActive;
 
   @override
@@ -496,30 +619,95 @@ class _RoutineBuilderStep extends StatefulWidget {
 }
 
 class _RoutineBuilderStepState extends State<_RoutineBuilderStep> {
-  static const List<String> _freqOptions = ['daily', 'weekly', 'as-needed'];
-
-  late List<Map<String, dynamic>> _am;
-  late List<Map<String, dynamic>> _pm;
   bool _skip = false;
-
   final _amCtrl = TextEditingController();
   final _pmCtrl = TextEditingController();
+
+  // Default morning routine items
+  final List<_RoutineItem> _morningItems = [
+    _RoutineItem(id: 'cleanser_am', name: 'Cleanser', icon: '🧴'),
+    _RoutineItem(id: 'toner_am', name: 'Toner', icon: '💧'),
+    _RoutineItem(id: 'serum_am', name: 'Serum', icon: '✨'),
+    _RoutineItem(id: 'moisturizer_am', name: 'Moisturizer', icon: '🧈'),
+    _RoutineItem(id: 'sunscreen', name: 'Sunscreen', icon: '☀️'),
+    _RoutineItem(id: 'eye_cream_am', name: 'Eye Cream', icon: '👁️'),
+  ];
+
+  // Default evening routine items
+  final List<_RoutineItem> _eveningItems = [
+    _RoutineItem(id: 'makeup_remover', name: 'Makeup Remover', icon: '🧹'),
+    _RoutineItem(id: 'cleanser_pm', name: 'Cleanser', icon: '🧴'),
+    _RoutineItem(id: 'exfoliant', name: 'Exfoliant', icon: '🌟'),
+    _RoutineItem(id: 'toner_pm', name: 'Toner', icon: '💧'),
+    _RoutineItem(id: 'treatment', name: 'Treatment/Actives', icon: '💉'),
+    _RoutineItem(id: 'serum_pm', name: 'Serum', icon: '✨'),
+    _RoutineItem(id: 'eye_cream_pm', name: 'Eye Cream', icon: '👁️'),
+    _RoutineItem(id: 'moisturizer_pm', name: 'Night Cream', icon: '🌙'),
+    _RoutineItem(id: 'face_oil', name: 'Face Oil', icon: '🫒'),
+  ];
+
+  // Custom items added by user
+  final List<_RoutineItem> _customMorningItems = [];
+  final List<_RoutineItem> _customEveningItems = [];
 
   @override
   void initState() {
     super.initState();
+    _loadFromPayload();
+  }
+
+  void _loadFromPayload() {
     final p = widget.payload;
     _skip = p['skip'] == true;
-    if (p['am'] is List && p['pm'] is List) {
-      _am = (p['am'] as List).cast<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
-      _pm = (p['pm'] as List).cast<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
-    } else {
-      // Start blank by default; if legacy flags exist, add those
-      _am = [];
-      _pm = [];
-      for (final k in ['cleanser','moisturizer','sunscreen','actives']) {
-        if (p[k] == true) {
-          _ensureInList(_am, k, _labelFor(k), checked: true);
+
+    // Load saved AM items
+    if (p['am'] is List) {
+      for (final item in (p['am'] as List)) {
+        if (item is Map) {
+          final key = item['key']?.toString() ?? '';
+          final checked = item['checked'] == true;
+          final freq = item['freq']?.toString() ?? 'daily';
+
+          // Check if it's a default item
+          final defaultItem = _morningItems.where((e) => e.id == key).firstOrNull;
+          if (defaultItem != null) {
+            defaultItem.isSelected = checked;
+            defaultItem.frequency = freq;
+          } else if (key.isNotEmpty) {
+            // Custom item
+            _customMorningItems.add(_RoutineItem(
+              id: key,
+              name: item['label']?.toString() ?? key,
+              icon: item['icon']?.toString() ?? '💊',
+              isSelected: checked,
+              frequency: freq,
+            ));
+          }
+        }
+      }
+    }
+
+    // Load saved PM items
+    if (p['pm'] is List) {
+      for (final item in (p['pm'] as List)) {
+        if (item is Map) {
+          final key = item['key']?.toString() ?? '';
+          final checked = item['checked'] == true;
+          final freq = item['freq']?.toString() ?? 'daily';
+
+          final defaultItem = _eveningItems.where((e) => e.id == key).firstOrNull;
+          if (defaultItem != null) {
+            defaultItem.isSelected = checked;
+            defaultItem.frequency = freq;
+          } else if (key.isNotEmpty) {
+            _customEveningItems.add(_RoutineItem(
+              id: key,
+              name: item['label']?.toString() ?? key,
+              icon: item['icon']?.toString() ?? '💊',
+              isSelected: checked,
+              frequency: freq,
+            ));
+          }
         }
       }
     }
@@ -532,171 +720,317 @@ class _RoutineBuilderStepState extends State<_RoutineBuilderStep> {
     super.dispose();
   }
 
-  Map<String, dynamic> _makeItem(String key, String label, {bool checked = true, String freq = 'daily'}) =>
-      {'key': key, 'label': label, 'checked': checked, 'freq': freq};
-
-  String _labelFor(String key) {
-    switch (key) {
-      case 'cleanser': return 'Cleanser';
-      case 'moisturizer': return 'Moisturizer';
-      case 'sunscreen': return 'Sunscreen';
-      case 'actives': return 'Actives';
-      default: return key[0].toUpperCase() + key.substring(1);
-    }
-  }
-
-  void _ensureInList(List<Map<String, dynamic>> list, String key, String label, {bool checked = true}) {
-    final i = list.indexWhere((e) => (e['key'] as String).toLowerCase() == key.toLowerCase());
-    if (i >= 0) {
-      list[i]['checked'] = checked;
-    } else {
-      list.add(_makeItem(key, label, checked: checked));
-    }
-  }
-
   void _emit() {
+    final amItems = [..._morningItems, ..._customMorningItems]
+        .where((e) => e.isSelected)
+        .map((e) => e.toJson())
+        .toList();
+    final pmItems = [..._eveningItems, ..._customEveningItems]
+        .where((e) => e.isSelected)
+        .map((e) => e.toJson())
+        .toList();
+
     widget.onChanged({
-      'am': _am,
-      'pm': _pm,
+      'am': amItems,
+      'pm': pmItems,
       'skip': _skip,
     });
   }
 
-  void _addTo(String section) {
+  void _addCustomItem(String section) {
     final ctrl = section == 'am' ? _amCtrl : _pmCtrl;
-    final list = section == 'am' ? _am : _pm;
+    final list = section == 'am' ? _customMorningItems : _customEveningItems;
     final name = ctrl.text.trim();
     if (name.isEmpty) return;
-    final key = name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-').replaceAll(RegExp(r'^-|-$'), '');
-    // Avoid duplicates (case-insensitive)
-    if (!list.any((e) => (e['key'] as String).toLowerCase() == key)) {
+
+    final id = '${section}_custom_${name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '_')}';
+    final allItems = section == 'am'
+        ? [..._morningItems, ..._customMorningItems]
+        : [..._eveningItems, ..._customEveningItems];
+
+    if (!allItems.any((e) => e.id == id)) {
       setState(() {
-        list.add(_makeItem(key, name, checked: true, freq: 'daily'));
+        list.add(_RoutineItem(
+          id: id,
+          name: name,
+          icon: '💊',
+          isSelected: true,
+          frequency: 'daily',
+        ));
       });
       _emit();
     }
     ctrl.clear();
   }
 
-  Widget _buildSection(String title, String section, List<Map<String, dynamic>> list, TextEditingController ctrl) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
-        // Single-line items: label + frequency chips, no drag, no delete, no checkbox
-        Column(
-          children: [
-            for (var index = 0; index < list.length; index++)
-              Builder(
-                builder: (context) {
-                  final item = list[index];
-                  return Container(
-                    key: ValueKey('$section-${item['key']}-$index'),
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Brand.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Select the steps in your skincare routine',
+            style: TextStyle(fontSize: 14, color: Brand.textSecondary),
+          ),
+          const SizedBox(height: 20),
+
+          // Morning section
+          _buildSectionHeader('☀️ Morning Routine'),
+          const SizedBox(height: 12),
+          ..._morningItems.map((item) => _buildRoutineCard(item)),
+          ..._customMorningItems.map((item) => _buildRoutineCard(item, isCustom: true)),
+          _buildAddCustomRow('am', _amCtrl, 'Add morning step'),
+          const SizedBox(height: 24),
+
+          // Evening section
+          _buildSectionHeader('🌙 Evening Routine'),
+          const SizedBox(height: 12),
+          ..._eveningItems.map((item) => _buildRoutineCard(item)),
+          ..._customEveningItems.map((item) => _buildRoutineCard(item, isCustom: true)),
+          _buildAddCustomRow('pm', _pmCtrl, 'Add evening step'),
+          const SizedBox(height: 16),
+
+          // Skip option
+          InkWell(
+            onTap: () {
+              setState(() => _skip = !_skip);
+              _emit();
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                children: [
+                  Container(
+                    width: 22,
+                    height: 22,
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFFF0E8EB)), // Light rose border
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: _skip ? Colors.transparent : Brand.borderLight,
+                        width: 2,
+                      ),
+                      gradient: _skip ? Brand.primaryGradient : null,
+                      color: _skip ? null : Colors.white,
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(child: Text(item['label']?.toString() ?? item['key'].toString())),
-                        SizedBox(
-                          height: 36,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                for (final f in _freqOptions) ...[
-                                  ChoiceChip(
-                                    label: Text(_freqLabel(f)),
-                                    selected: item['freq'] == f,
-                                    selectedColor: const Color(0xFFD0A3AF), // Dusty rose
-                                    onSelected: (_) {
-                                      setState(() => item['freq'] = f);
-                                      _emit();
-                                    },
-                                  ),
-                                  const SizedBox(width: 6),
-                                ],
-                                IconButton(
-                                  tooltip: 'Remove',
-                                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                                  onPressed: () {
-                                    setState(() {
-                                      list.removeAt(index);
-                                    });
-                                    _emit();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: _skip
+                        ? const Icon(Icons.check, size: 14, color: Colors.white)
+                        : null,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    "I don't have a routine yet",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Brand.textSecondary,
                     ),
-                  );
-                },
-              ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: ctrl,
-                decoration: InputDecoration(
-                  hintText: section == 'am' ? 'Add morning step' : 'Add evening step',
-                ),
-                onSubmitted: (_) => _addTo(section),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 8),
-            FilledButton(onPressed: () => _addTo(section), child: const Text('Add')),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
-  String _freqLabel(String value) {
-    switch (value) {
-      case 'daily': return 'Daily';
-      case 'weekly': return 'Weekly';
-      case 'as-needed': return 'As needed';
-    }
-    return value;
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Brand.textPrimary,
+      ),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildRoutineCard(_RoutineItem item, {bool isCustom = false}) {
+    final isSelected = item.isSelected;
     return Padding(
-      padding: const EdgeInsets.all(16),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
-            _buildSection('Morning', 'am', _am, _amCtrl),
-            const SizedBox(height: 16),
-            _buildSection('Evening', 'pm', _pm, _pmCtrl),
-            const SizedBox(height: 8),
-            CheckboxListTile(
-              value: _skip,
-              onChanged: (v) {
-                setState(() => _skip = v == true);
-                _emit();
-              },
-              title: const Text("I don't have a routine yet"),
-              controlAffinity: ListTileControlAffinity.leading,
-              contentPadding: EdgeInsets.zero,
+      padding: const EdgeInsets.only(bottom: 10),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: isSelected ? Brand.primaryStart.withOpacity(0.12) : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? Brand.primaryStart : Brand.borderLight,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Brand.primaryStart.withOpacity(0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InkWell(
+              onTap: () {
+                setState(() => item.isSelected = !item.isSelected);
+                _emit();
+              },
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      gradient: Brand.primaryGradient,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(item.icon, style: const TextStyle(fontSize: 20)),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      item.name,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Brand.textPrimary,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: isSelected ? Colors.transparent : Brand.borderLight,
+                        width: 2,
+                      ),
+                      gradient: isSelected ? Brand.primaryGradient : null,
+                      color: isSelected ? null : Colors.white,
+                    ),
+                    child: isSelected
+                        ? const Icon(Icons.check, size: 14, color: Colors.white)
+                        : null,
+                  ),
+                ],
+              ),
+            ),
+            // Frequency buttons - only show when selected
+            if (isSelected) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Text(
+                    'Frequency:',
+                    style: TextStyle(fontSize: 12, color: Brand.textSecondary),
+                  ),
+                  const Spacer(),
+                  _buildFreqButton(item, 'daily', 'Daily'),
+                  const SizedBox(width: 6),
+                  _buildFreqButton(item, 'weekly', 'Weekly'),
+                  const SizedBox(width: 6),
+                  _buildFreqButton(item, 'as-needed', 'As needed'),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFreqButton(_RoutineItem item, String value, String label) {
+    final isActive = item.frequency == value;
+    return InkWell(
+      onTap: () {
+        setState(() => item.frequency = value);
+        _emit();
+      },
+      borderRadius: BorderRadius.circular(6),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          gradient: isActive ? Brand.primaryGradient : null,
+          color: isActive ? null : Brand.cardBackgroundSecondary,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(
+            color: isActive ? Colors.transparent : Brand.borderLight,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: isActive ? Colors.white : Brand.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddCustomRow(String section, TextEditingController ctrl, String hint) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Brand.borderLight),
+              ),
+              child: TextField(
+                controller: ctrl,
+                decoration: InputDecoration(
+                  hintText: hint,
+                  hintStyle: TextStyle(color: Brand.textSecondary, fontSize: 14),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                ),
+                onSubmitted: (_) => _addCustomItem(section),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          InkWell(
+            onTap: () => _addCustomItem(section),
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              height: 44,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                gradient: Brand.primaryGradient,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Center(
+                child: Text(
+                  'Add',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1023,22 +1357,40 @@ class _OnboardingWizardState extends State<OnboardingWizard> {
           },
         );
       case OnboardingStepKey.sensitivities:
-        return _ConcernsStep(
-          title: 'Sensitivities (ingredients, etc.)',
+        return _CardSelectStep(
+          title: 'Sensitivities',
+          subtitle: 'Select any ingredients or substances that irritate your skin',
           options: OnboardingValidators.allowedSensitivities.toList(),
           values: (_state.getStepPayload(step)['items'] as List?)?.cast<String>() ?? const [],
           hintText: 'Add a sensitivity or trigger',
+          icons: const {
+            'fragrance': '🌸',
+            'essential oils': '🫒',
+            'alcohol': '🍷',
+            'lanolin': '🐑',
+            'dyes': '🎨',
+            'parabens': '⚗️',
+            'sulfates': '🧪',
+          },
           onChanged: (values) async {
             setState(() => _state.setStepPayload(step, {'items': values}));
             await _persistStep(step);
           },
         );
       case OnboardingStepKey.dietFlags:
-        return _ConcernsStep(
-          title: 'Diet flags',
+        return _CardSelectStep(
+          title: 'Diet & Nutrition',
+          subtitle: 'Select foods or dietary factors that may affect your skin',
           options: OnboardingValidators.allowedDietFlags.toList(),
           values: (_state.getStepPayload(step)['flags'] as List?)?.cast<String>() ?? const [],
-          hintText: 'Add a diet flag',
+          hintText: 'Add a diet trigger',
+          icons: const {
+            'dairy': '🥛',
+            'gluten': '🍞',
+            'sugar': '🍬',
+            'alcohol': '🍷',
+            'caffeine': '☕',
+          },
           onChanged: (values) async {
             setState(() => _state.setStepPayload(step, {'flags': values}));
             await _persistStep(step);
@@ -1056,51 +1408,53 @@ class _OnboardingWizardState extends State<OnboardingWizard> {
           },
         );
       case OnboardingStepKey.lifestyle:
-        return _ConcernsStep(
-          title: 'Lifestyle factors',
+        return _CardSelectStep(
+          title: 'Lifestyle Factors',
+          subtitle: 'Select factors that may be affecting your skin health',
           options: OnboardingValidators.allowedLifestyle.toList(),
           values: (_state.getStepPayload(step)['factors'] as List?)?.cast<String>() ?? const [],
           hintText: 'Add a lifestyle factor',
+          icons: const {
+            'low sleep': '😴',
+            'high stress': '😰',
+            'low exercise': '🏃',
+            'smoker': '🚬',
+            'high sun exposure': '☀️',
+          },
           onChanged: (values) async {
             setState(() => _state.setStepPayload(step, {'factors': values}));
             await _persistStep(step);
           },
         );
       case OnboardingStepKey.medications:
-        return _ConcernsStep(
+        return _CardSelectStep(
           title: 'Medications',
+          subtitle: 'Select any skin-related medications you are currently using',
           options: OnboardingValidators.allowedMedications.toList(),
           values: (_state.getStepPayload(step)['medications'] as List?)?.cast<String>() ?? const [],
           hintText: 'Add a medication',
+          icons: const {
+            'adapalene': '💊',
+            'tretinoin': '💉',
+            'benzoyl peroxide': '🧴',
+            'clindamycin': '💊',
+            'isotretinoin': '💊',
+            'spironolactone': '💊',
+          },
           onChanged: (values) async {
             setState(() => _state.setStepPayload(step, {'medications': values}));
             await _persistStep(step);
           },
         );
       case OnboardingStepKey.consentInfo:
-        final payload = _state.getStepPayload(step);
-        final checked = payload['acknowledged'] == true;
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Consent and Privacy', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
-              const Text('We use your data to personalize insights. You can delete your data at any time.'),
-              const SizedBox(height: 12),
-              CheckboxListTile(
-                value: checked,
-                onChanged: (v) async {
-                  setState(() => _state.setStepPayload(step, {'acknowledged': v == true}));
-                  await _persistStep(step);
-                },
-                title: const Text('I acknowledge'),
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
-            ],
-          ),
-        );
+        // Consent moved to signup page - auto-acknowledge and continue
+        Future.microtask(() async {
+          if (_state.getStepPayload(step)['acknowledged'] != true) {
+            setState(() => _state.setStepPayload(step, {'acknowledged': true}));
+            await _persistStep(step);
+          }
+        });
+        return const SizedBox.shrink();
       
     }
   }
@@ -1165,25 +1519,30 @@ class _MultiSelectChips extends StatelessWidget {
   }
 }
 
-class _ConcernsStep extends StatefulWidget {
-  const _ConcernsStep({
+/// Card-based selection step with icons for onboarding
+class _CardSelectStep extends StatefulWidget {
+  const _CardSelectStep({
     required this.title,
+    required this.subtitle,
     required this.options,
     required this.values,
     required this.onChanged,
     required this.hintText,
+    this.icons = const {},
   });
   final String title;
+  final String subtitle;
   final List<String> options;
   final List<String> values;
   final ValueChanged<List<String>> onChanged;
   final String hintText;
+  final Map<String, String> icons; // option -> emoji
 
   @override
-  State<_ConcernsStep> createState() => _ConcernsStepState();
+  State<_CardSelectStep> createState() => _CardSelectStepState();
 }
 
-class _ConcernsStepState extends State<_ConcernsStep> {
+class _CardSelectStepState extends State<_CardSelectStep> {
   final _ctrl = TextEditingController();
 
   @override
@@ -1192,13 +1551,15 @@ class _ConcernsStepState extends State<_ConcernsStep> {
     super.dispose();
   }
 
-  void _toggleOption(String opt, bool selected) {
+  bool _isSelected(String opt) =>
+      widget.values.any((e) => e.toLowerCase() == opt.toLowerCase());
+
+  void _toggleOption(String opt) {
     final next = List<String>.from(widget.values);
-    bool eq(String a, String b) => a.toLowerCase() == b.toLowerCase();
-    if (selected) {
-      if (!next.any((e) => eq(e, opt))) next.add(opt);
+    if (_isSelected(opt)) {
+      next.removeWhere((e) => e.toLowerCase() == opt.toLowerCase());
     } else {
-      next.removeWhere((e) => eq(e, opt));
+      next.add(opt);
     }
     widget.onChanged(next);
   }
@@ -1215,64 +1576,197 @@ class _ConcernsStepState extends State<_ConcernsStep> {
     _ctrl.clear();
   }
 
+  String _getIcon(String opt) {
+    return widget.icons[opt.toLowerCase()] ?? '✨';
+  }
+
   @override
   Widget build(BuildContext context) {
     final lowerOptions = widget.options.map((e) => e.toLowerCase()).toSet();
     final customOnly = widget.values.where((v) => !lowerOptions.contains(v.toLowerCase())).toList();
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final opt in widget.options)
-                FilterChip(
-                  label: Text(opt),
-                  selected: widget.values.any((e) => e.toLowerCase() == opt.toLowerCase()),
-                  onSelected: (sel) => _toggleOption(opt, sel),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _ctrl,
-                  decoration: InputDecoration(hintText: widget.hintText),
-                  onSubmitted: (_) => _addCustom(),
-                ),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(onPressed: _addCustom, child: const Text('Add')),
-            ],
-          ),
-          if (customOnly.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final item in customOnly)
-                  Chip(
-                    label: Text(item),
-                    onDeleted: () {
-                      final next = List<String>.from(widget.values)
-                        ..removeWhere((e) => e.toLowerCase() == item.toLowerCase());
-                      widget.onChanged(next);
-                    },
-                  ),
-              ],
+          Text(
+            widget.title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Brand.textPrimary,
             ),
-          ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            widget.subtitle,
+            style: TextStyle(fontSize: 14, color: Brand.textSecondary),
+          ),
+          const SizedBox(height: 20),
+
+          // Option cards
+          ...widget.options.map((opt) => _buildOptionCard(opt)),
+
+          // Custom items
+          ...customOnly.map((item) => _buildOptionCard(item, isCustom: true)),
+
+          // Add custom row
+          _buildAddCustomRow(),
         ],
       ),
+    );
+  }
+
+  Widget _buildOptionCard(String opt, {bool isCustom = false}) {
+    final isSelected = _isSelected(opt);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: InkWell(
+        onTap: () => _toggleOption(opt),
+        borderRadius: BorderRadius.circular(14),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: isSelected ? Brand.primaryStart.withOpacity(0.12) : Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isSelected ? Brand.primaryStart : Brand.borderLight,
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Brand.primaryStart.withOpacity(0.05),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  gradient: Brand.primaryGradient,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Text(_getIcon(opt), style: const TextStyle(fontSize: 20)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  opt[0].toUpperCase() + opt.substring(1),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Brand.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: isSelected ? Colors.transparent : Brand.borderLight,
+                    width: 2,
+                  ),
+                  gradient: isSelected ? Brand.primaryGradient : null,
+                  color: isSelected ? null : Colors.white,
+                ),
+                child: isSelected
+                    ? const Icon(Icons.check, size: 14, color: Colors.white)
+                    : null,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddCustomRow() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Brand.borderLight),
+              ),
+              child: TextField(
+                controller: _ctrl,
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                  hintStyle: TextStyle(color: Brand.textSecondary, fontSize: 14),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                ),
+                onSubmitted: (_) => _addCustom(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          InkWell(
+            onTap: _addCustom,
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              height: 44,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                gradient: Brand.primaryGradient,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Center(
+                child: Text(
+                  'Add',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Legacy _ConcernsStep kept for compatibility but uses new card design
+class _ConcernsStep extends StatelessWidget {
+  const _ConcernsStep({
+    required this.title,
+    required this.options,
+    required this.values,
+    required this.onChanged,
+    required this.hintText,
+  });
+  final String title;
+  final List<String> options;
+  final List<String> values;
+  final ValueChanged<List<String>> onChanged;
+  final String hintText;
+
+  @override
+  Widget build(BuildContext context) {
+    return _CardSelectStep(
+      title: title,
+      subtitle: 'Select all that apply',
+      options: options,
+      values: values,
+      onChanged: onChanged,
+      hintText: hintText,
     );
   }
 }

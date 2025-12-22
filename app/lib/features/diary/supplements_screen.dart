@@ -1,37 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:skincare_app/services/analytics.dart';
 import 'package:skincare_app/services/analytics_events.dart';
-import '../onboarding/state/onboarding_state.dart';
+import '../../theme/brand.dart';
 
 class Supplement {
   String id;
   String name;
+  String description;
+  String icon;
   String dosage;
   String frequency;
   String? notes;
-  bool enabled;
+  bool isSelected;
   bool am;
   bool pm;
 
   Supplement({
     required this.id,
     required this.name,
+    this.description = '',
+    this.icon = '💊',
     required this.dosage,
     required this.frequency,
     this.notes,
-    this.enabled = true,
-    this.am = true,
+    this.isSelected = false,
+    this.am = false,
     this.pm = false,
   });
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
+    'description': description,
     'dosage': dosage,
     'frequency': frequency,
     'notes': notes,
-    'enabled': enabled,
+    'enabled': isSelected,
     'am': am,
     'pm': pm,
   };
@@ -51,10 +57,11 @@ class Supplement {
   factory Supplement.fromJson(Map<String, dynamic> json) => Supplement(
     id: json['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
     name: (json['name'] ?? '') as String,
+    description: (json['description'] ?? '') as String,
     dosage: (json['dosage'] ?? '') as String,
     frequency: (json['frequency'] ?? 'Once daily') as String,
     notes: json['notes'] as String?,
-    enabled: _asBool(json['enabled'], defaultValue: true),
+    isSelected: _asBool(json['enabled'], defaultValue: true),
     am: _asBool(json['am'], defaultValue: true),
     pm: _asBool(json['pm'], defaultValue: false),
   );
@@ -75,142 +82,38 @@ class SupplementsScreen extends StatefulWidget {
 }
 
 class _SupplementsScreenState extends State<SupplementsScreen> {
-  final _formKey = GlobalKey<FormState>();
-  
-  List<Supplement> _supplements = [];
-  // UI state for mockup-aligned inline form and toggles
-  final TextEditingController _formNameController = TextEditingController();
-  final TextEditingController _quickAddController = TextEditingController();
-  final TextEditingController _formDosageController = TextEditingController();
-  String _formFrequency = 'Once daily';
-  bool _formMorning = false;
-  bool _formAfternoon = false;
-  bool _formEvening = false;
-
-  final Map<String, bool> _intakeToggle = {};
-  final DateTime _today = DateTime.now();
-  
-  // Common supplements for quick selection
-  final List<String> _commonSupplements = [
-    'Vitamin A',
-    'Vitamin C',
-    'Vitamin D',
-    'Vitamin E',
-    'Zinc',
-    'Omega-3',
-    'Biotin',
-    'Collagen',
-    'Probiotics',
-    'Evening Primrose Oil',
-    'Hyaluronic Acid',
-    'Niacinamide',
-    'Selenium',
-    'Iron',
-    'B-Complex',
-    'Magnesium',
-    'Turmeric',
-    'Green Tea Extract',
-  ];
-
-  final List<String> _frequencyOptions = [
-    'Once daily',
-    'Twice daily',
-    'Three times daily',
-    'Every other day',
-    'Weekly',
-    'As needed',
-  ];
-  
   bool _isLoading = false;
-  bool _hasChanges = false;
+  final TextEditingController _customCtrl = TextEditingController();
+
+  // Default supplements with descriptions and icons
+  final List<Supplement> _defaultSupplements = [
+    Supplement(id: 'omega3', name: 'Omega-3', description: 'Anti-inflammatory fish oils', icon: '🐟', dosage: '', frequency: 'daily'),
+    Supplement(id: 'vitamin_a', name: 'Vitamin A', description: 'Supports skin cell turnover', icon: '🥕', dosage: '', frequency: 'daily'),
+    Supplement(id: 'vitamin_c', name: 'Vitamin C', description: 'Antioxidant & collagen support', icon: '🍊', dosage: '', frequency: 'daily'),
+    Supplement(id: 'vitamin_d', name: 'Vitamin D', description: 'Immune & skin health', icon: '☀️', dosage: '', frequency: 'daily'),
+    Supplement(id: 'vitamin_e', name: 'Vitamin E', description: 'Skin protection & healing', icon: '🌿', dosage: '', frequency: 'daily'),
+    Supplement(id: 'zinc', name: 'Zinc', description: 'Wound healing & acne control', icon: '⚡', dosage: '', frequency: 'daily'),
+    Supplement(id: 'biotin', name: 'Biotin', description: 'Hair, skin & nail support', icon: '💅', dosage: '', frequency: 'daily'),
+    Supplement(id: 'collagen', name: 'Collagen', description: 'Skin elasticity & hydration', icon: '✨', dosage: '', frequency: 'daily'),
+    Supplement(id: 'probiotics', name: 'Probiotics', description: 'Gut-skin axis support', icon: '🦠', dosage: '', frequency: 'daily'),
+    Supplement(id: 'evening_primrose', name: 'Evening Primrose Oil', description: 'Hormonal skin support', icon: '🌸', dosage: '', frequency: 'daily'),
+    Supplement(id: 'hyaluronic', name: 'Hyaluronic Acid', description: 'Deep hydration', icon: '💧', dosage: '', frequency: 'daily'),
+    Supplement(id: 'niacinamide', name: 'Niacinamide (B3)', description: 'Barrier repair & brightening', icon: '🧪', dosage: '', frequency: 'daily'),
+    Supplement(id: 'b_complex', name: 'B-Complex', description: 'Energy & skin metabolism', icon: '💛', dosage: '', frequency: 'daily'),
+    Supplement(id: 'magnesium', name: 'Magnesium', description: 'Stress & inflammation support', icon: '🟢', dosage: '', frequency: 'daily'),
+  ];
+
+  // Custom added supplements
+  final List<Supplement> _customSupplements = [];
 
   @override
   void initState() {
     super.initState();
     _loadInitialData();
-    
-    // Track screen view
     AnalyticsService.capture('screen_view', {
       'screen_name': 'supplements_form',
       'entry_id': widget.entryId,
     });
-  }
-
-  String _formatDate(DateTime d) {
-    const weekdays = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
-    ];
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    final weekday = weekdays[d.weekday - 1];
-    final month = months[d.month - 1];
-    return '$weekday, $month ${d.day}, ${d.year}';
-  }
-
-  Widget _gradientCircle(IconData icon) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Icon(icon, color: Colors.white),
-    );
-  }
-
-  void _handleAddSupplementFromForm() {
-    final name = _formNameController.text.trim();
-    if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a supplement name')),
-      );
-      return;
-    }
-
-    final supplement = Supplement(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: name,
-      dosage: _formDosageController.text.trim(),
-      frequency: _formFrequency,
-      enabled: true,
-      am: _formMorning,
-      pm: _formEvening,
-    );
-
-    setState(() {
-      _supplements.add(supplement);
-      _intakeToggle[supplement.id] = false;
-      _formNameController.clear();
-      _formDosageController.clear();
-      _formFrequency = 'Once daily';
-      _formMorning = false;
-      _formAfternoon = false;
-      _formEvening = false;
-    });
-    _markChanged();
   }
 
   void _loadInitialData() {
@@ -218,276 +121,99 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
       final data = widget.initialData!;
       final raw = data['supplements'];
       if (raw is List) {
-        final parsed = <Supplement>[];
         for (final item in raw) {
+          String name = '';
+          bool am = true;
+          bool pm = false;
           if (item is String) {
-            parsed.add(Supplement(
-              id: DateTime.now().millisecondsSinceEpoch.toString(),
-              name: item,
-              dosage: '',
-              frequency: 'Once daily',
-              enabled: true,
-              am: true,
-              pm: false,
-            ));
-          } else if (item is Map<String, dynamic>) {
-            parsed.add(Supplement.fromJson(item));
+            name = item;
           } else if (item is Map) {
-            parsed.add(Supplement.fromJson(Map<String, dynamic>.from(item)));
+            name = item['name']?.toString() ?? '';
+            am = Supplement._asBool(item['am'], defaultValue: true);
+            pm = Supplement._asBool(item['pm'], defaultValue: false);
+          }
+          
+          final id = name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '_');
+          final found = _defaultSupplements.where((s) => s.id == id || s.name.toLowerCase() == name.toLowerCase()).firstOrNull;
+          if (found != null) {
+            found.isSelected = true;
+            found.am = am;
+            found.pm = pm;
+          } else if (name.isNotEmpty) {
+            _customSupplements.add(Supplement(
+              id: id,
+              name: name,
+              description: '',
+              icon: '💊',
+              dosage: '',
+              frequency: 'daily',
+              isSelected: true,
+              am: am,
+              pm: pm,
+            ));
           }
         }
-        setState(() {
-          _supplements = parsed;
-        });
+        setState(() {});
       }
     }
   }
 
-  void _markChanged() {
-    if (!_hasChanges) {
-      setState(() => _hasChanges = true);
-    }
-  }
+  void _addCustomSupplement() {
+    final name = _customCtrl.text.trim();
+    if (name.isEmpty) return;
 
-  // Quick-add helpers for chips/input
-  void _addByName(String name) {
-    final trimmed = name.trim();
-    if (trimmed.isEmpty) return;
-    final exists = _supplements.any((s) => s.name.toLowerCase() == trimmed.toLowerCase());
-    if (exists) return;
-    setState(() {
-      _supplements.add(Supplement(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        name: trimmed,
-        dosage: '',
-        frequency: 'Once daily',
-        enabled: true,
-        am: true,
-        pm: false,
-      ));
-      _hasChanges = true;
-    });
-  }
-
-  void _toggleQuickPick(String label, bool selected) {
-    if (selected) {
-      _addByName(label);
-    } else {
+    final id = name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '_');
+    final allItems = [..._defaultSupplements, ..._customSupplements];
+    if (!allItems.any((e) => e.id == id)) {
       setState(() {
-        _supplements.removeWhere((s) => s.name.toLowerCase() == label.toLowerCase());
-        _hasChanges = true;
+        _customSupplements.add(Supplement(
+          id: id,
+          name: name,
+          description: '',
+          icon: '💊',
+          dosage: '',
+          frequency: 'daily',
+          isSelected: true,
+          am: true,
+          pm: false,
+        ));
       });
     }
-  }
-
-  void _addSupplement({String? name}) {
-    final supplement = Supplement(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: name ?? '',
-      dosage: '',
-      frequency: 'Once daily',
-    );
-
-    setState(() {
-      _supplements.add(supplement);
-    });
-    _markChanged();
-
-    if (name == null) {
-      // Show edit dialog for custom supplement
-      _showEditSupplementDialog(supplement);
-    }
-  }
-
-  void _removeSupplement(String id) {
-    setState(() {
-      _supplements.removeWhere((s) => s.id == id);
-    });
-    _markChanged();
-  }
-
-  void _showEditSupplementDialog(Supplement supplement) {
-    final nameController = TextEditingController(text: supplement.name);
-    final dosageController = TextEditingController(text: supplement.dosage);
-    String selectedFrequency = supplement.frequency;
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: Text(supplement.name.isEmpty ? 'Add Supplement' : 'Edit Supplement'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Supplement Name',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Please enter a supplement name';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: dosageController,
-                  decoration: const InputDecoration(
-                    labelText: 'Dosage',
-                    hintText: 'e.g., 1000mg, 2 capsules',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: selectedFrequency,
-                  decoration: const InputDecoration(
-                    labelText: 'Frequency',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: _frequencyOptions.map((frequency) {
-                    return DropdownMenuItem(
-                      value: frequency,
-                      child: Text(frequency),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setDialogState(() {
-                        selectedFrequency = value;
-                      });
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (nameController.text.trim().isNotEmpty) {
-                  setState(() {
-                    supplement.name = nameController.text.trim();
-                    supplement.dosage = dosageController.text.trim();
-                    supplement.frequency = selectedFrequency;
-                  });
-                  _markChanged();
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showAddSupplementDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add Supplement'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Choose from common supplements:'),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 200,
-              width: double.maxFinite,
-              child: ListView.builder(
-                itemCount: _commonSupplements.length,
-                itemBuilder: (context, index) {
-                  final supplement = _commonSupplements[index];
-                  final isAlreadyAdded = _supplements.any((s) => s.name == supplement);
-                  
-                  return ListTile(
-                    title: Text(supplement),
-                    trailing: isAlreadyAdded 
-                        ? const Icon(Icons.check, color: Color(0xFF6A11CB))
-                        : null,
-                    onTap: isAlreadyAdded ? null : () {
-                      Navigator.of(context).pop();
-                      _addSupplement(name: supplement);
-                    },
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Divider(),
-            const SizedBox(height: 8),
-            SizedBox(
-              width: double.maxFinite,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _addSupplement();
-                },
-                icon: const Icon(Icons.add),
-                label: const Text('Add Custom Supplement'),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
+    _customCtrl.clear();
   }
 
   Future<void> _saveSupplements() async {
-    // Optional validation (no form fields required in this UI variant)
-    if (!((_formKey.currentState?.validate()) ?? true)) return;
-
     setState(() => _isLoading = true);
 
     try {
       final user = Supabase.instance.client.auth.currentUser;
-      if (user == null) {
-        throw Exception('User not authenticated');
+      if (user == null) throw Exception('User not authenticated');
+
+      final List<Map<String, dynamic>> supplements = [];
+      for (final s in [..._defaultSupplements, ..._customSupplements]) {
+        if (s.isSelected) {
+          supplements.add(s.toJson());
+        }
       }
 
       final entryData = {
         'user_id': user.id,
         'entry_id': widget.entryId ?? DateTime.now().millisecondsSinceEpoch.toString(),
-        'supplements': _supplements.map((s) => s.toJson()).toList(),
+        'supplements': supplements,
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
       };
 
-      await Supabase.instance.client
-          .from('supplement_entries')
-          .upsert(entryData);
+      await Supabase.instance.client.from('supplement_entries').upsert(entryData);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Supplements entry saved')),
+          const SnackBar(content: Text('Supplements saved')),
         );
-
-        // Track successful save
         AnalyticsService.capture(AnalyticsEvents.logCreateSupplements, {
           'entry_id': widget.entryId,
-          AnalyticsProperties.hasPhoto: false, // Supplements entries don't have photos
-          'ts': DateTime.now().toIso8601String(),
-          'supplement_count': _supplements.length,
-          'supplement_names': _supplements.map((s) => s.name).toList(),
+          'supplement_count': supplements.length,
         });
-
         Navigator.of(context).pop(true);
       }
     } catch (e) {
@@ -495,217 +221,362 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to save: $e')),
         );
-
-        // Track error
-        AnalyticsService.capture('log_create_error', {
-          'entry_type': 'supplements',
-          'entry_id': widget.entryId,
-          'error': e.toString(),
-        });
       }
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  Widget _buildSupplementRow(Supplement s, int index) {
-    const mint = Color(0xFFA8EDEA);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Brand.backgroundLight,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Supplements',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Brand.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Select supplements you take and when you take them.',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Brand.textSecondary,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    _buildSectionHeader('💊 Common Supplements'),
+                    const SizedBox(height: 12),
+                    ..._defaultSupplements.map((s) => _buildSupplementCard(s)),
+                    ..._customSupplements.map((s) => _buildSupplementCard(s, isCustom: true)),
+                    _buildAddButton(),
+                  ],
+                ),
+              ),
+            ),
+            _buildBottomCTA(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
-        border: index < _supplements.length - 1
-            ? const Border(bottom: BorderSide(color: Color(0xFFE5E7EB)))
-            : null,
+        gradient: LinearGradient(
+          colors: [
+            Brand.primaryStart.withOpacity(0.12),
+            Brand.primaryEnd.withOpacity(0.12),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Checkbox(
-                value: s.enabled,
-                onChanged: (v) {
-                  setState(() {
-                    s.enabled = v == true;
-                    _hasChanges = true;
-                  });
-                },
-              ),
-              Text(s.name, style: const TextStyle(fontWeight: FontWeight.w500)),
-            ],
+          InkWell(
+            onTap: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                context.go('/tabs');
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Icon(Icons.arrow_back, color: Brand.textPrimary),
+            ),
           ),
-          Wrap(
-            spacing: 8,
-            children: [
-              ChoiceChip(
-                label: const Text('AM'),
-                selected: s.am,
-                selectedColor: mint,
-                onSelected: (_) => setState(() { s.am = !s.am; _hasChanges = true; }),
+          Text(
+            'Supplements',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Brand.textPrimary,
+            ),
+          ),
+          const SizedBox(width: 40),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Brand.textPrimary,
+      ),
+    );
+  }
+
+  Widget _buildSupplementCard(Supplement item, {bool isCustom = false}) {
+    final isSelected = item.isSelected;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isSelected ? Brand.primaryStart.withOpacity(0.12) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? Brand.primaryStart : Brand.borderLight,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Brand.primaryStart.withOpacity(0.06),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Top row: icon, name+description, checkbox
+            InkWell(
+              onTap: () => setState(() => item.isSelected = !item.isSelected),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      gradient: Brand.primaryGradient,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(item.icon, style: const TextStyle(fontSize: 22)),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.name,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Brand.textPrimary,
+                          ),
+                        ),
+                        if (item.description.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            item.description,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Brand.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: isSelected ? Colors.transparent : Brand.borderLight,
+                        width: 2,
+                      ),
+                      gradient: isSelected ? Brand.primaryGradient : null,
+                      color: isSelected ? null : Colors.white,
+                    ),
+                    child: isSelected
+                        ? const Icon(Icons.check, size: 14, color: Colors.white)
+                        : null,
+                  ),
+                ],
               ),
-              ChoiceChip(
-                label: const Text('PM'),
-                selected: s.pm,
-                selectedColor: mint,
-                onSelected: (_) => setState(() { s.pm = !s.pm; _hasChanges = true; }),
-              ),
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () => _showEditSupplementDialog(s),
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete_outline),
-                onPressed: () => _removeSupplement(s.id),
+            ),
+            // AM/PM buttons - only show if selected
+            if (isSelected) ...[
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Text(
+                    'When do you take it?',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Brand.textSecondary,
+                    ),
+                  ),
+                  const Spacer(),
+                  _buildAmPmButton(item, true, 'AM'),
+                  const SizedBox(width: 8),
+                  _buildAmPmButton(item, false, 'PM'),
+                ],
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAmPmButton(Supplement item, bool isAm, String label) {
+    final isActive = isAm ? item.am : item.pm;
+    return InkWell(
+      onTap: () {
+        setState(() {
+          if (isAm) {
+            item.am = !item.am;
+          } else {
+            item.pm = !item.pm;
+          }
+        });
+      },
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: isActive ? Brand.primaryGradient : null,
+          color: isActive ? null : Brand.cardBackgroundSecondary,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isActive ? Colors.transparent : Brand.borderLight,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: isActive ? Colors.white : Brand.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddButton() {
+    return InkWell(
+      onTap: _showAddDialog,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: Brand.cardBackgroundSecondary,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Brand.borderLight, width: 2),
+        ),
+        child: Center(
+          child: Text(
+            '+ Add custom supplement',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Brand.textSecondary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAddDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Add Custom Supplement'),
+        content: TextField(
+          controller: _customCtrl,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: 'e.g., Turmeric',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          onSubmitted: (_) {
+            _addCustomSupplement();
+            Navigator.pop(ctx);
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _addCustomSupplement();
+              Navigator.pop(ctx);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Brand.primaryStart,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add'),
           ),
         ],
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Supplements', style: TextStyle(color: Colors.white)),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).maybePop(),
-        ),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+  Widget _buildBottomCTA() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      decoration: BoxDecoration(
+        color: Brand.backgroundLight,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -4),
           ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: IconButton(
-                icon: const Icon(Icons.history, color: Colors.grey),
-                onPressed: () {},
-              ),
-            ),
-          ),
-          if (_hasChanges)
-            TextButton(
-              onPressed: _isLoading ? null : _saveSupplements,
-              style: TextButton.styleFrom(foregroundColor: Colors.white),
-              child: _isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                    )
-                  : const Text('Save'),
-            ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Supplements', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
-              // Quick picks chips (match onboarding)
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final opt in OnboardingValidators.allowedSupplements)
-                    FilterChip(
-                      label: Text(opt),
-                      selected: _supplements.any((s) => s.name.toLowerCase() == opt.toLowerCase()),
-                      selectedColor: const Color(0xFFA8EDEA),
-                      onSelected: (sel) => _toggleQuickPick(opt, sel),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              // Input to add custom (match onboarding)
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _quickAddController,
-                      decoration: const InputDecoration(hintText: 'Add a supplement'),
-                      onSubmitted: (v) { _addByName(v); _quickAddController.clear(); },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  FilledButton(
-                    onPressed: () { _addByName(_quickAddController.text); _quickAddController.clear(); },
-                    child: const Text('Add'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              // List section (match onboarding list item: checkbox + label + AM/PM chips)
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFE5E7EB)),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: _supplements.isEmpty
-                      ? Text('No supplements yet. Use the chips above or add your own.', style: TextStyle(color: Colors.grey[600]))
-                      : Column(
-                          children: [
-                            for (int i = 0; i < _supplements.length; i++)
-                              Container(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                decoration: BoxDecoration(
-                                  border: i < _supplements.length - 1 ? const Border(bottom: BorderSide(color: Color(0xFFE5E7EB))) : null,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Checkbox(
-                                          value: _supplements[i].enabled,
-                                          onChanged: (v) => setState(() { _supplements[i].enabled = v == true; _hasChanges = true; }),
-                                        ),
-                                        Text(_supplements[i].name),
-                                      ],
-                                    ),
-                                    Wrap(
-                                      spacing: 8,
-                                      children: [
-                                        ChoiceChip(
-                                          label: const Text('AM'),
-                                          selected: _supplements[i].am,
-                                          selectedColor: const Color(0xFFA8EDEA),
-                                          onSelected: (_) => setState(() { _supplements[i].am = !_supplements[i].am; _hasChanges = true; }),
-                                        ),
-                                        ChoiceChip(
-                                          label: const Text('PM'),
-                                          selected: _supplements[i].pm,
-                                          selectedColor: const Color(0xFFA8EDEA),
-                                          onSelected: (_) => setState(() { _supplements[i].pm = !_supplements[i].pm; _hasChanges = true; }),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                ),
-              ),
-            ],
+      child: SizedBox(
+        width: double.infinity,
+        height: 54,
+        child: ElevatedButton(
+          onPressed: _isLoading ? null : _saveSupplements,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Brand.primaryStart,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(27),
+            ),
+            elevation: 0,
           ),
+          child: _isLoading
+              ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                )
+              : const Text(
+                  'Save Supplements',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
         ),
       ),
     );
@@ -713,9 +584,7 @@ class _SupplementsScreenState extends State<SupplementsScreen> {
 
   @override
   void dispose() {
-    _formNameController.dispose();
-    _quickAddController.dispose();
-    _formDosageController.dispose();
+    _customCtrl.dispose();
     super.dispose();
   }
 }

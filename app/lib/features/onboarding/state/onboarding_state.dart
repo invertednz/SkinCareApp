@@ -101,7 +101,7 @@ class OnboardingState extends ChangeNotifier {
     OnboardingStepKey.supplements,
     OnboardingStepKey.lifestyle,
     OnboardingStepKey.medications,
-    OnboardingStepKey.consentInfo,
+    // OnboardingStepKey.consentInfo, // Moved to signup page
   ];
 
   final Map<OnboardingStepKey, Map<String, dynamic>> _answers = {};
