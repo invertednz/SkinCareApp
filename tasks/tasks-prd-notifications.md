@@ -10,7 +10,7 @@
 
 - Defaults: AM 08:00, PM 20:00, Daily 19:30, Weekly Sun 17:00; quiet hours 22:00–07:00.
 - Current codebase: no notifications (APNs/FCM) or preferences implementation found yet; leaving tasks unchecked until implemented.
- - Deep link routes implemented in `app/lib/router/app_router.dart`: `/notifications/:category` opens app to appropriate tab.
+- Deep link routes implemented in `app/lib/router/app_router.dart`: `/notifications/:category` opens app to appropriate tab.
 
 ## Tasks
 

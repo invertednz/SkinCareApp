@@ -19,14 +19,21 @@ class NotificationsService {
   /// Initialize the notifications service
   Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
+    // Skip notification initialization on web — flutter_local_notifications
+    // does not support the web platform.
+    if (f.kIsWeb) {
+      _isInitialized = true;
+      return;
+    }
+
     try {
       // Initialize local notifications
       await _initializeLocalNotifications();
-      
+
       // Initialize local notifications scheduler
       await _localScheduler.initialize();
-      
+
       _isInitialized = true;
     } catch (e) {
       AnalyticsService.capture('notification_init_error', {

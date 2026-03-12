@@ -1,11 +1,13 @@
 # Onboarding Wizard Redesign
 
 ## Overview
+
 The existing onboarding wizard (detailed profile questions) has been completely redesigned to match the sophisticated Dusty Rose & Charcoal aesthetic.
 
 ## Before vs After
 
 ### Before (Old Design)
+
 - Gradient header with "Your Profile" title
 - Overlapping card design
 - Basic progress bar
@@ -77,20 +79,24 @@ The existing onboarding wizard (detailed profile questions) has been completely 
 **Background**: `Brand.backgroundLight` (#F8F5F6)
 **AppBar**: Transparent with charcoal icons
 **Progress Bar**:
+
 - Background: `Brand.borderMedium` (#E8E0E3)
 - Fill: `Brand.primaryGradient` (rose gradient)
 
 **Content Card**:
+
 - Background: White
 - Border: `Brand.borderLight` (#F0E8EB)
 - Shadow: Rose-tinted, 16px blur
 
 **Buttons**:
+
 - Back: Outlined with rose border
 - Continue: Filled rose background
 - Disabled: `Brand.borderMedium`
 
 **Error Card**:
+
 - Background: `Colors.red.shade50`
 - Border: `Colors.red.shade200`
 - Icon: `Colors.red.shade700`
@@ -113,6 +119,7 @@ The existing onboarding wizard (detailed profile questions) has been completely 
 ### Shadows
 
 **Content Card**:
+
 ```dart
 BoxShadow(
   color: Brand.primaryStart.withOpacity(0.08),
@@ -124,23 +131,27 @@ BoxShadow(
 ## Key Features
 
 ### Progressive Disclosure
+
 - Back button only appears after first step
 - Progress bar shows current position
 - Step counter provides context
 - Clear "Complete" label on final step
 
 ### Error Handling
+
 - Errors display above content card
 - Icon + text for clarity
 - Red theme for urgency
 - Proper spacing
 
 ### Loading States
+
 - Spinner in button during save
 - Buttons disabled while loading
 - White spinner on rose background
 
 ### Navigation
+
 - Back button goes to previous step
 - Close button saves draft and exits
 - Continue advances to next step
@@ -149,6 +160,7 @@ BoxShadow(
 ## Interaction Flow
 
 ### First Step
+
 ```
 ┌─────────────────────────────────┐
 │              ✕                  │
@@ -162,6 +174,7 @@ BoxShadow(
 ```
 
 ### Middle Steps
+
 ```
 ┌─────────────────────────────────┐
 │ ←            ✕                  │
@@ -175,6 +188,7 @@ BoxShadow(
 ```
 
 ### Final Step
+
 ```
 ┌─────────────────────────────────┐
 │ ←            ✕                  │
@@ -191,6 +205,7 @@ BoxShadow(
 ## Consistency with Marketing Pages
 
 ### Shared Design Elements
+
 ✓ Same background color
 ✓ Same card styling
 ✓ Same button styles
@@ -201,22 +216,26 @@ BoxShadow(
 ✓ Same spacing system
 
 ### Visual Cohesion
+
 The wizard now feels like a natural continuation of the marketing pages rather than a jarring transition to a different design system.
 
 ## Technical Implementation
 
 ### File Modified
+
 `lib/features/onboarding/presentation/onboarding_wizard.dart`
 
 ### Key Changes
 
 **Removed**:
+
 - `GradientHeader` widget usage
 - `OverlapCard` widget usage
 - Old gradient header container
 - Generic step counter text
 
 **Added**:
+
 - Transparent AppBar with icons
 - Horizontal progress bar with counter
 - White content card with shadow
@@ -225,6 +244,7 @@ The wizard now feels like a natural continuation of the marketing pages rather t
 - Proper button states
 
 ### Widget Structure
+
 ```dart
 Scaffold
 ├── AppBar (transparent)
@@ -247,24 +267,28 @@ Scaffold
 ## User Experience Improvements
 
 ### Clarity
+
 - Progress is immediately visible
 - Current step is clear
 - Total steps known upfront
 - Navigation options obvious
 
 ### Consistency
+
 - Matches marketing page design
 - Familiar button styles
 - Expected interactions
 - Cohesive experience
 
 ### Feedback
+
 - Loading states visible
 - Errors clearly displayed
 - Progress updates smoothly
 - Actions have clear outcomes
 
 ### Accessibility
+
 - High contrast text
 - Large touch targets (16px padding)
 - Clear focus indicators
@@ -274,6 +298,7 @@ Scaffold
 ## Testing Checklist
 
 ### Visual
+
 - [ ] Background color matches marketing pages
 - [ ] Progress bar fills correctly
 - [ ] Step counter updates
@@ -282,6 +307,7 @@ Scaffold
 - [ ] Error card displays properly
 
 ### Functional
+
 - [ ] Back button appears after first step
 - [ ] Back button navigates correctly
 - [ ] Close button saves and exits
@@ -292,6 +318,7 @@ Scaffold
 - [ ] Progress bar animates
 
 ### Responsive
+
 - [ ] Layout works on small screens
 - [ ] Content scrolls if needed
 - [ ] Buttons remain accessible
@@ -300,15 +327,18 @@ Scaffold
 ## Migration Notes
 
 ### Breaking Changes
+
 None - all functionality preserved
 
 ### Behavioral Changes
+
 - Back button now in AppBar instead of bottom
 - Close button moved to AppBar
 - Button labels changed ("Next" → "Continue", "Submit" → "Complete")
 - Progress display changed (text → bar + counter)
 
 ### Visual Changes
+
 - Complete redesign of layout
 - New color scheme applied
 - New button styles
@@ -318,12 +348,14 @@ None - all functionality preserved
 ## Performance
 
 ### Optimizations
+
 - No additional widgets loaded
 - Efficient progress calculation
 - Minimal rebuilds
 - Smooth animations
 
 ### Memory
+
 - No memory leaks
 - Proper disposal
 - Efficient state management
@@ -331,6 +363,7 @@ None - all functionality preserved
 ## Future Enhancements
 
 ### Potential Additions
+
 1. **Step titles** in AppBar
 2. **Animated transitions** between steps
 3. **Skip option** for optional steps
@@ -341,6 +374,7 @@ None - all functionality preserved
 8. **Haptic feedback** on interactions
 
 ### A/B Test Ideas
+
 - Test different button labels
 - Try different progress styles
 - Experiment with card animations

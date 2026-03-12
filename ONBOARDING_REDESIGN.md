@@ -1,25 +1,30 @@
 # Enhanced Onboarding Redesign - Dusty Rose & Charcoal
 
 ## Overview
+
 Complete redesign of the SkinCare app onboarding flow with a sophisticated **Dusty Rose & Charcoal** color scheme, matching the design from `color_v3_01_rose_charcoal.html`.
 
 ## Color Scheme
 
 ### Primary Colors
+
 - **Dusty Rose Primary**: `#D0A3AF` (Brand.primaryStart)
 - **Dusty Rose Accent**: `#BA8593` (Brand.primaryEnd)
 - **Charcoal**: `#3D3840` (Brand.charcoal)
 
 ### Background Colors
+
 - **Light**: `#F8F5F6` (Brand.backgroundLight)
 - **Medium**: `#F0EAEC` (Brand.backgroundMedium)
 
 ### Text Colors
+
 - **Primary**: `#3D3840` (Brand.textPrimary)
 - **Secondary**: `#6D6168` (Brand.textSecondary)
 - **Tertiary**: `#8A7B82` (Brand.textTertiary)
 
 ### Borders
+
 - **Light**: `#F0E8EB` (Brand.borderLight)
 - **Medium**: `#E8E0E3` (Brand.borderMedium)
 
@@ -94,6 +99,7 @@ Complete redesign of the SkinCare app onboarding flow with a sophisticated **Dus
     - Terms acceptance footer
 
 ### Bonus Flow
+
 - **Special Discount Page** (`SpecialDiscountPage`)
   - Shown if user closes payment (can't skip)
   - 50% off first year ($4.99/month)
@@ -114,10 +120,12 @@ lib/features/onboarding/presentation/
 ## Updated Files
 
 ### Theme
+
 - `lib/theme/brand.dart` - Complete color system for Dusty Rose & Charcoal
 - `lib/theme/light_theme.dart` - Updated theme to use new colors
 
 ### Onboarding
+
 - `lib/features/onboarding/presentation/onboarding_wizard.dart`
   - All mint colors (`#A8EDEA`) replaced with dusty rose (`#D0A3AF`)
   - Updated borders to use rose tints
@@ -125,29 +133,34 @@ lib/features/onboarding/presentation/
   - Custom gradient header
 
 ### Router
+
 - `lib/router/app_router.dart` - Routes to `EnhancedOnboardingFlow` instead of standalone wizard
 
 ## Design Principles
 
 ### Typography
+
 - **Headings**: 32-36px, bold, tight letter-spacing (-0.5 to -1)
 - **Subheadings**: 18-20px, medium weight
 - **Body**: 14-16px, regular weight
 - **Labels**: 12-13px for metadata
 
 ### Spacing
+
 - Consistent 24px page padding
 - 16px between major elements
 - 8-12px between related items
 - 32-48px for section breaks
 
 ### Interactions
+
 - 300-400ms transitions
 - Cubic bezier easing for polish
 - Hover effects with transform: translateY(-4 to -6px)
 - Gradient highlights on selection
 
 ### Shadows
+
 - Light: `rgba(208, 163, 175, 0.08)` 16px blur
 - Medium: `rgba(186, 133, 147, 0.14)` 16px blur
 - Selected: `rgba(208, 163, 175, 0.4)` 16px blur + glow
@@ -155,36 +168,43 @@ lib/features/onboarding/presentation/
 ## Marketing Psychology
 
 ### Welcome Page
+
 - Social proof builds trust immediately
 - Specific statistics (94%, 50K+) create credibility
 - "Evidence-based" appeals to rational buyers
 
 ### Goal Selection
+
 - Personalization from the start
 - Clear value propositions per goal
 - Visual hierarchy guides attention
 
 ### Results Page
+
 - Concrete expectations manage customer success
 - Grid layout makes scanning easy
 - Timeline creates realistic expectations
 
 ### Progress Graph
+
 - Visual representation reduces uncertainty
 - Milestones provide motivation checkpoints
 - "Slow then ramp" curve sets honest expectations
 
 ### Features Carousel
+
 - Interactive engagement increases commitment
 - Each feature has clear value
 - Carousel format prevents overwhelm
 
 ### Thank You Page
+
 - Celebration creates positive association
 - Community stats provide belonging
 - Review CTA leverages reciprocity
 
 ### Pricing
+
 - 7-day free trial reduces barrier
 - "Best Value" badge guides choice
 - Countdown timer on discount creates urgency

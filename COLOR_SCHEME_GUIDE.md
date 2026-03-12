@@ -1,6 +1,7 @@
 # Dusty Rose & Charcoal - Color Scheme Guide
 
 ## Visual Reference
+
 Based on: `mockups/color_v3_01_rose_charcoal.html`
 
 ## Core Palette
@@ -57,7 +58,7 @@ Based on: `mockups/color_v3_01_rose_charcoal.html`
 
 ```
 Primary Text (#3D3840)      █████ Headings, labels
-Secondary Text (#6D6168)    ████  Body text, descriptions  
+Secondary Text (#6D6168)    ████  Body text, descriptions
 Tertiary Text (#8A7B82)     ███   Metadata, hints
 ```
 
@@ -73,6 +74,7 @@ Medium Border (#E8E0E3)     ━━━━━  Standard borders
 ### Buttons
 
 **Primary CTA**
+
 ```dart
 ElevatedButton(
   style: ElevatedButton.styleFrom(
@@ -83,6 +85,7 @@ ElevatedButton(
 ```
 
 **Outlined**
+
 ```dart
 OutlinedButton(
   style: OutlinedButton.styleFrom(
@@ -95,6 +98,7 @@ OutlinedButton(
 ### Cards
 
 **Standard Card**
+
 ```dart
 Container(
   decoration: BoxDecoration(
@@ -113,6 +117,7 @@ Container(
 ```
 
 **Selected Card**
+
 ```dart
 Container(
   decoration: BoxDecoration(
@@ -138,6 +143,7 @@ Container(
 ### Chips & Pills
 
 **Selected Chip**
+
 ```dart
 FilterChip(
   label: Text('Selected'),
@@ -147,6 +153,7 @@ FilterChip(
 ```
 
 **Unselected Chip**
+
 ```dart
 FilterChip(
   label: Text('Option'),
@@ -159,6 +166,7 @@ FilterChip(
 ### Gradients
 
 **Primary Gradient** (Headers, selected states)
+
 ```dart
 LinearGradient(
   colors: [Brand.primaryStart, Brand.primaryEnd],  // #D0A3AF → #BA8593
@@ -168,6 +176,7 @@ LinearGradient(
 ```
 
 **Secondary Gradient** (Subtle backgrounds)
+
 ```dart
 LinearGradient(
   colors: [Brand.secondaryStart, Brand.secondaryEnd],  // #F5EDEF → #E8E0E3
@@ -179,6 +188,7 @@ LinearGradient(
 ### Sliders & Progress
 
 **Active Track**
+
 ```dart
 Slider(
   activeColor: Brand.primaryStart,  // #D0A3AF
@@ -187,6 +197,7 @@ Slider(
 ```
 
 **Progress Bar**
+
 ```dart
 Container(
   decoration: BoxDecoration(
@@ -200,15 +211,16 @@ Container(
 
 ### Contrast Ratios
 
-| Combination                          | Ratio | WCAG Level |
-|--------------------------------------|-------|------------|
-| Dusty Rose (#D0A3AF) on White        | 2.8:1 | AA Large   |
-| Charcoal (#3D3840) on White          | 10.5:1| AAA        |
-| White on Dusty Rose (#D0A3AF)        | 3.2:1 | AA Large   |
-| Secondary Text (#6D6168) on White    | 5.8:1 | AA         |
-| Tertiary Text (#8A7B82) on White     | 4.2:1 | AA Large   |
+| Combination                       | Ratio  | WCAG Level |
+| --------------------------------- | ------ | ---------- |
+| Dusty Rose (#D0A3AF) on White     | 2.8:1  | AA Large   |
+| Charcoal (#3D3840) on White       | 10.5:1 | AAA        |
+| White on Dusty Rose (#D0A3AF)     | 3.2:1  | AA Large   |
+| Secondary Text (#6D6168) on White | 5.8:1  | AA         |
+| Tertiary Text (#8A7B82) on White  | 4.2:1  | AA Large   |
 
 ### Recommendations
+
 - Use Charcoal (#3D3840) for body text (excellent contrast)
 - Use white text on rose gradients (good contrast)
 - Rose works for large text and interactive elements
@@ -222,23 +234,23 @@ class Brand {
   // Primary
   static const Color primaryStart = Color(0xFFD0A3AF);
   static const Color primaryEnd = Color(0xFFBA8593);
-  
+
   // Accent
   static const Color charcoal = Color(0xFF3D3840);
-  
+
   // Backgrounds
   static const Color backgroundLight = Color(0xFFF8F5F6);
   static const Color backgroundMedium = Color(0xFFF0EAEC);
-  
+
   // Text
   static const Color textPrimary = Color(0xFF3D3840);
   static const Color textSecondary = Color(0xFF6D6168);
   static const Color textTertiary = Color(0xFF8A7B82);
-  
+
   // Surfaces
   static const Color cardBackground = Color(0xFFFFFFFF);
   static const Color cardBackgroundSecondary = Color(0xFFFDFBFC);
-  
+
   // Borders
   static const Color borderLight = Color(0xFFF0E8EB);
   static const Color borderMedium = Color(0xFFE8E0E3);
@@ -248,6 +260,7 @@ class Brand {
 ## Psychology & Brand Positioning
 
 ### Dusty Rose Associations
+
 - **Sophistication**: Mature, refined aesthetic
 - **Femininity**: Gentle without being juvenile
 - **Luxury**: Premium skincare positioning
@@ -255,6 +268,7 @@ class Brand {
 - **Warmth**: Emotional connection
 
 ### Charcoal Associations
+
 - **Authority**: Professional credibility
 - **Elegance**: Modern sophistication
 - **Seriousness**: Takes skin health seriously
@@ -262,6 +276,7 @@ class Brand {
 - **Balance**: Grounds the softer rose tones
 
 ### Target Demographic
+
 - **Age**: 32-50 (sweet spot)
 - **Appeal**: Women seeking elegant, mature skincare
 - **Income**: Mid to upper-middle class
@@ -269,6 +284,7 @@ class Brand {
 - **Avoid**: Appears too clinical, too playful, or generic
 
 ### Competitive Position
+
 - More sophisticated than pink/mint beauty apps
 - Warmer than clinical blue/white medical apps
 - More mature than pastel wellness apps
@@ -277,6 +293,7 @@ class Brand {
 ## Migration Notes
 
 ### Old Colors → New Colors
+
 - Mint `#A8EDEA` → Dusty Rose `#D0A3AF`
 - Pink `#FF7EB3` → Dusty Rose Accent `#BA8593`
 - Generic borders → Rose-tinted borders
@@ -284,6 +301,7 @@ class Brand {
 - White backgrounds → Soft rose-tinted backgrounds
 
 ### Files Updated
+
 1. `lib/theme/brand.dart` - Core color definitions
 2. `lib/theme/light_theme.dart` - Theme configuration
 3. `lib/features/onboarding/presentation/onboarding_wizard.dart` - All interactive elements
@@ -292,19 +310,23 @@ class Brand {
 ## Testing in Different Contexts
 
 ### Light Mode (Primary)
+
 ✓ Excellent readability
 ✓ Warm, inviting feel
 ✓ Professional appearance
 ✓ Clear visual hierarchy
 
 ### Dark Mode (Future)
+
 Consider these adjustments:
+
 - Use deeper charcoal for backgrounds
 - Lighten rose tones for visibility
 - Reduce opacity on gradients
 - Increase contrast ratios
 
 ### Outdoor Visibility
+
 - Charcoal text ensures readability in bright light
 - Rose elements may wash out slightly (acceptable for secondary UI)
 - White cards maintain clarity
@@ -312,6 +334,7 @@ Consider these adjustments:
 ## Brand Consistency Checklist
 
 When adding new UI:
+
 - [ ] CTAs use Dusty Rose gradient or solid
 - [ ] Selected states have rose highlight
 - [ ] Text uses charcoal hierarchy (primary/secondary/tertiary)

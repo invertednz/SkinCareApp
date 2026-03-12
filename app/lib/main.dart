@@ -37,11 +37,20 @@ Future<void> main() async {
       // Bind profile service to session changes and fetch profile
       ProfileService.instance.rebind(SessionService.instance);
     }
-    await AnalyticsService.init(apiKey: Env.mixpanelToken, host: Env.mixpanelHost);
-    
-    // Initialize notifications service
-    await NotificationsService().initialize();
-    
+
+    // Non-critical services — isolate failures so they don't crash the app
+    try {
+      await AnalyticsService.init(apiKey: Env.mixpanelToken, host: Env.mixpanelHost);
+    } catch (e) {
+      debugPrint('Analytics init failed (non-fatal): $e');
+    }
+
+    try {
+      await NotificationsService().initialize();
+    } catch (e) {
+      debugPrint('Notifications init failed (non-fatal): $e');
+    }
+
     runApp(MyApp(router: AppRouter.create()));
   } catch (error, stackTrace) {
     // Log initialization error and show fallback app

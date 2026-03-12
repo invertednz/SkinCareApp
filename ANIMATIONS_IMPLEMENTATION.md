@@ -5,6 +5,7 @@ This document summarizes the animation system implemented for the SkinCare app b
 ## Created Files
 
 ### 1. `lib/widgets/page_transitions.dart`
+
 - **FadePageTransitionsBuilder**: Page transition builder for cross-fade effect
 - **FadePageRoute**: Custom page route with cross-fade transition
 - **Duration**: 300ms
@@ -12,27 +13,28 @@ This document summarizes the animation system implemented for the SkinCare app b
 - **Accessibility**: Respects `MediaQuery.disableAnimations` for reduced motion
 
 ### 2. `lib/widgets/staggered_animation.dart`
+
 - **StaggeredAnimation**: Widget for staggered fade + slide-up animations
   - Duration: 600ms per element
   - Stagger delay: 100ms between each element
   - Curve: `Curves.easeOut`
   - Slide distance: 30% of widget height (configurable)
-  
 - **AnimatedCard**: Individual animated card with staggered entry
   - Provides manual control over delay for individual items
   - Same animation parameters as StaggeredAnimation
-  
 - **Accessibility**: Both widgets respect reduced motion preferences
 
 ## Applied Animations
 
 ### Router-level Page Transitions (`lib/router/app_router.dart`)
+
 - Added cross-fade transitions to `/onboarding` and `/paywall` routes
 - Uses `CustomTransitionPage` from go_router
 - Duration: 300ms with linear curve
 - Checks for reduced motion accessibility preference
 
 ### Enhanced Onboarding Flow (`lib/features/onboarding/presentation/enhanced_onboarding_flow.dart`)
+
 - Wrapped the entire flow in `AnimatedSwitcher` for smooth cross-fade between steps
 - Duration: 300ms with linear curve
 - Each step has a unique `ValueKey` for proper animation triggering
@@ -41,6 +43,7 @@ This document summarizes the animation system implemented for the SkinCare app b
 ### Marketing Pages
 
 #### `marketing_pages.dart`
+
 - **WelcomePage**: Social proof cards wrapped in `StaggeredAnimation`
   - 3 cards with 100ms stagger delay
   - Creates a cascading waterfall effect
@@ -50,6 +53,7 @@ This document summarizes the animation system implemented for the SkinCare app b
   - Staggered entrance creates professional, polished feel
 
 #### `marketing_pages_3.dart`
+
 - **TimelineVisualizationPage**: Timeline items wrapped in `StaggeredAnimation`
   - 3 timeline steps with staggered entrance
   - Enhances the visual progression narrative
@@ -57,17 +61,19 @@ This document summarizes the animation system implemented for the SkinCare app b
 ## Animation Specifications
 
 ### Page Transitions (Between Screens)
+
 - **Effect**: Cross-fade transition
 - **Duration**: 300ms
 - **Curve**: Linear
 - **Behavior**: Old screen fades out while new screen fades in simultaneously
 
 ### Staggered Card/Element Animations
+
 - **Effect**: Staggered fade + slide-up animation
 - **Duration**: 600ms per element
 - **Curve**: `ease-out` (smooth deceleration)
 - **Stagger Delay**: 100ms between each element
-- **Movement**: 
+- **Movement**:
   - Start Position: 30% down from final position
   - End Position: Final position
   - Opacity: 0 → 1
@@ -75,6 +81,7 @@ This document summarizes the animation system implemented for the SkinCare app b
 ## Accessibility Features
 
 All animations respect the user's motion preferences:
+
 - Checks `MediaQuery.maybeOf(context)?.disableAnimations`
 - When reduced motion is enabled:
   - Page transitions are skipped (widgets appear instantly)
@@ -93,6 +100,7 @@ All animations respect the user's motion preferences:
 ## Usage Examples
 
 ### Using Staggered Animation
+
 ```dart
 StaggeredAnimation(
   children: [
@@ -106,6 +114,7 @@ StaggeredAnimation(
 ```
 
 ### Using Animated Card with Custom Delay
+
 ```dart
 AnimatedCard(
   delay: Duration(milliseconds: 200),
@@ -114,6 +123,7 @@ AnimatedCard(
 ```
 
 ### Using Fade Page Route
+
 ```dart
 Navigator.push(
   context,

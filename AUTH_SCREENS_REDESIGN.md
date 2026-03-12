@@ -1,6 +1,7 @@
 # Auth Screens Redesign - Dusty Rose & Charcoal
 
 ## Overview
+
 Complete redesign of login and password reset screens to match the sophisticated Dusty Rose & Charcoal aesthetic from the enhanced onboarding flow.
 
 ## Changes Made
@@ -8,6 +9,7 @@ Complete redesign of login and password reset screens to match the sophisticated
 ### Login Screen (`login_screen.dart`)
 
 #### Before
+
 - Generic gradient header with overlap card
 - Basic form layout
 - Minimal branding
@@ -16,6 +18,7 @@ Complete redesign of login and password reset screens to match the sophisticated
 #### After ✨
 
 **Layout Structure**:
+
 1. **Hero Section**
    - Gradient icon (spa_outlined) with shadow
    - "Welcome to SkinCare" headline (32px, bold)
@@ -55,6 +58,7 @@ Complete redesign of login and password reset screens to match the sophisticated
 ### Password Reset Screen (`password_reset_screen.dart`)
 
 #### Before
+
 - Basic AppBar
 - Simple centered form
 - Minimal styling
@@ -63,6 +67,7 @@ Complete redesign of login and password reset screens to match the sophisticated
 #### After ✨
 
 **Layout Structure**:
+
 1. **Hero Section**
    - Gradient icon (lock_reset) with shadow
    - "Reset Password" headline (32px, bold)
@@ -91,22 +96,26 @@ Complete redesign of login and password reset screens to match the sophisticated
 ### Colors Used
 
 **Backgrounds**:
+
 - `Brand.backgroundLight` (#F8F5F6) - Main scaffold
 - `Colors.white` - Card backgrounds
 - `Brand.secondaryStart.withOpacity(0.3)` - Info boxes
 
 **Text**:
+
 - `Brand.textPrimary` (#3D3840) - Headlines
 - `Brand.textSecondary` (#6D6168) - Subtitles
 - `Brand.textTertiary` (#8A7B82) - Footer links
 
 **Interactive**:
+
 - `Brand.primaryStart` (#D0A3AF) - Buttons, icons, focus
 - `Brand.primaryGradient` - Icon backgrounds
 - `Brand.borderLight` (#F0E8EB) - Card borders
 - `Brand.borderMedium` (#E8E0E3) - Input borders
 
 **Errors**:
+
 - `Colors.red.shade50` - Error background
 - `Colors.red.shade200` - Error border
 - `Colors.red.shade700` - Error icon
@@ -130,6 +139,7 @@ Complete redesign of login and password reset screens to match the sophisticated
 ### Shadows
 
 **Hero Icons**:
+
 ```dart
 BoxShadow(
   color: Brand.primaryStart.withOpacity(0.3),
@@ -139,6 +149,7 @@ BoxShadow(
 ```
 
 **Cards**:
+
 ```dart
 BoxShadow(
   color: Brand.primaryStart.withOpacity(0.08),
@@ -177,6 +188,7 @@ BoxShadow(
 ## User Experience Improvements
 
 ### Visual Hierarchy
+
 1. Icon draws attention
 2. Headline establishes context
 3. Subtitle provides guidance
@@ -184,6 +196,7 @@ BoxShadow(
 5. CTA is prominent
 
 ### Emotional Design
+
 - **Rose tones**: Warm, welcoming, sophisticated
 - **Charcoal text**: Professional, readable
 - **Soft shadows**: Elevated, premium feel
@@ -191,6 +204,7 @@ BoxShadow(
 - **Ample spacing**: Calm, uncluttered
 
 ### Accessibility
+
 - High contrast text (10.5:1 for charcoal)
 - Large touch targets (52px buttons)
 - Clear focus indicators (rose borders)
@@ -200,6 +214,7 @@ BoxShadow(
 ## Consistency with Onboarding
 
 ### Shared Elements
+
 ✓ Same color palette
 ✓ Same typography scale
 ✓ Same spacing system
@@ -209,6 +224,7 @@ BoxShadow(
 ✓ Same icon treatment
 
 ### Brand Cohesion
+
 - Users see consistent design from auth → onboarding → app
 - Builds trust through visual consistency
 - Professional, polished appearance
@@ -217,16 +233,19 @@ BoxShadow(
 ## Technical Details
 
 ### Files Modified
+
 1. `lib/features/auth/login_screen.dart`
 2. `lib/features/auth/password_reset_screen.dart`
 
 ### Dependencies
+
 - Uses `Brand` class from `lib/theme/brand.dart`
 - No new dependencies added
 - Maintains existing functionality
 - All tests should still pass
 
 ### Responsive Behavior
+
 - Max width: 480px (centered)
 - Scrollable on small screens
 - Proper padding on all sizes
@@ -237,6 +256,7 @@ BoxShadow(
 ### Login Screen
 
 **Before**:
+
 ```
 ┌─────────────────────────┐
 │ [Gradient Header]       │
@@ -251,6 +271,7 @@ BoxShadow(
 ```
 
 **After**:
+
 ```
 ┌─────────────────────────────┐
 │    [Rose Gradient Icon]     │
@@ -272,6 +293,7 @@ BoxShadow(
 ### Password Reset Screen
 
 **Before**:
+
 ```
 ┌─────────────────────────┐
 │ ← Reset password        │
@@ -282,6 +304,7 @@ BoxShadow(
 ```
 
 **After**:
+
 ```
 ┌─────────────────────────────┐
 │ ←                           │
@@ -300,6 +323,7 @@ BoxShadow(
 ## Testing Checklist
 
 ### Login Screen
+
 - [ ] Displays correctly on various screen sizes
 - [ ] Email validation works
 - [ ] Password validation works
@@ -312,6 +336,7 @@ BoxShadow(
 - [ ] Icons display properly
 
 ### Password Reset Screen
+
 - [ ] Back button works
 - [ ] Email validation works
 - [ ] Error messages display
@@ -324,6 +349,7 @@ BoxShadow(
 ## Future Enhancements
 
 ### Potential Additions
+
 1. **Animated transitions** between states
 2. **Password visibility toggle** with eye icon
 3. **Remember me** checkbox on login
@@ -334,6 +360,7 @@ BoxShadow(
 8. **Auto-fill support** improvements
 
 ### A/B Test Ideas
+
 - Test different headlines
 - Try different icon styles
 - Experiment with button copy
@@ -343,20 +370,24 @@ BoxShadow(
 ## Migration Notes
 
 ### Breaking Changes
+
 None - all functionality preserved
 
 ### Visual Changes
+
 - Users will see new design immediately
 - No data migration needed
 - No behavioral changes
 - Existing tests should pass
 
 ### Rollback Plan
+
 If needed, revert the two files to previous versions. No database or API changes required.
 
 ## Success Metrics
 
 ### Expected Improvements
+
 - **Perceived quality**: Higher brand perception
 - **Trust signals**: Professional appearance
 - **Completion rate**: Clearer CTAs
@@ -364,6 +395,7 @@ If needed, revert the two files to previous versions. No database or API changes
 - **Brand recall**: Memorable design
 
 ### Metrics to Track
+
 - Login completion rate
 - Password reset completion rate
 - Error rate per field

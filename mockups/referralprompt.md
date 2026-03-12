@@ -37,6 +37,7 @@ Craft a share message that includes:
 
 **Template Structure**:
 ```
+
 [Emoji] [Personal Hook about receiving value]
 
 [Explain the value/benefit received in 1-2 sentences]
@@ -48,6 +49,7 @@ Craft a share message that includes:
 [CTA with referral code]
 
 [Hashtags]
+
 ```
 
 #### 3. Rewards Display UI
@@ -121,16 +123,16 @@ Implement analytics for:
 
 1. **Complete Referral System Code**
    - Models, providers, database integration
-   
+
 2. **Rewards UI Component**
    - Beautiful, gamified display of earnings
-   
+
 3. **Share Integration**
    - Native share with optimized message
-   
+
 4. **Analytics Events**
    - Track every step of the funnel
-   
+
 5. **Documentation**
    - How to customize rewards
    - How to update share message
@@ -168,15 +170,18 @@ When using this prompt, replace these placeholders:
 ## EXAMPLE: Fitness App
 
 ```
+
 As the world's best marketer and UX designer, implement a comprehensive viral sharing + referral rewards system for FitTrack with the following specifications:
 
 ### CONTEXT
+
 - **App Type**: Fitness & Nutrition Tracking
 - **Platform**: Both iOS & Android
 - **Tech Stack**: Flutter
 - **Current User Flow**: After user completes their first 7-day streak
 
 ### Share Message Example:
+
 ```
 💪 I just completed my first week on FitTrack and I'm already down 3 lbs!
 
@@ -190,9 +195,11 @@ Join me! Use my code: FIT8XK2P to get started 🚀
 ```
 
 ### Rewards Structure:
+
 - $15 off next year for each referral
 - Max cap: $99 (full year free if you refer 7 friends)
 - Redemption: Applied automatically at next renewal
+
 ```
 
 ---
@@ -224,16 +231,16 @@ A well-implemented viral sharing system should achieve:
 
 ## ANTI-PATTERNS TO AVOID
 
-❌ Generic "Share this app" button  
-❌ No reward or unclear reward  
-❌ Complicated multi-step sharing process  
-❌ Corporate-sounding share message  
-❌ No tracking or attribution  
-❌ Hidden referral code or too small  
-❌ Reward that's too small to motivate  
-❌ Placing share button in wrong location (not at gratitude peak)  
-❌ No visual feedback after sharing  
-❌ Ignoring the "why" (just asks to share without explaining mission)  
+❌ Generic "Share this app" button
+❌ No reward or unclear reward
+❌ Complicated multi-step sharing process
+❌ Corporate-sounding share message
+❌ No tracking or attribution
+❌ Hidden referral code or too small
+❌ Reward that's too small to motivate
+❌ Placing share button in wrong location (not at gratitude peak)
+❌ No visual feedback after sharing
+❌ Ignoring the "why" (just asks to share without explaining mission)
 
 ---
 
@@ -262,28 +269,33 @@ Before launch, verify:
 
 ### Parenting App
 ```
+
 🎁 [Name] gave me access to BabySteps for just $29/year!
 
 They donated $10 through "Pay It Forward", BabySteps matched it, and now I'm saving $20. This app has reduced my parenting stress by 50% - no more 2 AM googling!
 
-Use my code: BABY4P7K to join the movement! 
+Use my code: BABY4P7K to join the movement!
 
 #ParentingCommunity #PayItForward
+
 ```
 
 ### Finance App
 ```
+
 💰 I just saved $1,247 in the last 3 months using MoneyMind!
 
 [Name] shared their referral code and we both got 3 months free premium. The AI finds subscriptions I forgot about, negotiates bills, and actually makes saving automatic.
 
-Your turn! Code: SAVE9MX2 
+Your turn! Code: SAVE9MX2
 
 #FinancialFreedom #SmartMoney
+
 ```
 
 ### Education App
 ```
+
 🎓 My daughter's math scores went from C to A in 6 weeks with LearnFast!
 
 [Name] gifted me 50% off and now I'm paying it forward. The adaptive AI makes learning actually fun - she asks to do her homework now!
@@ -291,10 +303,12 @@ Your turn! Code: SAVE9MX2
 Join us! Code: LEARN3K9P
 
 #EdTech #ProudParent
+
 ```
 
 ### Mental Health App
 ```
+
 🧘 I've meditated 30 days straight thanks to MindfulMe and [Name]!
 
 They shared their "Meditation Buddy" code and we both got $20 off. My anxiety has dropped significantly and I'm sleeping better than ever.
@@ -302,6 +316,7 @@ They shared their "Meditation Buddy" code and we both got $20 off. My anxiety ha
 Your journey starts here: MIND7Q4R
 
 #MentalHealthMatters #Mindfulness
+
 ```
 
 ---
@@ -321,3 +336,4 @@ The key is making users feel like **advocates for a mission**, not just unpaid m
 ---
 
 **Save this prompt and customize the [VARIABLES] for each new app!**
+```

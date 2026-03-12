@@ -1,0 +1,22 @@
+{
+  "name": "skincare-app-e2e",
+  "version": "1.0.0",
+  "description": "Playwright E2E tests for SkinCare Flutter Web App",
+  "private": true,
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:debug": "npx playwright test --debug",
+    "test:auth": "npx playwright test tests/auth",
+    "test:onboarding": "npx playwright test tests/onboarding",
+    "test:tracking": "npx playwright test tests/tracking",
+    "test:chat": "npx playwright test tests/chat",
+    "test:navigation": "npx playwright test tests/navigation",
+    "test:paywall": "npx playwright test tests/paywall",
+    "report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
