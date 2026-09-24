@@ -1,11 +1,5 @@
-import {
-  test,
-  expect,
-  flutterText,
-  flutterButton,
-  waitForFlutterReady,
-  enableFlutterSemantics,
-} from "../fixtures";
+import { test, expect, flutterText, flutterButton } from "../fixtures";
+import { navigateWithMockAuth } from "../helpers/mock-auth";
 
 /**
  * Chat Screen Tests
@@ -17,65 +11,21 @@ import {
  * - Image attachment support
  * - Loading states
  *
- * Note: Requires authenticated access. In release mode,
- * tests gracefully skip if sign-in fails.
+ * Uses mock Supabase auth interception to bypass real authentication.
  */
-
-async function navigateToChat(
-  page: import("@playwright/test").Page,
-): Promise<boolean> {
-  await page.goto("/");
-  await waitForFlutterReady(page);
-
-  await flutterText(page, "Already have an account? Log in").click();
-  await page.waitForTimeout(1500);
-  await enableFlutterSemantics(page);
-
-  const inputs = page.locator("input");
-  if ((await inputs.count()) >= 2) {
-    await inputs.first().fill("test@test.com");
-    await inputs.nth(1).fill("password123");
-
-    const consent = flutterText(page, "I agree to the Terms & Privacy Policy");
-    if (await consent.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await consent.click();
-      await page.waitForTimeout(300);
-    }
-
-    await flutterText(page, "Sign In").click();
-    await page.waitForTimeout(3000);
-    await enableFlutterSemantics(page);
-  }
-
-  const chatTab = flutterText(page, "Chat");
-  if (await chatTab.isVisible({ timeout: 5000 }).catch(() => false)) {
-    await chatTab.click();
-    await page.waitForTimeout(1000);
-    return true;
-  }
-
-  return false;
-}
 
 test.describe("Chat Screen", () => {
   test("should display chat interface", async ({ page }) => {
-    const reachedChat = await navigateToChat(page);
-    if (!reachedChat) {
-      test.skip();
-      return;
-    }
+    await navigateWithMockAuth(page, "Chat");
 
     // Chat screen should have a message input area
     const bodyText = await page.textContent("body");
     expect(bodyText).toBeTruthy();
+    expect(bodyText!.length).toBeGreaterThan(0);
   });
 
   test("should show message input field", async ({ page }) => {
-    const reachedChat = await navigateToChat(page);
-    if (!reachedChat) {
-      test.skip();
-      return;
-    }
+    await navigateWithMockAuth(page, "Chat");
 
     // Look for text input (message field)
     const messageInput = page
@@ -87,11 +37,7 @@ test.describe("Chat Screen", () => {
   });
 
   test("should show send button", async ({ page }) => {
-    const reachedChat = await navigateToChat(page);
-    if (!reachedChat) {
-      test.skip();
-      return;
-    }
+    await navigateWithMockAuth(page, "Chat");
 
     // Send button (arrow icon or "Send" text)
     const sendBtn = flutterButton(page, "Send")
@@ -104,11 +50,7 @@ test.describe("Chat Screen", () => {
   });
 
   test("should allow typing a message", async ({ page }) => {
-    const reachedChat = await navigateToChat(page);
-    if (!reachedChat) {
-      test.skip();
-      return;
-    }
+    await navigateWithMockAuth(page, "Chat");
 
     const messageInput = page
       .locator("input")
@@ -123,11 +65,7 @@ test.describe("Chat Screen", () => {
   });
 
   test("should show image attachment button", async ({ page }) => {
-    const reachedChat = await navigateToChat(page);
-    if (!reachedChat) {
-      test.skip();
-      return;
-    }
+    await navigateWithMockAuth(page, "Chat");
 
     // Image picker button (camera/photo icon)
     const attachBtn = page
@@ -142,15 +80,11 @@ test.describe("Chat Screen", () => {
   });
 
   test("should display empty state or previous messages", async ({ page }) => {
-    const reachedChat = await navigateToChat(page);
-    if (!reachedChat) {
-      test.skip();
-      return;
-    }
+    await navigateWithMockAuth(page, "Chat");
 
     // Either empty state message or previous conversation messages
     // The chat loads last conversation on init
     const bodyText = await page.textContent("body");
-    expect(bodyText?.length).toBeGreaterThan(0);
+    expect(bodyText!.length).toBeGreaterThan(0);
   });
 });

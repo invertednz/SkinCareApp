@@ -31,7 +31,8 @@ Future<void> main() async {
     final url = Env.supabaseUrl;
     final key = Env.supabaseAnonKey;
     if (url != null && url.isNotEmpty && key != null && key.isNotEmpty) {
-      await Supabase.initialize(url: url, anonKey: key);
+      await Supabase.initialize(url: url, anonKey: key)
+          .timeout(const Duration(seconds: 10));
       // Ensure auth listener is attached now that Supabase is initialized
       SessionService.instance.rebind();
       // Bind profile service to session changes and fetch profile

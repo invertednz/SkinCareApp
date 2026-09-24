@@ -72,13 +72,16 @@ class ProfileService extends ChangeNotifier {
           .from('profiles')
           .select('onboarding_completed_at')
           .eq('user_id', user.id)
-          .maybeSingle();
+          .maybeSingle()
+          .timeout(const Duration(seconds: 8));
       final completedAt = data == null ? null : data['onboarding_completed_at'];
       _onboardingCompleted = completedAt != null;
       // Subscription stub: always false until payment integration
       _hasActiveSubscription = false;
     } catch (e) {
       _lastError = e;
+      // Default to not onboarded on error/timeout so router can proceed
+      _onboardingCompleted ??= false;
     } finally {
       _loading = false;
       notifyListeners();
