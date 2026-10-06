@@ -24,12 +24,18 @@ export default defineConfig({
     timeout: 15_000,
   },
   use: {
-    baseURL: process.env.BASE_URL || "http://localhost:8080",
+    baseURL: process.env.BASE_URL || "http://localhost:8082",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
     actionTimeout: 10_000,
     navigationTimeout: 30_000,
+  },
+  webServer: {
+    command: "npx serve ../../app/build/web -l 8082 -s --no-clipboard",
+    port: 8082,
+    reuseExistingServer: !process.env.CI,
+    timeout: 30_000,
   },
   projects: [
     {
